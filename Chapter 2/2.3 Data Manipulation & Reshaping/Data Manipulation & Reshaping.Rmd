@@ -1,6 +1,8 @@
 # Data Manipulation & Reshaping
 This training module was developed by Dr. Kyle R. Roell, Dr. Julia E. Rager, and Alexis Payton
 
+Example edit here
+
 Spring 2023
 
 ## Introduction to Training Module
