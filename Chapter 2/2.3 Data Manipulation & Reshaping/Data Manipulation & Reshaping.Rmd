@@ -456,6 +456,6 @@ Together, this training module provides introductory level information on the ba
 
 
 ## Test your knowledge
-1. What are the subject IDs for subjects that have the highest drinking water Cadmium levels, but had babies at a least 35 weeks?
+1. What subjects, arranged from highest to lowest drinking water Cadmium levels, had babies at at least 35 weeks and had urinary Cadmium levels of at least 1.5 µg/L?
 
 **Hint**: Try using the `arrange` function from tidyverse.

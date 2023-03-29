@@ -1,0 +1,35 @@
+```{r}
+library(tidyverse)
+```
+
+```{r}
+# Loading data
+demographic_data <- read.csv("Module2_3/Module2_3_DemographicData.csv")
+chemical_data <- read.csv("Module2_3/Module2_3_ChemicalData.csv")
+```
+
+
+```{r}
+# Viewing data
+head(demographic_data)
+head(chemical_data)
+```
+
+```{r}
+# Merging to create one dataframe and also removing columns that aren't needed for this analysis
+chemical_demographic_df = inner_join(demographic_data[,c(1,6)], chemical_data[,c(1,3,6)])
+head(chemical_demographic_df)
+```
+
+Now that we have one dataframe with both gestational age and cadmium data we can easily filter using the next few lines of code.
+
+```{r}
+chemical_demographic_df %>%
+    # Filtering for mothers that gave birth to babies that were at least 35 weeks old
+    # Filtering for mothers with at least 1.5 micrograms/L urinary cadmium levels
+    filter(GA > 35 & UCd > 1.5) %>%
+    # Arranging the dataframe from highest to lowest cadmium levels
+    arrange(-DWCd)
+```
+
+
