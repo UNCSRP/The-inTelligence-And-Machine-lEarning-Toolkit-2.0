@@ -115,6 +115,7 @@ Start by selecting all of the data.
 Data cleaning in Excel can be expedited with knowledge of useful features and functions to format data. Check out the resources below for additional information on Excel tricks.
 - https://careerfoundry.com/en/blog/data-analytics/data-analysis-in-excel/
 - https://www.lifehack.org/articles/technology/20-excel-spreadsheet-secrets-youll-never-know-you-dont-read-this.html
+- https://www.udemy.com/course/useful-excel-for-beginners/
 
 ## Test Your Knowledge
 Try cleaning the "Module1_2_TYK Raw Dataset" to mimic the cleaned versions of the data entitled, "Module1_2_TYK Subject Info Key" and "Module1_2_TYK Data Key".
