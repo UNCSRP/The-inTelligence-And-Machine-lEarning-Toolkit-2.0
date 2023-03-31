@@ -64,7 +64,7 @@ head(demographic_data)
 
 
 
-We'll be using a dataset that has subject demographic data. Often times continous variables, like BMI, are dichotomized to increase statistical power in analyses. 
+We'll be using a dataset that has subject demographic data. Often times continous variables, like BMI, are dichotomized to increase statistical power in analyses. This is particularly important for clinical toxicology data that tend to have smaller sample sizes.
 
 ## Training Module's Environmental Health Question
 This training module was specifically developed to answer the following environmental health question:
@@ -318,13 +318,13 @@ Since the p value > 0.05, there are not statistically significant differences in
 1. Are there statistically significant differences in gestational age between younger mothers (maternal age < 30 years old) and older mothers (maternal age > 30 years old)?
 2. Are there statistically significant differences in each drinking water chemical (ie. Arsenic levels, Cadmium levels, etc.) between younger and older mothers?
     - **Hint 1**: Start with the dataframe below.
-    - **Hint 2**: Create a new function for obtaining the statistics and use a loop within the function.
+    - **Hint 2**: Create a new function for obtaining the t value and p value and use a loop within the function.
 
 
 ```{r}
 # Creating the combined dataframe with chemical and demographic data to answer question 2
 # First changing the chemical data from a wide to long format
-longer_chemical_data <- pivot_longer(chemical_data, cols = 2:7, names_to = "Chemical", 
+longer_chemical_data <- pivot_longer(chemical_data, cols = 2:7, names_to = "Chemical_Measure", 
                                     values_to = "Chemical_Concentration")
 demographic_chemical_data <- inner_join(demographic_data, longer_chemical_data) 
 

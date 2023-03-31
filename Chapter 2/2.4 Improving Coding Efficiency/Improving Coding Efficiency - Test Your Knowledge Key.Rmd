@@ -1,0 +1,118 @@
+# Improving Coding Efficiency - Test Your Knowledge Key
+
+```{r}
+library(tidyverse)
+```
+
+ 
+```{r}
+# Load the data
+demographic_data <- read.csv("Module2_4/Module2_4_DemographicData.csv")
+chemical_data <- read.csv("Module2_4/Module2_4_ChemicalData.csv")
+```
+
+
+```{r}
+# Viewing data
+head(demographic_data)
+head(chemical_data)
+```
+
+
+### Question 1: Are there statistically significant differences in gestational age between younger mothers (maternal age < 30 years old) and older mothers (maternal age > 30 years old)?
+Before choosing a statistical test, we'll test for normality and variance.
+
+
+```{r}
+hist(demographic_data$MAge)
+```
+
+
+The data is relatively normally distributed, but we'll confirm with a Shapiro-Wilk test.
+
+
+```{r}
+shapiro.test(demographic_data$MAge)
+```
+
+
+This test resulted in a p-value of 0.7141, so we cannot reject the null hypothesis (that data are normally distributed). This means that we can assume that these data are normally distributed. Next, test for the homogeneity of variances using a F-test. Start by creating a dichotomized column for maternal age.
+
+
+```{r}
+demographic_data = demographic_data %>%
+    # If MAge < 30 then the value in the new column will be "Y" for younger
+    mutate(Dichotomized_MAge = ifelse(MAge < 30, "Y",
+    # If MAge > 30 then the value in the new column will be "O" for older
+                                     ifelse(MAge > 30, "O", NA)))
+
+head(demographic_data)
+```
+
+
+```{r}
+var.test(GA ~ Dichotomized_MAge, data = demographic_data)
+```
+
+
+This test resulted in a p-value of 0.8396, so we cannot reject the null hypothesis, meaning that the variance is the same between these two groups. Therefore, we can compute an unpaired t test since its assumptions are met. 
+
+
+```{r}
+t.test(GA ~ Dichotomized_MAge, data = demographic_data)
+```
+
+
+This test resulted in a p-value of 0.9644, so we cannot reject the null hypothesis, meaning that there isn't a statistically significant difference between the average gestational age between younger and older mothers.
+### Question 2. Are there statistically significant differences in each drinking water chemical (ie. Arsenic levels, Cadmium levels, etc.) between younger and older mothers?
+
+
+```{r}
+# Creating the combined dataframe with chemical and demographic data to answer question 2
+# First changing the chemical data from a wide to long format
+longer_chemical_data <- pivot_longer(chemical_data, cols = 2:7, names_to = "Chemical_Measure", 
+                                    values_to = "Chemical_Concentration")
+demographic_chemical_data <- inner_join(demographic_data, longer_chemical_data) 
+
+head(demographic_chemical_data)
+```
+
+ 
+
+```{r}
+# Creating a vector that contains each unique chemical measurment
+# The loop will iterate through each of the 6 measurements in this vector
+unique_chemicals = unique(demographic_chemical_data$Chemical_Measure)
+unique_chemicals
+```
+
+```{r}
+# Creating an empty df to store the values
+t_test_df = data.frame()
+
+# Using a 'for' loop 
+for (i in 1:length(unique_chemicals)){
+    
+    # Filtering the dataframe to only contain the chemical measurement of interest
+    filtered_df = demographic_chemical_data %>%
+        filter(Chemical_Measure == unique_chemicals[i])
+    
+    # T test
+    t_test = t.test(Chemical_Concentration ~ Dichotomized_MAge, data = filtered_df)
+    
+    # Extracting the t statistic and p value
+    t_test_values = cbind(unique_chemicals[i], t_test$statistic, t_test$p.value)
+    
+    # Putting the values into the empty dataframe
+    t_test_df = rbind(t_test_df, t_test_values)
+}
+
+# Adding column names
+colnames(t_test_df) = c("Chemical_Measure", "Statistic", "P Value")
+t_test_df
+```
+
+
+All of the p values > 0.05, therefore there weren't any differences between any of the chemical measure concentrations and dichotomized maternal age. 
+
+NOTE TO LAUREN: I could put this loop into a function like I did in the acutal module, but you wouldn't actually want to do that when coding. I could leave this loop above as it is a mention that a real scenario in which the loop could be put into a function like if you had a similar dataset that you wanted to run t tests on. I'd just like to know your thoughts if I should also put this loop into a function too/ how to make this concept more clear.
