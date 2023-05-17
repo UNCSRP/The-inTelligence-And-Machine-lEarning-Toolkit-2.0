@@ -1,140 +1,77 @@
 # Data Cleaning in Excel
 
-This training module was developed by Alexis Payton, MS, and Dr. Julia E. Rager
+This training module was developed by Alexis Payton and Dr. Julia E. Rager
 
 Spring 2023
 
-General questions for Alexis:
-Sometimes there are > before your subsection and sometimes there are not. I'm thinking to parallel our previous TAME modules, let's not use the > formatting (even though I agree it looks nice in some places, but I think for consistency let's just have all text left aligned without the grey line on the left that appears with '>' unless for the rare occasion that you want to highlight something or something)
-
 ## Introduction to Training Module
 
-This module is intended to be a starting guide to cleaning and organizing an example toxicology dataset in Excel. Cleaning and organizing your data represent critical steps needed to prep wet lab generated data for downstream analyses. These steps will ensure that:
-
-+ Data are amenable to downstream analyses in R, or your preferred programming language
-+ Data are clear and easily interpretable by collaborators, reviewers, and readers
+This module is intended to be a guide to clean and organize data in Excel:
+ - To make running analyses easier in R. 
+ - To ensure that the data is clear and easily interpretable by all collaborators, reviewers, and readers. 
     
-In this training tutorial, we'll make use of an example dataset that needs to be cleaned. The dataset contains concentration values for molecules that were measured using protein-based ELISA technologies. These molecules specifically span 17 sterols and cytokines, selected based upon their important roles in mediating biological responses. These measures were derived from human serum samples. Demographic information also exists for each subject. 
+In this training tutorial, we'll make use of an example dataset that needs to be cleaned. The dataset contains mediator concentrations (sterols and cytokines) derived from human serum samples along with demographic information for each subject. 
 
-The following steps detailed in this training module are by no means exhaustive! Further resources are provided at the end. This module provides example steps that are helpful when cleaning your data in excel. Datasets often come in many different formats from our wet bench colleagues, therefore some steps will likely need to be added, removed, or amended depending on your specific data.
-
-
-### Save a copy of the soon-to-be organized and cleaned dataset as a new file
-> Open Microsoft Excel and prior to **ANY** edits, click “File” --> “Save As” to save a new version of the file that can serve as the cleaned version of the data. This is very important for file tracking purposes, and can help in the instance that the original version needs to be referred back to (e.g., if data are accidently deleted or modified during downstream steps).
-
-**Suggested Title Attributes**
-
-+ The file needs to be named something indicative of the data it contains followed by the current date (e.g., "Allostatic Mediator Data_061622"). 
-+ The title should be succinct and descriptive. 
-+ It is okay to use dashes or underscores in the name of the title.
-+ Do not include special characters, such as $, #, @, !, %, 6, &, *, (, ), and +. Special characters tend to generate errors on local harddrives when syncing to cloud-based servers, and they are difficult to upload into programming software.
+The following steps are by no means exhaustive! Rather use this dataset as an example of a way to clean the data. Datasets often come in many different formats from our wet bench colleagues, therefore some steps might need to be added, removed, or amended.
 
 
-
-Let's first view what the dataset currently looks like:
+### Save a copy of the new organized and cleaned dataset
+> Open Excel and prior to **ANY** edits, click “File” --> “Save As” to save a new version of the file that serve as the cleaned version of the data.
+   > - This is very important in the instance that the original version needs to be referred back to (ie. if data is accidently deleted). 
+> The file needs to be named something indicative of the data it contains followed by the current date (ie. "Allostatic Mediator Data_061622"). 
+    >- The title should be succinct and descriptive. 
+    >- It's okay to use dashes or underscores in the name of the title, but stay away from special characters.
 
 <img src="Screenshots/Picture1.png"  />
 
-
-### Favorite excel short-cuts
-
-Alexis- can we quickly describe some fun short-cuts here? For example, to highlight/grab all cells with adjacent content, click on the starting cell and hold down shift + cmd, then arrow to the direction that you want to highlight grab
-
-We can maybe just describe this short-cut, and maybe one or two others, and then point then to an online resource that provides more fun excel short-cuts so it doesn't take us too much time to draft. I just can't live without the above short-cut in my life, personally :)
-
-
 ###  Remove extraneous white space
-
-Before we can begin organizing the data, we need to remove the entirely blank rows of cells. This reduces the file size and allows for the use of the filter function in Excel, as well as other organizing functions, which will be used in the next few steps. This step also makes the data look more tidy and amenable to import into scripted activities. 
-
-+ Excel Trick: Select all lines that need to be removed and press Ctrl + - (minus key) for Mac users. (Note that there are other ways to do this for larger datasets, but this works fine for this small example)
+> Remove the entirely blank rows of cells. This not only makes the data look more tidy, it reduces the file size and allows for the use of the filter function in Excel which will be used in the next few steps. 
+  >  - Excel Trick: Select all lines that need to be removed and press Ctrl + - (minus key) for Mac users. 
 
 <img src="Screenshots/Picture2.png" />
 
 
 ### Replace missing data with “NA”
-
-Question for Alexis: I thought that if a cell is empty, it automatically gets imported into R as 'NA', correct? I'm just asking before I think it's actually pretty difficult to replace all empty cells with 'NA' in excel, which I've done before, but I think is prone to error right?
-
-
-
-+ There was no missing data in this dataset, so this step can be skipped. This is done to confirm that the data is indeed missing.
-
-
+> There was no missing data in this dataset, so this step can be skipped. This is done to confirm that the data is indeed missing.
 
 ### Create a metadata tab
-
-Metadata explains what each column represents in the dataset. Metadata now represents a required component of data sharing, so it is best to initiate this process early in your analysis
-
-+ Create a new tab (preferably as the first tab) and label it “XXXXX_METADATA” (ie. “Allostatic_METADATA")
-+ Then relabel the original data tab as “XXXX_DATA” (ie. “Allostatic_DATA). 
+> Metadata explains what each column represents in the dataset. Move this tab  to the first tab and entitle it “XXXXX_METADATA” (ie. “Allostatic_METADATA"). Relabel the data tab as “XXXX_DATA” (ie. “Allostatic_DATA). 
 
 <img src="Screenshots/Picture3.png" />
 
-Question for Alexis: it seems like we should add a section describing to copy and paste the column identifiers within the metadata tab, and followed by a 'Description' column header, to be filled in by the scientist(s) who generated the data. ADD SCREENSHOT OF METADATA TAB AS AN EXAMPLE : ( : )
-
-
 ### Abbreviate and capitalize categorical data
-Categorical data are easier to handle in programming languages when they are capitalized and abbreviated. It also helps reduce typing and potential typing mistakes within your script.
-
-As an example, for this dataset, we edited..
-Alexis: please detail the specific edits that you completed here
-
-
-Once the categorical data has been abbreviated, add those abbreviations to the metadata and describe what they symbolize. 
+> This helps reduce typing and potential typing mistakes in R. Once the categorical data has been abbreviated, add those abbreviations to the metadata and describe what they symbolize. 
 
 <img src="Screenshots/Picture4.png" />
 
 
 ### Alphabetize (sort) the data by the categorical variable of interest 
-For this dataset, we will sort by the column "Group". This organizes the data and sets it up for the next step.
+> For this dataset, we will sort by the column "Group". This organizes the data and sets it up for the next step.
+    > - Click on the cell that contains the column name "Group". 
+    > - Click the "Sort & Filter" button, click "Filter", and then click "Ascending".
 
-+ Click on the cell that contains the column name "Group". 
-+ Click the "Sort & Filter" button, click "Filter", and then click "Ascending".
-
-Alexis- I know this is VERY nit picky, but sometimes when you select a single column and sort, excel does not succesfully grab the material to the left/right of it (particularly when data may be missing). To minimize the potential for mistakes, I typical highlight the entire top row of cells, and filter "Sort & Filter", and then choose the specific column to filter. Could you make this slight modification please (again sorry I'm being annoying)!
-
-### Create a new subject number column to better suite downstream analyses
-
-Alexis- we need to explain why we want analysis-specific subject numbers, and why the original subject numbers were not ideal first. I'm looking at the data right now and I think the original subject #'s might be good? I might be missing something...
-
-
-Relabel the subject number/identifier column as “Original_Subject_Number” and create an ordinal subject number column labeled “Subject_Number”. 
-
-+ 	R reads in spaces between words as periods, therefore it’s common practice to replace spaces with underscores when doing data analysis in R. 
-+ Avoid using dashes in column names or anywhere else in the dataset. 
+### Create a new subject number column
+> Relabel the subject number/identifier column as “Original_Subject_Number” and create an ordinal subject number column labeled “Subject_Number”. 
+   > - 	R reads in spaces between words as periods, therefore it’s common practice to replace spaces with underscores when doing data analysis in R. 
+   > - Avoid using dashes in column names or anywhere else in the dataset. 
     
 <img src="Screenshots/Picture5.png" />
 
 ### Remove special symbols and dashes
-Programming languages, in general, do not operate well with special symbols and dashes, particularly when included in column identifiers. For this reason, it is best to remove these while cleaning up your data, prior to importing it into R of your preferred programming software.
-
-In this case, this dataset contains dashes and Greek letters within some of the column header identifiers. Here, it is beneficial to remove these dashes (e.g., change IL-10 to IL10) and replace the Greek letters with first letter of the word in English (e.g., change TNF-$\alpha$ to TNFa). 
+> This dataset contains dashes and Greek letters, remove those dashes and replace the Greek letters with first letter of the word in English (ie. TNF-$\alpha$ becomes TNFa). 
    
-   
-### Bold all column names and center all data.
-These data will likely be shared with collaborators, uploaded onto data deposition websites, and used as supporting information in published manuscripts. For these purposes, it is nice to format data in excel such that it is visually appealing and easy to digest.
-
-For example, here, it is nice to bold column identifiers and center the data, as shown below:
-
+### Bold all column names and center all data. 
 <img src="Screenshots/Picture6.png" />
 
-### Create a subject identifier column that also includes group
-
-Alexis - can we please call this column "Group_SubjectID" or something that combines the two previous labels columns more intuitively? I feel like folks won't be able to differentiate between "Subject_Number" vs. "Subject_ID"
-
-The subject identifer column labeled, “Subject_ID”, combines the subject number with the variable of interest (ie. Group for this dataset). 
-
-+ This is useful for analyses to identify outliers by the subject number and the group. 
+### Create a subject identifier column
+> The subject identifer column labeled, “Subject_ID”, combines the subject number with the variable of interest (ie. Group for this dataset). 
+  > - This is useful for analyses to identify outliers by the subject number and the group. 
   
 <img src="Screenshots/Picture7.png" />
 
-
-### Separate subject demographic data from experimental measurements
-This example dataset is very small, so we kept the demographic data (e.g., sex, race, age) within the same file as the experimentally measures molecules. Though in larger datasets (e.g., genome-wide data, exposomic data, etc), it is often beneficial to separate the demographic data into one file that can be labeled according to the following format: “XXX_Subject_Info_061622” (ie. “Allostatic_Subject_Info_061622”). 
-
-Though this step was not completed for this current data, since it had a smaller size and the downstream analyses were simple.
-
+> Create separate files for the experimental data and demographics data (ie. sex, race, age).
+> The demographics dataset should be entitled “XXX_Subject_Info_061622” (ie. “Allostatic_Subject_Info_061622”). 
+>    - This wasn’t done for this dataset, since it had a smaller size and the analyses were simple. 
 
 ### Convert the data from a wide to long format 
 > A wide format contains values that **DO NOT** repeat the subject identifier column. For this dataset, each subject has one row containing all of its data, therefore the subject identifier occurs once in the dataset.
@@ -153,15 +90,6 @@ Though this step was not completed for this current data, since it had a smaller
 
 
 ### Pivoting data from a wide to long format
-
-Alexis- I didn't realize that you were running the super fancy pivot table option through the Power Query... we may want to test this on some folks to see if it is too difficult..
-
-An additional idea is to first ask students to generate summary-level statistics using a standard pivot table, just as a fun analysis and to show them the basic pivot table function. And then lead into this more advanced casting power query
-
-Can we discuss??
-
-
-
 To do this, a power query in Excel will be used. 
 Start by selecting all of the data.
 1. Click the tab at the top that says "Data". Then click "Get Data (Power Query)" at the far left. 
@@ -183,25 +111,11 @@ Start by selecting all of the data.
 10. Click "Convert to Range" within the "Table" tab. This removes the power query capabilities, so that the data is a regular excel sheet. 
 11. Now the "Category" column can be created to identify the types of biomarkers in the dataset. Additionally, we can make this data more closely resemble the final long format screenshot by bolding the headers, centering all the data, etc. 
 
-## Concluding Remarks and Additional Resources
-In summary, this training module... ALEXIS- can we please add a couple of sentences summarizing what this training module accomplished?
+## Additional Resources
+Data cleaning in Excel can be expedited with knowledge of useful features and functions to format data. Check out the resources below for additional information on Excel tricks.
+- https://careerfoundry.com/en/blog/data-analytics/data-analysis-in-excel/
+- https://www.lifehack.org/articles/technology/20-excel-spreadsheet-secrets-youll-never-know-you-dont-read-this.html
+- https://www.udemy.com/course/useful-excel-for-beginners/
 
-Data cleaning in Excel can be expedited with knowledge of useful features and functions to format data.
-
-For more information surrounding data cleaning and manipulation in excel, the following are some helpful resources:
-
-+ https://careerfoundry.com/en/blog/data-analytics/data-analysis-in-excel/
-+ https://www.lifehack.org/articles/technology/20-excel-spreadsheet-secrets-youll-never-know-you-dont-read-this.html
-+ https://www.udemy.com/course/useful-excel-for-beginners/
-
-
-## Test Your Knowledge Box
-1. Try cleaning the "Module1_2_TYK Raw Dataset" to mimic the cleaned versions of the data entitled, "Module1_2_TYK Subject Info Key" and "Module1_2_TYK Data Key".
-
-ALEXIS- I love this TYKB content!!! Can we also add some summary-level statistics questions to parallel the basic pivot table content that will be added? We can keep these answers internal for in-person workshops and coursework, but keep the above question #1 with the answer provided as you have, that way we have the best of both worlds!
-
-2. When reviewing these same data, use the lessons learned when organizing data in pivot tables to also answer the following summary-level statistics questions: What is the overall mean, median, and max concentration measured for IL-10 (or something like this question... feel free to edit)
-
-
-
-
+## Test Your Knowledge
+Try cleaning the "Module1_2_TYK Raw Dataset" to mimic the cleaned versions of the data entitled, "Module1_2_TYK Subject Info Key" and "Module1_2_TYK Data Key".
