@@ -1,95 +1,136 @@
-# File Management for Github
+# Script Management and Sharing in Github
 
-This training module was developed by Alexis Payton and Lauren E. Koval
+This training module was developed by Alexis Payton, Lauren E. Koval, and Julia E. Rager
 
 Spring 2023
 
 ## Introduction to Training Module
 
-Overall, file management and good data practices are imperative, especially when working in shared project folders. Often, analyses and manuscripts are amended a plethora of times prior to being submitted for a grant or publication, therefore the following steps are used to track how and when a file is modified over time in Github. 
+File management and script development tracking are imperative when leading data analysis initiatives, especially when working in research teams and/or shared project folders. Often, analyses and manuscripts are updated and edited many times prior to being submitted for a grant or publication. Analysis methods are also oftentimes shared between members of a research team and to external communities, as further detailed in the FAIR training module. One important approach to effectively manage script tracking and sharing is to leverage Github, which can be used to track how and when a file is modified over time. 
 
-Github is an open source or publicly accessible platform designed to facilitate version control and issue tracking of code.  It is used by us and many of our colleagues to not only document versions of script written for data analysis and visualization, but to also make our code publicly available for manuscript submission. 
+[Github](github.com) is a publicly accessible platform designed to facilitate version control and issue tracking of code. It is used by us and many of our colleagues to not only document versions of script written for data analysis and visualization, but to also make our code publicly available for open communication and dissemination of results.
+
+This training module set out to... ALEXIS - we need a summary of what this module guides trainees through here.
+
+
+ALEXIS- one edit throughout: some of the figures are knitting way too large. There are ways to edit the printed figure sizes. You can also edit the resolution in Biorender (image size) and it will automatically shrink to accomodate the updated figure size. As you do this, you could manually add helpful arrows or panels where needed within the figures, to help the reader see where the 'Click' or where their eyes should go within the helpful screenshots. I know this takes a bit of effort, but I think it really helps. Thank you!!!
+
 
 ### Creating an Account
-> Head to [github.com](github.com), click "Sign Up" and follow the on screen instructions. 
+First, users must create their own accounts within github to start uploading/sharing code. To do this, navigate to [github.com](github.com), click "Sign Up", and follow the on screen instructions. 
 
 <img src="Screenshots/Picture10.png"/>
 
+
 ### Creating a Repository
-A repository, also known as a "repo", is similar to a project folder that will contain all code pertaining to a specific project, grant or manuscript. It can be public or private and multiple people can work on a project together in a single repository. 
-> Click the circle in top right-hand corner and click "Your repositories". 
+A repository, also known as a "repo", is similar to a project folder that will contain all code pertaining to a specific project (which can be used for specific research programs, grants, or manuscripts, as examples). A repo can be set-up as public or private; if a repo is initially set to private to keep findings confidential prior to publication, it can always be updated to public once findings are ready for public dissemination. Multiple people can be allowed to work on a project together within a single repository.
+
+To access the repositories that are currently available to you through your user account, click the circle in top right-hand corner and click "Your repositories". 
 
 <img src="Screenshots/Picture11.png"  />
 
-> Click on the green button that says "New".
+To create a new repository, click on the green button that says "New".
 
 <img src="Screenshots/Picture12.png"  />
 
-> Give your repository a generic descriptive name or name it the same title as your manuscript and click "Add a README file". 
+Then give your repository a descriptive name. We often edit the repo titles to match the title of specific manuscripts, though specific titling formats are up to the users/team's preference.
+
+Then click "Add a README file" to initiate the README file, which is important to continually edit to provide analysis-specific background information, and any addition information that would be helpful during and after code is drafted to better facilitate tracking information and project details. *We provide further details surrounding specific information that can be included within the README file below.*
+
 
 <img src="Screenshots/Picture13.png"  />
 
-For more information visit Github's [Create a repo](https://docs.github.com/en/get-started/quickstart/create-a-repo) documentation.
+For more information surrounding creating repositories, visit Github's [Create a repo](https://docs.github.com/en/get-started/quickstart/create-a-repo) documentation.
 
-### Uploading Code
-> To uploade code, navigate to the repository you have access to or the repository you just created.   
+
+
+### Uploading Code to Github
+There are many ways in which you can upload code into Github. These include
+
+Alexis/Lauren - I feel like we should include a paragraph or bullet points here describing the possible ways, and then pointing trainees towards resources for each. Then transition by saying that the simplest way (is this called the manual way, or something?) is the following:
+
+A simple way to upload code is to first navigate to the repository that you would like to upload your script/associated files to. Note that this could represent a repo that you created or that someone granted you access to.
 
 <img src="Screenshots/Picture1.png"  />
 
-> Click “Add file” then click “upload files”. Drag and drop your file containing your script into github and click “commit changes”. 
+Click “Add file” and then click “upload files”. Drag and drop your file containing your script into github and click “commit changes”. 
 
-*Note that there are other ways to upload your code, but this is the easiest way.* 
+ALEXIS - for these steps, can we please take screenshots of each step, and then upload all of the screenshots into Biorender (so it's just one figure) and turn it into a paneled figure, with large arrows indicating where the buttons are? I know, this is nit picky, but it is super helpful for more intro-level students trust me!!
 
-> To keep the repository organized, it might be necessary to create a new folder (like the folder labeled “1.Summary Statistics” in the above screenshot). Files can be grouped into these folders based on the type of analysis. 
 
-> To do so, click on the new file and then click on the pencil icon next to the "Blame" button. 
+
+### Adding Subfolders in Your Repository
+To keep the repository organized, it might be necessary to create a new folder (like the folder labeled “1.Summary Statistics” in the above screenshot). Files can be grouped into these folders based on the type of analysis. 
+
+To do so, click on the new file and then click on the pencil icon next to the "Blame" button. 
 
 <img src="Screenshots/Picture2.png"  />
 
-> Click on the box that contains the title of the file. Write the title of your new folder and then end with a forward slash (/). In the screenshot below, we're creating a new folder entitled "New Folder". Click “commit changes” and your file should now be in a new folder. 
+
+Click on the box that contains the title of the file. Write the title of your new folder and then end with a forward slash (/). In the screenshot below, we're creating a new folder entitled "New Folder". Click “commit changes” and your file should now be in a new folder. 
+
+ALEXIS- an arrow here might help as well (could add in either Biorender or powerpoint, Biorender is actually easier for me these days since it has a quicker way to edit the canvas size than powerpoint)
 
 <img src="Screenshots/Picture3.png"  />
 
 
 ### Updating Code
-> Saving iterations of code can save valuable time later as analyses are ever changing. If your code undergoes substantial changes, (ie. adding/ removing steps or if there’s code that is likely to be beneficial later on, but is no longer relevant to the current analysis), it is advised to save that version. 
+Saving iterations of code can save valuable time later as analyses are constantly being updated and edited. If your code undergoes substantial changes, (e.g., adding/ removing steps or if there’s code that is likely to be beneficial later on, but is no longer relevant to the current analysis), it is helpful to save that version in Github and then organize the edits. 
 
-> To do so, create a subfolder named “Archive” and move the old file into it. If you have multiple versions of a file with the same name, add the current date to prevent the file from being overwritten later on as seen in the screenshot below. 
+
+To do so, create a subfolder named “Archive” and move the old file into it. If you have multiple versions of a file with the same name, add the current date to prevent the file from being overwritten later on as seen in the screenshot below. 
 
 <img src="Screenshots/Picture4.png"  />
 
-> Once the old file version has been archived, now upload the most recent version of your code to the main  folder. Based on the screenshot above, that would be under “3. ML Visualizations”. 
-
+Once the old file version has been archived, now upload the most recent version of your code to the main  folder. Based on the screenshot above, that would be under “3. ML Visualizations”. 
 
 *Note: If a file is uploaded with the same name it will be overwritten, which can't be undone! Therefore, put the older file into the archive folder if you'd like it to be saved **PRIOR** to uploading the new version.*
 
-### Paralleling the Repository with a Manuscript
-> If the code is for a manuscript, include the table or figure name it pertains to in the manuscript in paratheses. For example, "Baseline Clusters (Figure 3)". This allows for viewers to find each table or figure faster. 
+
+ALEXIS- can we please add a note here again reminding the readers that there are alternate mechanisms of tacking edits to code, particularly between multiple such as building forks and committing (and then pointing to the resources that you find helpful for that, including the hyperlinks that you provided the TAME 2.0 team)
+
+
+
+### Updating Repository Titles and Structure to Support a Manuscript
+If the code is for a manuscript, include the table or figure name it pertains to in the manuscript in paratheses. For example, "Baseline Clusters (Figure 3)". This allows for viewers to find each table or figure faster. 
 
 <img src="Screenshots/Picture5.png"  />
 
-### Using a README.md file 
-> A README.md file is used to describe the overall aims and purpose of the analyses in the repository or a folder within a repository. It is often the first file that someone will look at in a repo/folder, so it is important to include information that would be valuable to an outsider trying to make use of the work.
+
+If the code is for different types of products, consider adding similar notation to aid in veiwer's abilities to track your work.
+
+
+### Using a README.md File 
+A README.md file can be used to describe the overall aims and purpose of the analyses in the repository or a folder within a repository. It is often the first file that someone will look at in a repo/folder, so it is important to include information that would be valuable to an outsider trying to make use of the work.
 
 ![image.png](attachment:image.png)
 
-> To add a README.md file, click “add file” and then “create new file”. 
+To add a README.md file, click “add file” and then “create new file”. 
  
 <img src="Screenshots/Picture6.png"  />
 
-> Name your file “README.md”. 
+Name your file “README.md”. 
 
 <img src="Screenshots/Picture7.png"  /> 
 
-> A “README.md” file uses R markdown syntax. Familiarize yourself with R markdown syntax [here](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) and [here](https://bookdown.org/yihui/rmarkdown/markdown-syntax.html).
+A “README.md” file uses R markdown syntax. This type of syntax is very helpful as you continue to develop R coding skills, as it provides a mechanism through which your code's output can be visualized and saved as a rendered file version. There are many helpful resources for R markdown, including some that we find helpful:
 
-> The final README.md file for the **OVERALL** repository should look something like the screenshot below. Always include…
-> -	The main goal of the project 
-> -	NB Viewer link
->    +	Sometimes the files take too long to render, so link the repository from the NB viewer website.
->    +	Go to [nbviewer.org](nbviewer.org) --> type in the name of the repository --> copy the url and add it to the README.md file
-> -	The final manuscript name, year it was published, Pub Med ID (if applicable)
-> -	Graphical abstract (if needed for publication)
++ [R Markdown Cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
++ [R Markdown Syntax Overview](https://bookdown.org/yihui/rmarkdown/markdown-syntax.html).
+
+
+The final README.md file for the **OVERALL** repository should look something like the screenshot below. It is advised to always include:
+
++	The main goal of the project 
++	NB Viewer link
+ALEXIS- can you please explain what a NB Viewer is?
+
+++ Note that sometimes the files take too long to render, it is helpful to link the repository from the NB viewer website by carrying out the following steps:
+++	Go to [nbviewer.org](nbviewer.org) --> type in the name of the repository --> copy the url and add it to the README.md file
+
++	The final manuscript name, year it was published, PubMed ID (if applicable)
++	Graphical abstract or other figure that can help draw in casual viewers of your Github site
+
 
 <img src="Screenshots/Picture8.png"  />
 
@@ -100,7 +141,15 @@ For more information visit Github's [Create a repo](https://docs.github.com/en/g
 
 <img src="Screenshots/Picture9.png"  />
 
-### Example Repositories
+
+
+## Concluding Remarks and Additional Resources
+In summary, this training module... ALEXIS- can we please add a couple of sentences summarizing what this training module accomplished?
+
+
+
+
+*Example Repositories*
 Below are links to repositories that contain script for analyses used in published manuscripts. These are examples of well organized Github repositories. 
 
 - [https://github.com/Ragerlab/Script_for_Cytokine-Signature-Clusters-as-a-Tool-to-Compare-Changes-associated-with-Tobacco-Product-](https://github.com/Ragerlab/Script_for_Cytokine-Signature-Clusters-as-a-Tool-to-Compare-Changes-associated-with-Tobacco-Product-)
@@ -108,3 +157,9 @@ Below are links to repositories that contain script for analyses used in publish
 - [https://github.com/UNC-CEMALB/Biomarkers-of-airway-immune-homeostasis-differ-significantly-with-generation-of-e-cigarettes](https://github.com/UNC-CEMALB/Biomarkers-of-airway-immune-homeostasis-differ-significantly-with-generation-of-e-cigarettes)
 
 - [https://github.com/Ragerlab/Script_for_Approaches-to-Incorporate-Extracellular-Vesicles-into-Exposure-Science-Toxicology-and-Pub](https://github.com/Ragerlab/Script_for_Approaches-to-Incorporate-Extracellular-Vesicles-into-Exposure-Science-Toxicology-and-Pub)
+
+
+## Test Your Knowledge Box
+Try creating your own Github profile, and set-up a practice repo with subfolders and a detailed READ.me file, paralleling the suggested formatting and content detailed above, for your own data analyses!
+
+
