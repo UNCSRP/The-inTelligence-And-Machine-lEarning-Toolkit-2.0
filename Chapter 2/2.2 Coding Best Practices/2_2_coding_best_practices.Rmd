@@ -1,6 +1,6 @@
 # Coding "Best" Practices
 
-This training module was developed by Dr. Kyle R. Roell and Dr. Julia E. Rager
+This training module was developed by Dr. Kyle R. Roell, Alexis Payton, MS, and Dr. Julia E. Rager
 
 Spring 2023
 
@@ -13,7 +13,7 @@ Point to coding style best practices resources, and everyone has their own codin
 
 ## Introduction to Training Module
 
-In this training module, we will be going over coding "best" practices. The reason we have put "best" in quotes is because although these are we consider best or better practices, everyone has different coding styles, annotation styles, etc. Here, we hope to just give you a sense of what we do when coding, why we do it, and why we think it is important. We will also be pointing out other guides to style, annotations, and best practices that we suggest implementing into your own coding and that we try to follow, as well.
+In this training module, we will be going over coding "best" practices. The reason we have put "best" in quotes is because although these are what we consider best or better practices, everyone has different coding styles, annotation styles, etc. Here, we hope to just give you a sense of what we do when coding, why we do it, and why we think it is important. We will also be pointing out other guides to style, annotations, and best practices that we suggest implementing into your own coding and that we try to follow, as well.
 
 <b>Some of the questions we hope to answer in this module are:
 
@@ -27,9 +27,9 @@ In this training module, we will be going over coding "best" practices. The reas
 
 In the following sections, we will be attempting to answer these questions. Keep in mind that the advice and suggestions in this section are just that: advice and suggestions. So please take them into consideration and integrate them into your own coding style as appropriate.
 
-## Naming the Script
+### Naming the Script
 
-The first thing we need to talk about, which is sometimes overlooked in the discussion of coding practices, is script naming conventions and high level descriptive headers within a script. It is important to remember to name your script something concise, but descriptive. You want to be able to easily recognize what the script is for and does without a cumbersome, lengthy title. Some tips for script naming conventions:
+The first thing we need to talk about, which is sometimes overlooked in the discussion of coding practices, is script naming conventions and high level descriptive headers within a script. It is important to remember to name your code something concise, but descriptive. You want to be able to easily recognize what the script is for and does without a cumbersome, lengthy title. Some tips for naming conventions:
 
 + Be concise, but descriptive
 + Consider using dates when appropriate 
@@ -38,16 +38,20 @@ The first thing we need to talk about, which is sometimes overlooked in the disc
 
 Keep in mind, each script should have a clear purpose within a given project. And, it is sometimes necessary, and often common, to have multiple scripts within one project that all pertain to different parts of the analysis. 
 
-## Script Header
+*KYLE - CAN YOU PROVIDE EXAMPLES OF APPROPIRATE NAMES AND WHEN MULTIPLE FILES ARE NECESSARY TO KEEP YOUR CODE/ANALYSES CONCISE FOR MULTIPLE ANALYSES? FOR EXAMPLE, NOT HAVING CODE FOR AN ANOVA ANALYSIS AND A KMEANS ANALYSIS IN THE SAME FILE.* 
 
-Once your script is created and named, it is generally a good idea to have a script header. The script header is responsible for defining:
+### Script Header
 
-+ Name - Longer or more readble name than script name.
+Once your script is created and named, it is generally a good idea to have a header. The script header is responsible for defining:
+
++ Name - Longer or more readable name than script name.
 + Author(s) - Who wrote the script?
 + Date - When was the script developed?
 + Description - Give a more detailed description of the purpose of the script, also a chance to provide any notes or special considerations for this particular script.
 
 In, R, it is common to include multiple "#", the comment operator, or a "#" followed by another special character, to start and end a block of coding annotation. This is common in starting the script and header of the file. An example of this, and a common header, may look something like this:
+
+*KYLE - CAN YOU ADD THAT THE BLOCK OF POUND SIGNS MAY BE NECESSARY FOR .R FILES, BUT NOT .Rmd FILES AND EXPLAIN THE DIFFERENCE BETWEEN THE TWO?*
 
 ```{r}
 
@@ -69,9 +73,9 @@ In, R, it is common to include multiple "#", the comment operator, or a "#" foll
 
 It is not necessary to follow this example exactly, but this is just to give an example of what a common header file may look like. We will now take a look at how annotations within the script itself can make a huge difference in understanding the code within.
 
-## Annotations
+### Annotations
 
-Before we actually talk about coding style, it is important to address annotating yoru code. So, what are annotations and why are they important? Annotations are basically just notes embeded within your code, as comments that will not be run. The beauty of annotating your code is that you not only others, but future you, will be able to read through and better understand what a particular piece of code does. I cannot tell you how many times I have gone back to my code and thought, I wish I had annotated this better. Because of this, I suggest annotating your code while you go and in a very descriptive fashion. While not every single line needs an annotation, or a very detailed one, it is a good idea to provide comments and annotation as much as you can. 
+Before we actually talk about coding style, it is important to address annotating code. So, what are annotations and why are they important? Annotations are notes embedded within your code, as comments that will not be run. The beauty of annotating your code is that you not only others, but future you, will be able to read through and better understand what a particular piece of code does. I suggest annotating your code while you write it and in a very descriptive fashion. While not every single line needs an annotation, or a very detailed one, it is a good idea to provide comments and annotation as much as you can. 
 
 #### General Annotation Style
 
@@ -79,7 +83,7 @@ In general, annotations will be commented out, descriptive short sentences that 
 
 ```{r, eval=F}
 
-# Performing logistic regression to assess assocation between xyz and abc
+# Performing logistic regression to assess association between xyz and abc
 # Regression confounders: V1, V2, V3 ...
 
 xyz.regression.output = glm(xyz ~ abc + V1 + V2 + V3, family=binomial(), data=example.data)
@@ -88,7 +92,7 @@ xyz.regression.output = glm(xyz ~ abc + V1 + V2 + V3, family=binomial(), data=ex
 
 #### Mid-Script Headings
 
-Another common approach to annotations is to use mid-script type headings to separate out the script into various sections. For example, you might want to create distinct sections for "Loading Packages, Data, and Setup", "Covariate Definition", "Correlation Analysis", "Regression Analysis", etc. This can help you, and others looking at your script, to ater find your way through the script more easily. It also can be more visually please to see the script split up into multiple sections as opposed to one giant chunk of code interspersed with comments.
+Another common approach to annotations is to use mid-script type headings to separate out the script into various sections. For example, you might want to create distinct sections for "Loading Packages, Data, and Setup", "Covariate Definition", "Correlation Analysis", "Regression Analysis", etc. This can help you, and others looking at your script, to after find your way through the script more easily. It also can be more visually pleasing to see the script split up into multiple sections as opposed to one giant chunk of code interspersed with comments.
 
 ```{r, eval=F}
 
@@ -108,14 +112,12 @@ Another common approach to annotations is to use mid-script type headings to sep
 xyz.regression.output = glm(xyz ~ abc + V1 + V2 + V3, family=binomial(), data=example.data)
 
 ```
-
-
 <b>General tips for annotations:</b>
 
 + Make comments that are useful and meaningful, you don't need to comment every single line
 + In general, you probably won't overannotate your script, so more is generally better
 + That being said, don't write super long paragraphs every few lines
-+ Split up your script into various sections using mid-script headings, as show above, when appropriate
++ Split up your script into various sections using mid-script headings, as shown above, when appropriate
 
 
 #### Quick, Short Comments and Annotations
@@ -170,16 +172,17 @@ if (Longer_variable_name_x < Short_name_y) {
 
 + Variable names
   + Make them intuitive, short, but descriptive
-  + Use the same convention throught (ex: separating words with "." or "_")
-+ Separate long longs onto two or more (typically for loops or functions)
+  + Use the same convention throughout (ex: separating words with "." or "_")
++ Separate long longs onto two or more (typically for loops or functions) *KYLE - NOT SURE WHAT YOU MEANT BY THIS*
 + Use "<-" for assignment operator
 + Using spacing appropriately for readability
   + Alignment of lines
   + After certain keywords when appropriate
 + Be consistent throughout 
-  + Ex: if you use Tidyverse conventions, continue to use it throughout your script
+  + Example: if you use Tidyverse conventions, continue to use it throughout your script
 + Try to make your code as readable as possible
 
+*KYLE - CAN WE PUT MORE EXAMPLE CODE THROUGHOUT, BECAUSE SOMEONE'S VERSION OF SHORT AND DESCRIPTIVE MIGHT BE DIFFERENT FROM OURS? FOR EXAMPLE, I'VE REVIEWED CODE THAT HAS HAD A VARIABLE NAMED 'CYTO', WHICH IS SHORT AND DESCRIPTIVE BUT IT'S MORE DIFFICULT FOR ME TO FOLLOW BECAUSE I DON'T KNOW IF IT'S A DATAFRAME THAT CONTAINS ALL THE CYTOKINE DATA, A LIST, MATRIX, A VECTOR OF UNIQUE CYTOKINE NAMES ETC.*
 
 <b>Style guides: </b>
 
@@ -192,26 +195,25 @@ if (Longer_variable_name_x < Short_name_y) {
 
 ## Script Organziation
 
-Lastly, it is important to note that organzing your script efficient can help with readabilty as well. In general, as stated before, the beginning of your script should contain some sort of header lines to describe the script. Here, we will go over the basic ordering we suggest for most scripts.
+Lastly, it is important to note that organizing your script efficient can help with readability as well. In general, as stated before, the beginning of your script should contain some sort of header lines to describe the script. Here, we will go over the basic ordering we suggest for most scripts.
 <b>
 
 1. Header section
 2. Loading libraries and data
-3. Function defintions (if any user defined functions exist)
-4. Data and variables manipuliation
+3. Function definitions (if any user defined functions exist)
+4. Data and variables manipulation
 5. Analyses
 
 </b>
 
-While following this exact organziation isn't absolutley, it can help people follow your code.
+*KYLE - CAN I SEE AN EXAMPLE OF WHAT THIS LOOKS LIKE? EVEN IF IT'S JUST A LINK TO CODE THAT'S ALREADY AVAILABLE ON GITHUB*
+
+While following this exact organization isn't absolute, it can help people follow your code.
+
+## Additional Resources
+*KYLE - CAN WE LINK CODE ON GITHUB HERE WITH DIFFERENT STYLES?*
 
 
 ## Concluding Remarks
 
 In this module we set out to help with coding style and best practices. And, while, there are many different coding styles, hopefully this brief guide helped demonstrate some of the basic concepts and practices. Please reference some of the style guides in the previous section, "Coding Style", and create your own style from best practices that works for you. Try to make your code understandable, readable, and consider how a future reader, including yourself, might go through your code and what they will need to know to be able to best follow it. 
-
-
-
-
-
-
