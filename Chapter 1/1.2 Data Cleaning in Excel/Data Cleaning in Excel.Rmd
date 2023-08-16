@@ -17,7 +17,8 @@ The following steps detailed in this training module are by no means exhaustive!
 
 
 ### Save a copy of the soon-to-be organized and cleaned dataset as a new file
-Open Microsoft Excel and prior to **ANY** edits, click “File” --> “Save As” to save a new version of the file that can serve as the cleaned version of the data. This is very important for file tracking purposes, and can help in the instance that the original version needs to be referred back to (e.g., if data are accidently deleted or modified during downstream steps).
+Open Microsoft Excel and prior to **ANY** edits, click “File” --> “Save As” to save a new version of the file that can serve as the cleaned version of the data. This is very important for file tracking purposes, and can help in the instance that the original version needs to be referred back to (e.g., if data are accidentally deleted or modified during downstream steps).
+
 + The file needs to be named something indicative of the data it contains followed by the current date (e.g., "Allostatic Mediator Data_061622"). 
 + The title should be succinct and descriptive. 
 + It is okay to use dashes or underscores in the name of the title.
@@ -29,6 +30,7 @@ Let's first view what the dataset currently looks like:
 
 <img src="Screenshots/Picture1.png" width="684" />
 
+
 #### Helpful Excel Keyboard Shortcuts
 
 The following keyboard shortcuts can help you work more efficiently in Excel:
@@ -37,11 +39,12 @@ The following keyboard shortcuts can help you work more efficiently in Excel:
     + Control + Fn + Right arrow key (Mac users) 
     + Control + End (PC users)
 + Move to the beginning of the sheet
-    + Control + Fn + Left arrow key (Mac users)
+    + Control + Fn + Left arrow key, then same Control + Fn + Up arrow key (Mac users)
     + Control + Home (PC users)
 + Highlight and grab all data
     + Click on the first cell in the upper left hand corner then click and hold Shift + Command + Down arrow key + Right arrow key (Mac users)
     + Shift + Command + Down arrow key + Right arrow key (PC users)
+++ Note that this only works if there are no cells with missing information or gaps in the columns/rows used to define the peripheral area.
 
 For more available shortcuts on various operating systems click [here](https://support.microsoft.com/en-us/office/keyboard-shortcuts-in-excel-1798d9d5-842a-42b8-9c99-9b7213f0040f). 
 
@@ -54,6 +57,7 @@ Before we can begin organizing the data, we need to remove the entirely blank ro
 
 ### Replace missing data with “NA”
 There are many ways missing data can be encoded in datasets. This includes values like "blank", "N/A", "NA", or leaving a cell blank. Replacing all missing values with "NA" values is done for 2 reasons:
+
 + To confirm that the data is indeed missing 
 + R reads in "NA" values as missing values
 
@@ -64,27 +68,30 @@ There was no missing data in this dataset, so this step can be skipped.
 ### Create a metadata tab
 Metadata explains what each column represents in the dataset. Metadata is now a required component of data sharing, so it is best to initiate this process prior to data analysis. Ideally, this information is filled in by the scientist(s) who generated the data.
 
-+ Create a new tab (preferably as the first tab) and label it “XXXXX_METADATA” (ie. “Allostatic_METADATA")
-+ Then relabel the original data tab as “XXXX_DATA” (ie. “Allostatic_DATA). 
++ Create a new tab (preferably as the first tab) and label it “XXXXX_METADATA” (i.e., “Allostatic_METADATA")
++ Then relabel the original data tab as “XXXX_DATA” (i.e., “Allostatic_DATA). 
 + Within the metadata tab, create three columns: the first, "Column Identifier", contains each of the column names found in the data tab; the second, "Code", contains the individual variable/ abbreviation for each column identifier; the third, "Description" contains additional information and definitions for abbreviations.
 
 <img src="Screenshots/Picture3.png" width="684" />
 
 ### Abbreviate and capitalize categorical data
-Categorical data are easier to handle in programming languages when they are capitalized and abbreviated. It also helps reduce typing and potential typing mistakes within your script.
+Categorical data are easier to handle in programming languages when they are capitalized and abbreviated. It also helps reduce typos and potential typing mistakes within your script.
 
 For this dataset, the following variables were edited:
+
 + Group
     + "control" became "NS" for non-smoker
     + "smoker" became "CS" for cigarette smoker
+    
 + Sex
     + "f" became "F" for female
     + "m" became "M" for male
+    
 + Race
     + "AA" became "B" for Black
     + "White" became "W" for White
 
-Once the categorical data has been abbreviated, add those abbreviations to the metadata and describe what they symbolize. 
+Once the categorical data have been abbreviated, add those abbreviations to the metadata and describe what they symbolize. 
 
 <img src="Screenshots/Picture4.png" width="684" />
 
