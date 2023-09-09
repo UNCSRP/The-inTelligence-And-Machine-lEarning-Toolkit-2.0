@@ -1,0 +1,284 @@
+# Normality Testing
+
+This training module was developed by Dr. Elise Hickman, Alexis Payton, MS, and Dr. Julia E. Rager.
+
+Fall 2023
+
+## Introduction to Training Module
+
+When selecting the appropriate statistical tests to evaluate potential trends in your data, statistical test selection often relies upon whether or not the underlying data are normally distributed. Many statistical tests and methods that are commonly implemented in exposure science, toxicology, and environmental health research rely on assumptions of normality. Applying a statistical test intended for data with a specific distribution when your data do not fit within that distribution can generate unreliable results, with the potential for false positive and false negative findings. Thus, one of the most common statistic tests to perform at the beginning of an analysis is a test for normality.
+
+In this training module, we will:
+
++ Review the normal distribution and why it is important
++ Demonstrate how to test whether your variable distributions are normal...
+    + Qualitatively, with histograms and Q-Q plots
+    + Quantitatively, with the Shapiro-Wilk test
++ Demonstrate log2 data transformation for non-normal data
++ Discuss additional considerations related to normality
+
+We will demonstrate normality assessment using example data derived from a study in which chemicals on silicone wristbands worn by participants for one week were analyzed as a proxy for environmental chemical exposure. Chemical concentrations on the wristbands were measured with gas chromatography mass spectrometry. The subset of chemical data used in this training module are all phthalates, a group of chemicals used primarily in plastic products to make them more flexible and durable. 
+
+### Script Preparations
+
+#### Cleaning the global environment
+
+
+```{r}
+rm(list=ls())
+```
+
+#### Installing required R packages
+If you already have these packages installed, you can skip this step, or you can run the below code which checks installation status for you
+
+```{r}
+if (!requireNamespace("openxlsx"))
+  install.packages("openxlsx");
+if (!requireNamespace("tidyverse"))
+  install.packages("tidyverse");
+if (!requireNamespace("ggpubr"))
+  install.packages("ggpubr");
+```
+
+#### Loading R packages required for this session
+
+```{r}
+library(openxlsx) # for importing data
+library(tidyverse) # for manipulating and plotting data
+library(ggpubr) # for making Q-Q plots with ggplot 
+```
+
+#### Set your working directory
+
+```{r include = FALSE}
+#setwd("/filepath to where your input files are")
+```
+
+#### Importing example dataset
+```{r message = FALSE}
+# Import data
+wrist_data <- read.xlsx("Module3/Chem_Wristband_Input_Data.xlsx")
+
+# Viewing the data
+head(wrist_data)
+```
+
+Our example dataset contains subject IDs `S_ID`, subject ages, and measurements of 8 different phthalates from silicone wristbands (`DEP`, `DBP`, `BBP`, `DEHA`, `DEHP`, `DEHT`, `DINP`, and `TOTM`). The units for the chemical data are nanogram of chemical per gram of silicone wristband (ng/g) per day the participant wore the wristband. NOT SURE IF WE NEED A BETTER SEGUEWAY
+
+## Training Module's Environmental Health Questions
+This training module was specifically developed to answer the following environmental health question:
+1. Is the data normally distributed?
+2. How does the distribution of the data influence the statistical tests performed on the data?
+IT'S UP TO YOU IF YOU WANT TO INCLUDE THIS QUESTION, BUT I THOUGHT IT MIGHT BE HELPFUL TO INTRODUCE STATISTICAL TESTS THAT WOULD BE CHOSEN BASED ON THE DATA' DISTRIBUTION
+
+Before answering these questions, let's define normality and how to test for it in R.
+
+## What is a normal distribution?
+
+A normal distribution is a distribution of data in which values are distributed roughly symmetrically out from the mean such that 68.3% of values fall within one standard deviation of the mean, 95.4% of values fall within 2 standard deviations of the mean, and 99.7% of values fall within three standard deviations of the mean.
+
+```{r out.width = "800px", echo = FALSE, fig.align = 'center', fig.cap = "Figure Credit: D Wells, CC BY-SA 4.0 <https://creativecommons.org/licenses/by-sa/4.0>, via Wikimedia Commons"}
+knitr::include_graphics("Images/Standard_Normal_Distribution.png")
+```
+
+Common parametric statistical tests, such as t-tests and one-way ANOVAs, rely on the assumption that your data fall within the normal distribution for calculation of z-scores and p-values. Non-parametric tests, such as the Wilcoxon test and the Kruskal-Wallis test, do not rely on assumptions about data distribution. For more on statistical testing for between-group comparisons, see *INSERT NAME OF IN VITRO MODULE AND OTHER BASIC STATS MODULES*.  
+
+
+## Qualitative Assessment of Normality
+
+We can begin by assessing the normality of our data through plots. For example, plotting data using [histograms](https://en.wikipedia.org/wiki/Histogram), [densities](https://www.data-to-viz.com/graph/density.html#:~:text=Definition,used%20in%20the%20same%20concept.), or [Q-Q plots](https://en.wikipedia.org/wiki/Q%E2%80%93Q_plot) can graphically help inform if a variable’s values appear to be normally distributed or not. We will start with visualizing our data distributions with histograms.
+
+### Histograms
+
+Let's start with visualizing the distribution of the participant's ages using the `hist()` function that is part of base R.
+```{r fig.align = 'center'}
+hist(wrist_data$Age)
+```
+
+We can edit some of the parameters to improve this basic histogram visualization. For example, we can decrease the size of each bin using the breaks parameter:
+```{r fig.align = 'center'}
+hist(wrist_data$Age, breaks = 10)
+```
+
+The `hist()` function is useful for plotting single distributions, but what if we have many variables that need normality assessment? We can leverage ggplot's powerful and flexible graphics functions such as `geom_histogram()` and `facet_wrap()` to inspect histograms of all of our variables in one figure panel. For more information on data manipulation in general, see *INSERT FINAL CHAPTER NAME HERE FOR DATA MANIPULATION* and for more on ggplot and data manipulation for `facet_wrap()`, see *INSERT FINAL CHAPTER WITH DETAILED GGPLOT OVERVEIW*. 
+
+```{r message = FALSE, fig.align = 'center'}
+# Pivot data longer to prepare for plotting
+wrist_data_long <- wrist_data %>%
+  pivot_longer(!S_ID, names_to = "variable", values_to = "value")
+
+# Set theme for graphing
+theme_set(theme_bw())
+
+# Make figure panel of histograms
+ggplot(wrist_data_long, aes(value)) +
+  geom_histogram(fill = "gray40", color = "black", binwidth = function(x) {(max(x) - min(x))/25}) +
+  facet_wrap(~ variable, scales = "free") +
+  labs(y = "# of Observations", x = "Value")
+```
+
+From these histograms, we can see that our chemical variables do not appear to be normally distributed. 
+
+### Q-Q Plots
+
+Q-Q (quantile-quantile) plots are another way to visually assess normality. Similar to the histogram above, we can create a single Q-Q plot for the age variable using base R functions. Normal Q-Q plots (Q-Q plots where the theoretical quantiles are based on a normal distribution) have theoretical quantiles on the x-axis and sample quantiles, representing the distribution of the variable of interest from the dataset, on the y-axis. If the variable of interest is normally distributed, the points on the graph will fall along the reference line. 
+```{r fig.align = 'center'}
+# Plot points
+qqnorm(wrist_data$Age)
+
+# Add a reference line for theoretically normally distributed data
+qqline(wrist_data$Age)
+```
+Small variations from the reference line, as seen above, are to be expected for the most extreme values. Overall, we can see that the age data are relatively normally distributed, as the points fall along the reference line.
+
+To make a figure panel will Q-Q plots for all of our variables of interest, we can use the `ggqqplot()` function within the *ggpubr* package. This function generates Q-Q plots and has arguments that are similar to ggplot2.
+```{r fig.align = 'center'}
+ggqqplot(wrist_data_long, x = "value", facet.by = "variable", ggtheme = theme_bw(), scales = "free")
+```
+With this figure panel, we can see that the chemical data have very noticeable deviations from the reference, suggesting non-normal distributions.  
+
+To answer our first environmental health question, age is the only variable that appears to be normally distributed in our dataset. This is based on our histograms and Q-Q plots with data centered in the middle and spreading with a distribution on both the lower and upper sides that follow typical normal data distributions. However, chemical concentrations appear to be non-normally distributed. 
+
+Next, we will implement a quantitative approach to assessing normality, based on a statistical test for normality. 
+
+## Quantitative Normality Assessment
+
+### Single Variable Normality Assessment
+
+We will use the Shapiro-Wilk test to quantitatively assess whether our data distribution is normal, again looking at the age data. This test can be carried out simply using the `shapiro.test()` function from the base R stats package. When using this test and interpreting its results, it is important to remember that the null hypothesis is that the sample distribution is normal, and a significant p-value means the distribution is non-normal.
+
+```{r}
+shapiro.test(wrist_data$Age)
+```
+This test resulted in a p-value of 0.8143, so we cannot reject the null hypothesis (that data are normally distributed). This means that we can assume that these age is normally distributed, which is consistent with our visualizations above. 
+
+### Multiple Variable Normality Assessment
+
+With a large dataset containing many variables of interest (e.g., our example data with multiple chemicals), it is more efficient to test each column for normality and then store those results in a data frame. We can use the base R function `apply()` to apply the Shapiro Wilk test over all of the numeric columns of our data frame. This function generates a list of results, with a list element for each variable tested. There are also other ways that you could iterate through each of your columns, such as a for loop or a function as in [Module 2.4](INSERT LINK). 
+```{r}
+# Apply Shapiro Wilk test
+shapiro_res <-  apply(wrist_data %>% select(-S_ID), 2, shapiro.test)
+
+# View first three list elements
+glimpse(shapiro_res[1:3])
+```
+
+We can then convert those list results into a data frame. Each variable is now in a row, with columns describing outputs of the statistical test. 
+```{r}
+# Create results data frame
+shapiro_res <- do.call(rbind.data.frame, shapiro_res)
+
+# View results data frame
+shapiro_res
+```
+
+Finally, we can clean up our results data frame and add a column that will quickly tell us whether our variables are normally or non-normally distributed based on the Shapiro-Wilk normality test results.
+```{r}
+# Clean data frame
+shapiro_res <- shapiro_res %>% 
+  
+  ## Add normality conclusion
+  mutate(normal = ifelse(p.value < 0.05, F, T)) %>%
+  
+  ## Remove columns that do not contain informative data
+  select(c(p.value, normal)) 
+
+# View cleaned up data frame
+shapiro_res
+```
+
+The results from the Shapiro-Wilk test demonstrate that the age data are normally distributed, while the chemical concentration data are non-normally distributed. These results support the conclusions we made based on our qualitative assessment above with histograms and Q-Q plots. Therefore, parametric statistical tests should be used when analyzing the age data, and non-parametric tests should be used when analyzing the chemical concentration data. 
+
+## Data Normalization
+
+*IT'S WORTH MENTIONING THAT THE SCALE() FUNCTION IS ALSO USED FOR DATA NORMALIZATION, BUT I WOULD START WITH WHAT DATA NORMALIZATION IS AND WHAT TECHNIQUES ARE EMPLOYED TO NORMALIZE DATA. NOT SURE IF IT'S ALSO WORTH MENTIONING THE DIFFERENCE BETWEEN NORMALIZATION AND STANDARDIZATION*
+
+When data are non-normally distributed, such as with the chemical concentrations in our example dataset, it may be desirable to transform the data so that the distribution becomes closer to a normal distribution, particularly if there are only parametric tests available to test your hypothesis. A common transformation used in environmental health research is log2 transformation, in which the data is transformed by taking the log2 of each value in the data frame. 
+
+Let's log2-transform our chemical data and examine the resulting histograms and Q-Q plots to qualitatively assess whether the data appear more normal following transformation. We will apply a pseudo-log2 transformation, where we will add 1 to each value before log2 transforming so that all resulting values are positive and any zeroes in the data frame do not return -Inf. 
+
+
+```{r fig.align = 'center'}
+# Apply log2 transformation to chemical data
+wrist_data_log2 <- wrist_data %>%
+  mutate(across(DEP:TOTM, ~ log2(.x + 1)))
+
+# Pivot data longer
+wrist_data_log2_long <- wrist_data_log2 %>%
+  pivot_longer(!S_ID, names_to = "variable", values_to = "value")
+
+# Make figure panel of histograms
+ggplot(wrist_data_log2_long, aes(value)) +
+  geom_histogram(fill = "gray40", color = "black", binwidth = function(x) {(max(x) - min(x))/25}) +
+  facet_wrap(~ variable, scales = "free") +
+  labs(y = "# of Observations", x = "Value")
+```
+
+```{r fig.align = 'center'}
+# Make a figure panel of Q-Q plots
+ggqqplot(wrist_data_log2_long, x = "value", facet.by = "variable", ggtheme = theme_bw(), scales = "free")
+```
+
+Both the histograms and the Q-Q plots demonstrate that our log2-transformed data are more normally distributed than the raw data graphed above. Let's apply the Shapiro-Wilk test to our log2 data to see if the chemical distributions are normally distributed.
+
+```{r}
+# Apply Shapiro Wilk test
+shapiro_res_log2 <-  apply(wrist_data_log2 %>% select(-S_ID), 2, shapiro.test)
+
+# Create results data frame
+shapiro_res_log2 <- do.call(rbind.data.frame, shapiro_res_log2)
+
+# Clean data frame
+shapiro_res_log2 <- shapiro_res_log2 %>% 
+  
+  ## Add normality conclusion
+  mutate(normal = ifelse(p.value < 0.05, F, T)) %>%
+  
+  ## Remove columns that do not contain informative data
+  select(c(p.value, normal)) 
+
+# View cleaned up data frame
+shapiro_res_log2
+```
+
+The results from the Shapiro-Wilk test demonstrate that the the log2 chemical concentration data are more normally distributed than the raw data. Overall, the p-values, even for the chemicals that are still non-normally distributed, are much higher, and only 2 out of the 8 chemicals are non-normally distributed by the Shapiro-Wilk test. Therefore, the log2 chemical data would be most appropriate to use if there is not a non-parametric statistical test for a given experimental design. 
+
+It is important to note that that if you proceed to statistical testing using log2 or other transformed data, graphs you make of significant results should use the transformed values on the y-axis, and findings should be interpreted in the context of the transformed values. 
+
+## Additional Considerations Regarding Normality
+
+The following sections detail additional considerations regarding normality. Similar to other advice in TAME, appropriate methods for handling normality assessment and normal versus non-normal data can be dependent on your field, lab, endpoints of interest, and downstream analyses. We encourage you to take those elements of your study into account, alongside the guidance provided here, when assessing normality. Regardless of the specific steps you take, be sure to report normality assessment steps and the data transformation or statistical test decisions you make based on them in your final report or manuscript. 
+
+#### Determining which data should go through normality testing:
+
+Values for all samples (rows) that will be going into statistical testing should be tested for normality. If you are only going to be statistically testing a subset of your data, perform the normality test on that subset. Another way to think of this is that data points that are on the same graph together and/or that have been used as input for a statistical test should be tested for normality together. 
+
+#### Adjusting Shapiro-Wilk p-values for multiple hypothesis testing:
+
+*NOT SURE IF WE WANT TO INCLUDE THIS?* I WAS THINKING THAT TOO, BUT I THINK IT'S BETTER SUITED FOR TESTS FOR STATISTICAL DIFFERENCES AS OPPOSED TO NORMALITY
+
+If you are testing a large number of variables for normality using the Shapiro-Wilk test, you should consider adjusting your p-values for multiple hypothesis testing using the [Benjamini-Hochberg procedure](https://rss.onlinelibrary.wiley.com/doi/10.1111/j.2517-6161.1995.tb02031.x). For more on multiple hypothesis testing, see *ARE WE GOING TO DISCUSS THIS MORE IN ANOTHE MODULE, OR DO WE ALREADY?*
+
+#### Analyzing datasets with a mixture of normally and non-normally distributed variables:
+
+There are a couple of different routes you can pursue if you have a mixture of normally and non-normally distributed variables in your data frame:
+
++ Perform parametric statistical tests on the normally distributed variables and non-parametric tests on the non-normally distributed variable.
++ Perform the statistical test across all variables that fits with the majority of the variable distributions in your dataset.
+
+Our preference is to perform one test across all variables of the same data type/endpoint (e.g., all chemical concentrations, all cytokine concentrations). Generally, statistical tests are relatively robust to different data distributions, and your results are unlikely to change significantly by the test you choose, so aim to choose an approach that fits *best* rather than *perfectly*. 
+
+## Concluding Remarks
+
+In conclusion, this training module serves as an introduction to and step by step tutorial for normality assessment. Approaches described in this training module include visualizations to qualitatively assess normality, statistical tests to quantitatively assess normality, data transformation, and other distribution considerations relating to normality. These methods are an important step in data characterization and exploration prior to downstream analyses and statistical testing, and they can be applied to nearly all studies carried out in environmental health research.
+
+## Additional Resources
+ADD OTHER LINKS TO NORMALITY RESOURCES
+
+## Test Your Knowledge
+
+*DO WE WANT TYK FOR THIS?* YES! WE CAN JUST HAVE THEM TEST FOR NORMALITY OF A DIFFERENT DATASET
+
+**Hint 1**: 
+
+**Hint 2**:

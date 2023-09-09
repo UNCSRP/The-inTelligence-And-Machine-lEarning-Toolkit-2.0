@@ -1,6 +1,6 @@
 # Improving Data Visualizations
 
-This training module was developed by Alexis Payton, Dr. Kyle R. Roell, and Dr. Julia E. Rager
+This training module was developed by Alexis Payton and Dr. Julia E. Rager
 
 Spring 2023
 
@@ -307,6 +307,8 @@ Takeaways from this heat map:
 ## Additional Resources
 
 These articles provide great information for [Beginner's Guide to Data Visualizations](https://towardsdatascience.com/beginners-guide-to-enhancing-visualizations-in-r-9fa5a00927c9) and [Improving Data Visualizations in R](https://towardsdatascience.com/8-tips-for-better-data-visualization-2f7118e8a9f4). More information on specifically [Generating Colors for Visualizations](https://blog.datawrapper.de/colorguide/). For additional figures available and to view aspects of figures that can be changed in `GGplot2` check out this [GGPlot2 Cheat Sheet](https://www.maths.usyd.edu.au/u/UG/SM/STAT3022/r/current/Misc/data-visualization-2.1.pdf). You might need it for the next section!
+
+Please note that the heat map generated above is not color blind friendly. It's advisable to use colors for manuscript figures that everyone will be able to see. Check out these [Stack overflow answers about color blind-safe color palettes and packages](https://stackoverflow.com/questions/57153428/r-plot-color-combinations-that-are-colorblind-accessible).
 
 ## Test Your Knowledge
 Replicate the figure below! The heat map is the same as the "Test Your Knowledge" figure from [Module 3.3] (add link). This time we'll focus on making the figure look more publication ready by cleaning up the titles, cleaning up the labels, and changing the colors.
