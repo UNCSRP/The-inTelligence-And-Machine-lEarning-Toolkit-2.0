@@ -1,42 +1,64 @@
-# Supervised Machine Learning Example 
+# Supervised Machine Learning 
 
 This training module was developed by Alexis Payton, MS, Oyemwenosa N. Avenbuan, and Dr. Julia E. Rager
 
 Fall 2023
 
-
 ## Introduction to Machine Learning, including Supervised Machine Learning
-As presented in the previous training module, machine learning is a field that has been around for decades, but has exploded in popularity and utility in recent years due to proliferation of big data. Through the building of models, machine learning has the ability to sift through and learn from large volumes of data and use that knowledge to solve problems. The challenges of big and high dimensional data as they pertain to environmental health and how machine learning can mitigate some of those challenges are discussed further in [Payton et. al](https://www.frontiersin.org/articles/10.3389/ftox.2023.1171175/full).
+Machine learning is a field that has been around for decades, but has exploded in popularity and utility in recent years due to proliferation of big data. Through the building of models, machine learning has the ability to sift through and learn from large volumes of data and use that knowledge to solve problems. The challenges of big and high dimensional data as they pertain to environmental health and how machine learning can mitigate some of those challenges are discussed further in [Payton et. al](https://www.frontiersin.org/articles/10.3389/ftox.2023.1171175/full).
+
+In this training module, we will explore:
+
++ Types of machine learning
++ Building/ training a supervised machine learning algorithm
++ Types of supervised machine learning models
++ Assessment of a supervised machine learning model's performance
+
+Before diving into supervised machine learning, let's take a step back and discuss what machine learning is as a field.
+
+## What is Machine Learning?
+**JULIA- I KNOW YOU DELETED THIS SECTION, BUT WE SHOULD DISCUSS WHAT MACHINE LEARNING IS BEFORE GETTING INTO SPECIFIC TYPES OF ML FOR CLARITY. I THINK THIS SECTION COULD POTENTIALLY BE REMOVED FOR TAME, BUT I WOULD KEEP IT FOR YOUR CLASS.**
+
+Machine learning is a field of study in computer science that involves creating algorithms, which are a set of instructions that perform a specific task on a given dataset. These algorithms enable researchers to create models that can automatically analyze to new and unforeseen situations capable of improving automatically through experience and data.
+
+In other words, instead of being explicitly programmed to perform a task, a machine learning algorithm is designed to learn from examples and data, allowing it to adapt and improve over time. This approach is particularly useful for tasks that are too complex or difficult to be solved using traditional programming methods. **NOSA - I'M NOT SURE WHAT YOU MEANT HERE BY TRADITIONAL PROGRAMMING METHODS**
+
+Through machine learning, scientists can:
+
++ Create a model that adapts to new circumstances 
++ Detect patterns in large and complex datasets
++ Evaluate the effectiveness of these patterns 
++ Make informed decisions about how to improve their models
+
+To learn more check out the following resources: **I WILL LIKELY CHANGE THESE RESOURCES...I THINK WE CAN FIND BETTER ONES** ALEXIS- YES AGREED, LET'S ALSO ASK OTHERS FOR THEIR FAVORITES - KYLE HAS RESPONDED WITH SOME GOOD SUGGESTIONS AT THIS POINT
+
++ [Machine Learning Mastery](https://machinelearningmastery.com/machine-learning-in-r-step-by-step/)
++ [Master in Data Science](https://www.mastersindatascience.org/learning/machine-learning-algorithms/decision-tree/)
++ [IBM - What is Machine Learning](https://www.ibm.com/topics/machine-learning)
++ Machine Learning by Mueller, J. P. (2021). Machine learning for dummies. John Wiley &amp; Sons. 
 
 
-Within the field of machine learning, there are many different types of models that can be run to address environmental health research questions. Two major categories of machine learning models commonly used in environmental health research are: (1) supervised machine learning, and (2) unsupervised machine learning.
+## Types of Machine Learning
 
-**Supervised machine learning** involves training a model using a labeled dataset, where each dependent or predictor variable is associated with an independent variable with a known outcome. This allows the model to learn how to best predict the labeled outcome during the model development phase. Once the model is developed and optimized, it can then be used on data it has not "seen" before to predict these outcomes based on the patterns and relationships identified in the data. For example, supervised machine learning has been used for cancer prediction and prognosis based on variables like tumor size, stage, and age ([Lynch et. al](https://www.sciencedirect.com/science/article/abs/pii/S1386505617302368?via%3Dihub), [Asadi et. al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7416093/)). 
+Within the field of machine learning, there are many different types of machine learning that can be run to address environmental health research questions. The two most commonly used categories used in environmental health research are: (1) supervised machine learning and (2) unsupervised machine learning.
 
-Supervised machine learning includes:
+**Supervised machine learning** involves training a model using a labeled dataset, where each dependent or predictor variable is associated with an independent variable with a known outcome. This allows the model to learn how to predict the labeled outcome on data it hasn't "seen" before based on the patterns and relationships it previously identified in the data. For example, supervised machine learning has been used for cancer prediction and prognosis based on variables like tumor size, stage, and age ([Lynch et. al](https://www.sciencedirect.com/science/article/abs/pii/S1386505617302368?via%3Dihub), [Asadi et. al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7416093/)). 
 
-+ Classification models that implement algorithms to classify a categorical outcome (e.g., plant species, disease status, etc.)
-+ Regression models that implement algorithms to predict a continuous outcome (e.g., temperature, chemical concentration, etc.)
+Supervised machine learning includes: 
++ Classification: Using algorithms to classify a categorical outcome (ie. plant species, disease status, etc.)
++ Regression: Using algorithms to predict a continuous outcome (ie. temperature, chemical concentration, etc.)
 <img src="https://github.com/UNC-CEMALB/P1006_Data-Organization-for-High-Dimensional-Analyses-in-Environmental-Health/assets/69641855/3c22a8fc-ada5-4199-9967-77f504d99d2a" width="684" />
 
 ([Soni, 2018](https://towardsdatascience.com/supervised-vs-unsupervised-learning-14f68e32ea8d))
 
-ALEXIS- THIS IS FINE FOR NOW, BUT EVENTUALLY IT WOULD BE GOOD TO RECREATE THIS SIMPLE FIGURE IN BIORENDER SO WE DON'T HAVE COPYRIGHT ISSUES
-NOTE THAT WE COULD ASK NOSA TO DO THIS AS SHE REVIEWS THIS MODULE
 
-
-**Unsupervised machine learning**, on the other hand, involves using models to find patterns or associations between variables in datasets that lack a known or labeled outcome. In some instances, analysts may even decide to exclude outcome/label information to discover different patterns, based upon the question being addressed, and may thus still employ unsupervised machine learning models. For example, unsupervised machine learning has been used to find new groups of genes that act in concerted manners, and thus, could be hypothesized to act along the same or overlapping biological pathways within human cells ([Botía et. al](https://bmcsystbiol.biomedcentral.com/articles/10.1186/s12918-017-0420-6), [Pagnuco et. al](https://www.sciencedirect.com/science/article/pii/S0888754317300575?via%3Dihub)).
+**Unsupervised machine learning**, on the other hand, involves using models to find patterns or associations between variables in dataset that lack a known or labeled outcome. For example, unsupervised machine learning has been used to find associations of co-expressed genes within various biological pathways ([Botía et. al](https://bmcsystbiol.biomedcentral.com/articles/10.1186/s12918-017-0420-6), [Pagnuco et. al](https://www.sciencedirect.com/science/article/pii/S0888754317300575?via%3Dihub)).
 
 <img src="https://github.com/UNC-CEMALB/P1006_Data-Organization-for-High-Dimensional-Analyses-in-Environmental-Health/assets/69641855/4f78adef-97b6-425f-9a51-43315b0fb7b2" width="684" />
 
 ([Langs et. al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6244522/))
 
-LET'S ALSO ASK NOSA TO CONTACT THE JOURNAL AND REQUEST PERMISSION TO RE-PRINT THIS FIGURE (WHICH I REALLY LIKE!)
-
 Overall, the distinction between supervised and unsupervised learning is an important concept in machine learning, as it can inform the choice of algorithms and techniques used to analyze and make predictions from data. It is worth noting that there are also other types of machine learning, such as semi-supervised learning, reinforcement learning and deep learning.
-
-
-
 
 ## Training Supervised Machine Learning Models
 
@@ -44,31 +66,27 @@ In supervised machine learning, algorithms need to be trained before they can be
 
 Let's imagine you're interested in predicting an animal's species (either a cat or a dog) based on a dataset that contains variables regarding weight, height, coat color, ear shape, etc. These data can be divided into a training set and a test set. The **training set** is a subset of the data that the model will learn from to make associations between the predictor variables (ie. height, weight etc.) and the outcome (ie. cat or dog). The **test set** is used used to evaluate what the model has learned from the training set. 
 
-
-ALEXIS WE TYPICALLY USE A 70% / 30% SPLIT IN OUR ANALYSES, COULD WE REVAMP THIS FIGURES TO SHOW THIS SPLIT?
-
-It's typical to split the entire dataset into training and test sets that contain 70% of the data as training and 30% of the data for testing, :
+It is common to split the entire dataset into the training set that contains 60% of the data and the test set that contains 40% of the data:
 
 <img src="https://github.com/UNC-CEMALB/P1006_Data-Organization-for-High-Dimensional-Analyses-in-Environmental-Health/assets/69641855/a8c723ec-e50c-4cb9-aff5-4230d0d6fc2c" width="684"/>
 
 *Created with BioRender.com*
 
-Other common splits include 60% training / 40% test and 80% training / 20% test.
-
+Other common splits include 70% training / 30% test and 80% training / 20% test.
 
 The process of developing a model often involves dividing the data into three main sets:
 
 1. **Training Set:** a subset of the data that the model uses to learn from the data by identifying patterns.
 
-2. **Validation Set**: a subset of data within the training set (ALEXIS I ADDED THIS IS THIS TRUE?) that is used to evaluate the model's fit in an unbiased way by fine-tuning its parameters and optimizing its performance. This is akin to pop quizzes that help students improve their understanding and performance. 
+2. **Validation Set**: a subset of training set data that is used to evaluate the model's fit in an unbiased way by fine-tuning its parameters and optimizing its performance. This is akin to pop quizzes that help students improve their understanding and performance. 
 
-3. **Test Set:** a subset of data that is used to evaluate the final model's fit based on the training and validation sets. This is akin to the model's final exam, as it provides an objective assessment of the model's ability to generalize to new, unseen data. 
+2. **Test Set:** a subset of data that is used to evaluate the final model's fit based on the training and validation sets. This is akin to the model's final exam, as it provides an objective assessment of the model's ability to generalize to new, unseen data. 
 
-It is important to note that the test set should only be used once, after the model has been trained using the training dataset. Using the test set multiple times during the development process can lead to overfitting, where the model performs well on the test data but poorly on new, unseen data. The ideal algorithm is generalizable or flexible enough to accurately predict unseen data. This is known as the **bias-variance tradeoff**. For further information on the bias-variance tradeoff, see [Understanding the Bias-Variance Tradeoff](https://towardsdatascience.com/understanding-the-bias-variance-tradeoff-165e6942b229)
+It is important to note that the test set should only be used once, after the model has been trained using the training dataset. Using the test set multiple times during the development process can lead to overfitting, where the model performs well on the test data but poorly on new, unseen data. The ideal algorithm is generalizable or flexible enough to accurately predict unseen data. This is known as the bias-variance tradeoff. For further information on the bias-variance tradeoff, see [Understanding the Bias-Variance Tradeoff](https://towardsdatascience.com/understanding-the-bias-variance-tradeoff-165e6942b229).
 
 ### Cross Validation
 
-The last topic we should mention in this section is **cross validation** or ***k*-fold cross validation**. If the dataset is based on this 70:30 split that we mentioned earlier, our model's accuracy will likely be influenced based upon *where* this 70:30 split occurs in the dataset. Cross validation (CV) is implemented to fine tune a model's parameters and ensure that the model is exposed to more patterns in the dataset, which reduces bias and improves prediction accuracy. 
+The last topic we should mention in this section is **cross validation** or ***k*-fold cross validation**. If the dataset is based on this 60:40 split that we mentioned earlier, our model's accuracy will likely be influenced based upon *where* this 60:40 split occurs in the dataset. This will likely bias the data and reduce the algorithm's ability to predict accurately. Cross validation (CV) is implemented to fine tune a model's parameters and ensure that the model is exposed to more patterns in the dataset, which reduces bias and improves prediction accuracy. 
 
 It works by equally splitting the samples in the dataset into *k* number of folds or groups. For example, if 5-fold CV were to be run, we would have 5 different groups in the dataset with 4 retained for validation sets to train the model and 1 retained for testing to fine tune the model's parameters. Across the five iterations, each fold would have a chance to be the test set as seen in the figure below. To measure prediction in Random Forest, out of bag (OOB) errors are calculated each time when tuning parameters. The lower the OOB error, the better the model performance.
 
@@ -78,15 +96,10 @@ It works by equally splitting the samples in the dataset into *k* number of fold
 
 **LAUREN - CAN YOU PLEASE MAKE SURE THIS ILLUSTRATION ACTUALLY VISUALIZES WHAT'S IN THE CODE BELOW? I MIGHT BE CONFUSING MYSELF.**
 
-Confusion matrix metrics would be calculated after each iteration and averaged for the final results. For additional information on the different types of cross validation, see: 
-
-+ [Cross Validation in Machine Learning](https://towardsdatascience.com/cross-validation-in-machine-learning-72924a69872f)
-+ [Cross Validation Pros & Cons](https://www.geeksforgeeks.org/cross-validation-machine-learning/)
-
-
+Confusion matrix metrics would be calculated after each iteration and averaged for the final results. Check out these resources for additional information on [Cross Validation in Machine Learning](https://towardsdatascience.com/cross-validation-in-machine-learning-72924a69872f) and [Cross Validation Pros & Cons](https://www.geeksforgeeks.org/cross-validation-machine-learning/).
 
 ## Assessing Model Performance  
-Metrics from a confusion matrix are used to evaluate model performance for classification-based supervised machine learning models. A confusion matrix consists of table that displays the numbers of how often the algorithm correctly or incorrectly predicted the outcome. 
+Metrics from a confusion matrix are used to measure model performance for classification-based supervised machine learning models. A confusion matrix consists of table that displays the numbers of how often the algorithm correctly or incorrectly predicted the outcome. 
 
 Going back to our animal classification example, let's say the confusion matrix below is a result of how well the model was able to predict whether an animal was considered to be a cat or a dog.
 
@@ -96,7 +109,7 @@ Going back to our animal classification example, let's say the confusion matrix 
 
 Some of the metrics that can be obtained from a confusion matrix are listed below:
 
-+ **Balanced Accuracy:** is the ratio of correct predictions (TP + TN) to the total number of predictions (TP + TN + TN + FN) and is typically used to assess overall model performance. This metric is prone to skew for imbalanced data. For example, if the animal dataset had 11 cats and 74 dogs the data would be considered to be imbalanced.
++ **Balanced Accuracy:** is the ratio of correct predictions (TP + TN) to the total number of predictions (TP + TN + TN + FN) and is typically used to assess overall model performance. This metric is prone to skew for imbalanced data. For example, if the animal dataset had 11 cats and 74 dogs the data would be considered to be imbalanced.  
 
 + **Sensitivity or Recall:** evaluates how well the model was able to predict the "positive" class. It's the ratio of correctly classified true positives to total number of all true positives (TP + FN). 
 
@@ -104,9 +117,9 @@ Some of the metrics that can be obtained from a confusion matrix are listed belo
 
 +  **Positive Predictive Value (PPV) or Precision:**  evaluates how well the model was able to predict the "positive" class. It's the ratio of correctly classified true positives to total number of predicted positives (TP + FP).
 
-+  **Negative Predictive Value (PPV):**  evaluates how well the model was able to predict the "negative" class. It's the ratio of correctly classified true negatives to total number of predicted positives (TN + FN).
++  **Negative Predictive Value (NPV):**  evaluates how well the model was able to predict the "negative" class. It's the ratio of correctly classified true negatives to total number of predicted positives (TN + FN).
 
-For all metrics, the values fall between 0 and 1, where 0 indicates that the model was not able to classify any data points correctly and 1 indicating that the model was able to classify all test data correctly. Typically a balanced accuracy of at least 0.7 is considered respectable. ALEXIS DO YOU HAPPEN TO HAVE A REFERENCE FOR THE 0.7 CUT-OFF?
+For all metrics, the values fall between 0 and 1, where 0 indicates the model was not able to classify any data points correctly and 1 indicating that the model was able to classify all test data correctly. Although subjective, a balanced accuracy of at least 0.7 is considered respectable ([Barkved, 2022](https://www.obviously.ai/post/machine-learning-model-performance#:~:text=Good%20accuracy%20in%20machine%20learning,also%20consistent%20with%20industry%20standards.)).
 
 
 **Note**: For multi-class classification (more than two labeled outcomes to be predicted), the same metrics are used, but are obtained in a slightly different way. Regression based supervised machine learning models use loss functions to evaluate model performance. For more information regarding confusion matrices and loss functions for regression-based models, see:
@@ -115,70 +128,58 @@ For all metrics, the values fall between 0 and 1, where 0 indicates that the mod
  + [Precision vs. Recall or Specificity vs. Sensitivity](https://towardsdatascience.com/should-i-look-at-precision-recall-or-specificity-sensitivity-3946158aace1)
  + [Loss Functions for Machine Learning Regression](https://towardsdatascience.com/understanding-the-3-most-common-loss-functions-for-machine-learning-regression-23e0ef3e14d3)
 
-
-
 ## Types of Supervised Machine Learning Algorithms
 
-Although this module's example focuses on a random forest model below, other notable algorithims commonly used in supervised machine learning exercises include: 
+Although this module's example focuses random forest model in the coding example below, other commonly used algorithims for supervised machine learning include: 
 
-+ **K-Nearest Neighbors (KNN):** Uses Euclidean distance to classify a data point in the test set based upon the most common class of neighboring data points.  For more information on KNN, see [K-Nearst Neighbor](https://www.ibm.com/topics/knn)
++ **K-Nearest Neighbors (KNN):** Uses Euclidean distance to classify a data point in the test set based upon the most common class of neighboring data points. For more information on KNN, see [K-Nearst Neighbor](https://www.ibm.com/topics/knn)
 <img src="https://user-images.githubusercontent.com/96756991/232493057-1e7ce98b-6985-44cd-98a9-3cfea5994659.png" width="684" />
 
 *Created with BioRender.com*
 
-+ **Support Vector Machine (SVM):** Creates a decision boundary line (hyperplane) in n-dimensional space to separate the data into each class so that when new data are presented they can be easily categorized. For more information on SVM, see [Support Vector Machine](https://www.javatpoint.com/machine-learning-support-vector-machine-algorithm)
-
++ **Support Vector Machine (SVM):** Creates a decision boundary line (hyperplane) in n-dimensional space to seperate the data into each class so that when new data is presented they can be easily cateogrized. For more information on SVM, see [Support Vector Machine](https://www.javatpoint.com/machine-learning-support-vector-machine-algorithm).
 <img src="https://user-images.githubusercontent.com/96756991/233735220-08682ea4-fe13-41c8-8ac5-9ddda7859328.png" width="684" />
 
 *Created with BioRender.com* 
 
-+ **Random Forest (RF):** Uses a multitude of decision trees trained on a subset of different samples from the training set and the resulting classification of a data point in the test set is aggregated from all the decision trees. A **decision tree** is a hierarchical model that selects the best predictors to classify the data with each node representing a test on a predictor, each branch representing the outcome, and leaf nodes representing the class label.
++ **Random Forest (RF):** Uses a multitude of decison trees trained on a subset of different samples from the training set and the resulting classification of a data point in the test set is aggregated from all the decision trees. A **decision tree** is a hierarchical model that selects the best predictors to classify the data with each node representing a test on a predictor, each branch representing the outcome, and leaf nodes representing the class label. For more information on RF and decision trees, check out [Random Forest](https://www.ibm.com/in-en/topics/random-forest) and
+[Decision Trees](https://www.ibm.com/topics/decision-trees#:~:text=A%20decision%20tree%20is%20a,internal%20nodes%20and%20leaf%20nodes.).
 
 Here is an illustration of the terminology used to describe the underlying structure of a decision tree:
 
-ALEXIS CAN WE PLEASE INSERT NOSE'S TREE FIGURE HERE? I REALLY LIKE IT
+<img src="https://github.com/UNC-CEMALB/P1011_Emission-Mixtures/assets/69641855/f4d15d7c-e2ee-42d0-b58c-4c8d3240f6be" width="684" />
 
 
-Here is a published example decision tree with potential variables and decisions informing low vs high risk of having a heart attack:
-
+Here is a published example decision tree with potential variables and decisions informing low vs high risk of having a heart attack: **I'LL REMAKE THIS SO IT'S BASED ON THE SAME EXAMPLE FROM ABOVE FOR TAME**
 
 <img src="https://github.com/UNC-CEMALB/P1011_Emission-Mixtures/assets/69641855/690d8e90-059e-47d0-98c0-bd0fc6fbebc3" width="684" />
 
-For more information on RF, see ([Navlani, 2023](https://www.datacamp.com/tutorial/decision-tree-classification-python)); and on decision trees, see [Decision Trees](https://www.ibm.com/topics/decision-trees#:~:text=A%20decision%20tree%20is%20a,internal%20nodes%20and%20leaf%20nodes)
-
-
-
-
+([Navlani, 2023](https://www.datacamp.com/tutorial/decision-tree-classification-python))
 
 ## Introduction to Training Module
-In this activity, we will analyze an example dataset to see whether we can use environmental monitoring information to predict areas of contamination through random forest modeling. Specifically, this supervised machine learning method will be applied to a dataset of well water descriptive variables, spanning geospatial location, sampling date, and well water attributes, with the goal of predicting whether detectable levels of inorganic arsenic (iAs) are present. This dataset was obtained through the sampling of 713 private wells across North Carolina using a method that was capable of detecting levels of iAs > 10 ppm (ALEXIS IS THIS CORRECT THAT WE USED THE 10 PPM CUT-OFF HERE? OR LOWER?). After the model is built, we walk through different parameters that are used to assess model performance.
+In this activity, we will analyze an example dataset to see whether we can use environmental monitoring information to predict areas of contamination through random forest modeling. Specifically, RF will leverage a dataset of well water variables that span geospatial location, sampling date, and well water attributes, with the goal of predicting whether detectable levels of inorganic arsenic (iAs) are present. This dataset was obtained through the sampling of 713 private wells across North Carolina using a method that was capable of detecting levels of iAs. After the algorithm has been trained and tested, model performance is assessed using the aforementioned confusion matrix metrics.
 
 
 ## Training Module's Environmental Health Questions
 
 This training module was specifically developed to answer the following environmental health questions:
 
-1. Which well water descriptive variables, spanning geospatial location, sampling date, and well water attributes, significantly differ between samples containing detectable levels of iAs vs samples that are not contaminated?
+1. Which well water predictor variables significantly differ between samples containing detectable levels of iAs vs samples that have non-detect levels of iAs?
 
-2. How can we train a random forest (RF) model to predict whether a well water location might be contaminated with inorganic arsenic (iAs)?
-
-3. How can we evaluate the performance of this RF model?
-
-4. With this RF model, can we predict if iAs will be detected based on well water information? 
-
-
-
+2. How can we build and evaluate the performance of this RF model?
 
 ## Script Preparations
 
 ### Cleaning the global environment
+
+
 ```{r}
 rm(list=ls())
 ```
 
-
 ### Installing required R packages
 If you already have these packages installed, you can skip this step, or you can run the below code which checks installation status for you
+
 
 ```{r}
 if (!requireNamespace("readxl"))
@@ -193,20 +194,9 @@ if (!requireNamespace("flextable"))
   install.packages("flextable");
 if (!requireNamespace("caret"))
   install.packages("caret");
-if (!requireNamespace("e1071"))
-  install.packages("e1071");
-if (!requireNamespace("Hmsic"))
-  install.packages("Hmsic");
 if (!requireNamespace("randomForest"))
   install.packages("randomForest");
-if (!requireNamespace("pROC"))
-  install.packages("pROC");
-if (!requireNamespace("themis"))
-  install.packages("themis");
-if (!requireNamespace("rlang"))
-  install.packages("rlang");
 ```
-
 
 ### Loading R packages required for this session
 
@@ -217,16 +207,11 @@ library(tidyverse);
 library(gtsummary);
 library(flextable);
 library(caret);
-library(e1071);
-library(Hmisc);
 library(randomForest);
-library(pROC);
-library(themis);
-library(rlang);
 ```
 
-
 ### Set your working directory
+
 
 ```{r}
 setwd("/filepath to where your input files are")
@@ -237,19 +222,16 @@ TO DELETE IN FINAL MODULE (NOT NOW):
 setwd("/Users/juliarager/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/CEMALB/CEMALB_DataAnalysisPM/Shared Project Folders/TAME 2.0/3. TAME 2.0 Code & Input Files/Chapter5/Supervised ML/Module5")
 ```
 
-
-
-### Importing the example dataset
+### Importing example dataset
 **Will need to change input to module number and add module number to the file itself**
 
 ```{r}
 # Load the data
-arsenic_data <- data.frame(read_excel("Module5/Arsenic_Data.xlsx"))
+arsenic_data <- data.frame(read_excel("Module5/Module5_Arsenic_Data.xlsx"))
 
 # View the top of the dataset
 head(arsenic_data) 
 ```
-
 
 The columns in this dataset are described below:
 + `Tax_ID`: Tax ID for the property
@@ -259,9 +241,7 @@ The columns in this dataset are described below:
 + `Static_Water_Depth`: Static water depth in the well (ft)
 + `Flow_Rate`: Well flow rate (gallons per minute)
 + `pH`: pH of water sample
-+ `Detect_Concentration`: Binary identifier (either non-detect (ND) or detect (D)) if As concentration detected in water sample 
-
-
++ `Detect_Concentration`: Binary identifier (either non-detect (ND) or detect (D)) if iAs concentration detected in water sample 
 
 ### Changing Data Types 
 First, `Detect_Concentration` needs to be converted from a character to a factor, so that Random Forest to know that non-detect (binarized as 0) data is considered baseline. `Water_Sample_Date` needs to be converted from a character to a date type, so that Random Forest understands this column contains dates.
@@ -277,10 +257,9 @@ arsenic_data = arsenic_data %>%
 head(arsenic_data)
 ```
 
-
 ### Testing for differences in predictor variables acrosss the outcome classes
 
-It is useful to run summary statistics on the variables that will be used as predictors in the model to see if there are differences in distributions between the outcomes classes (either non-detect or detect in this case). Typically, greater significance often leads to better predictivity for a certain variable, since the model is better able to separate the classes. We'll use the `tbl_summary()` function from the `gtsummary` package.
+It is useful to run summary statistics on the variables that will be used as predictors in the algorithm to see if there are differences in distributions between the outcomes classes (either non-detect or detect in this case). Typically, greater significance often leads to better predictivity for a certain variable, since the model is better able to separate the classes. We'll use the `tbl_summary()` function from the `gtsummary` package.
 
 For more information on the `tbl_summary()` function, check out this helpful [Tutorial](https://www.danieldsjoberg.com/gtsummary/articles/tbl_summary.html).
 
@@ -301,12 +280,12 @@ arsenic_data %>%
     bold(bold = TRUE, part = "header")
 ```
 
-All the variables are very significant with the exception of the sample date and the static water depth, therefore the model should predict fairly well.
-
+All the variables are significantly different between detect and non-detect iAs with the exception of the sample date and the static water depth, therefore the model should predict fairly well.
 
 ## Setting up Cross Validation
 
 As mentioned above, cross validation is done so that the model is trained and tested on different portions of the entire dataset. We'll use 5-fold cross validation.
+
 
 ```{r}
 # Since the splits in the dataset are random, a seed is set for reproducibility to ensure the splits are occuring
@@ -324,11 +303,9 @@ Within CV, different parameters will be tested, including the number of trees "g
 
 ```{r}
 ntree_values = c(50, 250, 500) # number of trees 
-p = dim(well_data)[2] - 1 # number of predictor variables in dataset
+p = dim(arsenic_data)[2] - 1 # number of predictor variables in the dataset
 mtry_values = c(sqrt(p), p/2, p) # number of predictors to be used in the model
 ```
-
-
 
 ## Predicting iAs Detection with a Random Forest (RF) Model
 
@@ -352,8 +329,8 @@ for (i in 1:length(arsenic_index)){
     rf_OOB_errors = list()
     rf_error_df = data.frame()
     
-    # Using ntree and mtry values to determine which combination yields the smallest OOB error from the 
-    # validation datasets
+    # Tuning parameters: using ntree and mtry values to determine which combination yields the smallest OOB error 
+    # from the validation datasets
     for (j in 1:length(ntree_values)){
         for (k in 1:length(mtry_values)){
             
@@ -387,7 +364,7 @@ for (i in 1:length(arsenic_index)){
     # Extracting balanced accuracy, sensitivity, specificity, and PPV
     matrix_values = data.frame(t(c(matrix$byClass[11])), t(c(matrix$byClass[1:3])))
     
-    # Adding values to df to be averaged
+    # Adding values to df to be averaged across the 5 splits from CV
     metrics_df = rbind(metrics_df, matrix_values)
 }
 
@@ -396,7 +373,7 @@ metrics_df = metrics_df %>%
     summarise(`Balanced Accuracy` = mean(Balanced.Accuracy), Sensitivity = mean(Sensitivity), 
           Specificity = mean(Specificity), PPV = mean(Pos.Pred.Value))
 
-# Viewing the model performance metrics
+# Viewing the model's performance metrics
 metrics_df
 ```
 
@@ -410,27 +387,15 @@ Takeaways from this confusion matrix:
 
 ALEXIS- I AGREE, I THINK JUST INCORPORATING AUC AS AN ADDITIONAL MODEL PERFORMANCE METRIC IS A GREAT IDEA, AND LET'S LEAVE OUT SMOTE FOR NOW
 
-
 ## Concluding Remarks
 
 In conclusion, this training module has provided an informative introduction to supervised machine learning using classification techniques in R. Machine learning is a powerful tool that can help researchers gain new insights and improve models to analyze complex datasets faster and in a more comprehensive way. The example we've explored demonstrates the utility of supervised machine learning models on datasets with a plethora of features.
 
-For additional learning materials on machine learning models, see the following resources: 
-
-**I WILL LIKELY CHANGE THESE RESOURCES...I THINK WE CAN FIND BETTER ONES** ALEXIS- YES AGREED, LET'S ALSO ASK OTHERS FOR THEIR FAVORITES - KYLE HAS RESPONDED WITH SOME GOOD SUGGESTIONS AT THIS POINT
-
-+ [Machine Learning Mastery](https://machinelearningmastery.com/machine-learning-in-r-step-by-step/)
-+ [Master in Data Science](https://www.mastersindatascience.org/learning/machine-learning-algorithms/decision-tree/)
-+ [IBM - What is Machine Learning](https://www.ibm.com/topics/machine-learning)
-+ Machine Learning by Mueller, J. P. (2021). Machine learning for dummies. John Wiley &amp; Sons. 
-
-
 ## Test Your Knowledge 
 
-1. Using the "Chromium_Data", use RF to determine if well water data can be accurate predictors of Chromium detection.
-**I FIGURED IT'D BE EASIEST TO MAKE THIS DATASET THAT HAS THE SAME PREDICTORS AS THE ARSENIC DATA, BUT WE CAN ALSO CHALLENGE THEM MORE WITH A DATASET WITH A DIFFERENT STRUCTURE**
+1. Using the "Manganese_Data", use RF to determine if well water data can be accurate predictors of Manganese detection. The data is structured similarly to the "Arsenic_Data" used in this module, however it now includes 4 additional predictor variables:
 
-I LOVE KEEPING IT SIMPLE - LET'S USE THE CHROMIUM DATASET WITH THE SAME STRUCTURE!!
-
-
-
++ `Longtitude`: Longtitude of address (decimal degrees)
++ `Latitude`: Latitude of address (decimal degrees)
++ `Stream_Distance`: Euclidean distance to the nearest stream (feet)
++ `Elevation`: Surface elevation of the sample location
