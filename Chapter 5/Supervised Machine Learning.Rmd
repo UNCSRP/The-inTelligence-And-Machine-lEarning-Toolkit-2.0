@@ -7,36 +7,6 @@ Fall 2023
 ## Introduction to Machine Learning, including Supervised Machine Learning
 Machine learning is a field that has been around for decades, but has exploded in popularity and utility in recent years due to proliferation of big data. Through the building of models, machine learning has the ability to sift through and learn from large volumes of data and use that knowledge to solve problems. The challenges of big and high dimensional data as they pertain to environmental health and how machine learning can mitigate some of those challenges are discussed further in [Payton et. al](https://www.frontiersin.org/articles/10.3389/ftox.2023.1171175/full).
 
-In this training module, we will explore:
-
-+ Types of machine learning
-+ Building/ training a supervised machine learning algorithm
-+ Types of supervised machine learning models
-+ Assessment of a supervised machine learning model's performance
-
-Before diving into supervised machine learning, let's take a step back and discuss what machine learning is as a field.
-
-## What is Machine Learning?
-**JULIA- I KNOW YOU DELETED THIS SECTION, BUT WE SHOULD DISCUSS WHAT MACHINE LEARNING IS BEFORE GETTING INTO SPECIFIC TYPES OF ML FOR CLARITY. I THINK THIS SECTION COULD POTENTIALLY BE REMOVED FOR TAME, BUT I WOULD KEEP IT FOR YOUR CLASS.**
-
-Machine learning is a field of study in computer science that involves creating algorithms, which are a set of instructions that perform a specific task on a given dataset. These algorithms enable researchers to create models that can automatically analyze to new and unforeseen situations capable of improving automatically through experience and data.
-
-In other words, instead of being explicitly programmed to perform a task, a machine learning algorithm is designed to learn from examples and data, allowing it to adapt and improve over time. This approach is particularly useful for tasks that are too complex or difficult to be solved using traditional programming methods. **NOSA - I'M NOT SURE WHAT YOU MEANT HERE BY TRADITIONAL PROGRAMMING METHODS**
-
-Through machine learning, scientists can:
-
-+ Create a model that adapts to new circumstances 
-+ Detect patterns in large and complex datasets
-+ Evaluate the effectiveness of these patterns 
-+ Make informed decisions about how to improve their models
-
-To learn more check out the following resources: **I WILL LIKELY CHANGE THESE RESOURCES...I THINK WE CAN FIND BETTER ONES** ALEXIS- YES AGREED, LET'S ALSO ASK OTHERS FOR THEIR FAVORITES - KYLE HAS RESPONDED WITH SOME GOOD SUGGESTIONS AT THIS POINT
-
-+ [Machine Learning Mastery](https://machinelearningmastery.com/machine-learning-in-r-step-by-step/)
-+ [Master in Data Science](https://www.mastersindatascience.org/learning/machine-learning-algorithms/decision-tree/)
-+ [IBM - What is Machine Learning](https://www.ibm.com/topics/machine-learning)
-+ Machine Learning by Mueller, J. P. (2021). Machine learning for dummies. John Wiley &amp; Sons. 
-
 
 ## Types of Machine Learning
 
@@ -252,7 +222,9 @@ arsenic_data = arsenic_data %>%
     # Converting `Detect_Concentration from a character to a factor
     mutate(Detect_Concentration = relevel(factor(ifelse(Detect_Concentration == "D", 1, 0)), ref = "0"),
         # converting water sample date from a character to a date type 
-        Water_Sample_Date = mdy(Water_Sample_Date))
+        Water_Sample_Date = mdy(Water_Sample_Date)) %>%
+    # Removing tax id and only keeping the predictor and outcome variables in the dataset
+    select(-Tax_ID)
 
 head(arsenic_data)
 ```
@@ -267,8 +239,6 @@ For more information on the `tbl_summary()` function, check out this helpful [Tu
 ```{r}
 arsenic_data %>%
     tbl_summary(by = Detect_Concentration,
-    # Selecting columns to include
-    include = colnames(arsenic_data[c(2:8)]), 
     # Displaying the mean and standard deviation in parantheses for all continuous variables
                 statistic = list(all_continuous() ~ "{mean} ({sd})")) %>%
     # Adding a column that displays the total number of samples for each variable
@@ -379,9 +349,9 @@ metrics_df
 
 Takeaways from this confusion matrix:
 
-+ Overall, the model performed moderately well at predicting if iAs would be detected based on a balanced accuracy of ~0.7
-+ RF did a poor job of predicting detect data with a sensitivity and a PPV of ~0.5
-+ The model was significantly better at predicting non-detect data based on a specificity of ~0.9 
++ Overall, the model did a moderate job at predicting if iAs would be detected based on a balanced accuracy of ~0.6
++ RF did a poor job of predicting detect data with a sensitivity of 0.4 and a PPV of ~0.5
++ The model was significantly better at predicting non-detect data based on a specificity of ~0.8 
 
 **I THINK WE COULD DISCUSS THE CLASS IMBALANCE ISSUE AND ADD EITHER SMOTE OR AUC, BUT THE MODEL PERFORMED DECENTLY WELL SO I'M NOT SURE IF THAT'S REALLY NECESSARY.**
 
@@ -390,6 +360,14 @@ ALEXIS- I AGREE, I THINK JUST INCORPORATING AUC AS AN ADDITIONAL MODEL PERFORMAN
 ## Concluding Remarks
 
 In conclusion, this training module has provided an informative introduction to supervised machine learning using classification techniques in R. Machine learning is a powerful tool that can help researchers gain new insights and improve models to analyze complex datasets faster and in a more comprehensive way. The example we've explored demonstrates the utility of supervised machine learning models on datasets with a plethora of features.
+
+## Additional Resources
+To learn more check out the following resources: **I WILL LIKELY CHANGE THESE RESOURCES...I THINK WE CAN FIND BETTER ONES** ALEXIS- YES AGREED, LET'S ALSO ASK OTHERS FOR THEIR FAVORITES - KYLE HAS RESPONDED WITH SOME GOOD SUGGESTIONS AT THIS POINT
+
++ [Machine Learning Mastery](https://machinelearningmastery.com/machine-learning-in-r-step-by-step/)
++ [Master in Data Science](https://www.mastersindatascience.org/learning/machine-learning-algorithms/decision-tree/)
++ [IBM - What is Machine Learning](https://www.ibm.com/topics/machine-learning)
++ Machine Learning by Mueller, J. P. (2021). Machine learning for dummies. John Wiley &amp; Sons. 
 
 ## Test Your Knowledge 
 

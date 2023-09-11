@@ -27,7 +27,9 @@ manganese_data = manganese_data %>%
     # Converting `Detect_Concentration from a character to a factor
     mutate(Detect_Concentration = relevel(factor(ifelse(Detect_Concentration == "D", 1, 0)), ref = "0"),
         # converting water sample date from a character to a date type 
-        Water_Sample_Date = mdy(Water_Sample_Date))
+        Water_Sample_Date = mdy(Water_Sample_Date)) %>%
+    # Removing tax id and only keeping the predictor and outcome variables in the dataset
+    select(-Tax_ID)
 
 head(manganese_data)
 ```
@@ -46,7 +48,7 @@ manganese_data %>%
     # Adding a column that displays the total number of samples for each variable
     # This will be 713 for all variables since we have no missing data
     add_n() %>% 
-    # Adding a column that dispalys the p value from anova
+    # Adding a column that displays the p value from anova
     add_p(test = list(all_continuous() ~ "aov")) %>% 
     as_flex_table() %>%
     bold(bold = TRUE, part = "header")
@@ -140,5 +142,5 @@ metrics_df
 Takeaways from this confusion matrix:
 
 + Overall, the model performed moderately well at predicting if iAs would be detected based on a balanced accuracy of ~0.7
-+ RF did an okay job of predicting detect data with a sensitivity and a PPV of ~0.6
++ RF did an okay job of predicting detect data with a sensitivity of 0.6 and a PPV of ~0.7
 + The model was better at predicting non-detect data based on a specificity of ~0.8 
