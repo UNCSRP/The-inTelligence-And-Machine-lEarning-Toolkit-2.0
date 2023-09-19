@@ -1,15 +1,13 @@
 # Supervised Machine Learning 
 
-This training module was developed by Alexis Payton, MS, Oyemwenosa N. Avenbuan, and Dr. Julia E. Rager
+This training module was developed by Alexis Payton, MS, Oyemwenosa N. Avenbuan, Lauren Koval, and Dr. Julia E. Rager
 
 Fall 2023
 
 ## Introduction to Machine Learning, including Supervised Machine Learning
 Machine learning is a field that has been around for decades, but has exploded in popularity and utility in recent years due to proliferation of big data. Through the building of models, machine learning has the ability to sift through and learn from large volumes of data and use that knowledge to solve problems. The challenges of big and high dimensional data as they pertain to environmental health and how machine learning can mitigate some of those challenges are discussed further in [Payton et. al](https://www.frontiersin.org/articles/10.3389/ftox.2023.1171175/full).
 
-
 ## Types of Machine Learning
-
 Within the field of machine learning, there are many different types of machine learning that can be run to address environmental health research questions. The two most commonly used categories used in environmental health research are: (1) supervised machine learning and (2) unsupervised machine learning.
 
 **Supervised machine learning** involves training a model using a labeled dataset, where each dependent or predictor variable is associated with an independent variable with a known outcome. This allows the model to learn how to predict the labeled outcome on data it hasn't "seen" before based on the patterns and relationships it previously identified in the data. For example, supervised machine learning has been used for cancer prediction and prognosis based on variables like tumor size, stage, and age ([Lynch et. al](https://www.sciencedirect.com/science/article/abs/pii/S1386505617302368?via%3Dihub), [Asadi et. al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7416093/)). 
@@ -34,7 +32,7 @@ Overall, the distinction between supervised and unsupervised learning is an impo
 
 In supervised machine learning, algorithms need to be trained before they can be used to predict data. This involves selecting a smaller portion of data, known as training data, so that the model will learn how to predict the outcome as accurately as possible. The process of training an algorithm is essential for enabling it to learn and improve over time, allowing it to make more accurate predictions and better adapt to new and changing circumstances. Ultimately, the effectiveness of a machine learning model depends on the quality and relevance of its training data.
 
-Let's imagine you're interested in predicting an animal's species (either a cat or a dog) based on a dataset that contains variables regarding weight, height, coat color, ear shape, etc. These data can be divided into a training set and a test set. The **training set** is a subset of the data that the model will learn from to make associations between the predictor variables (ie. height, weight etc.) and the outcome (ie. cat or dog). The **test set** is used used to evaluate what the model has learned from the training set. 
+Let's imagine you're interested in predicting an animal's species (either a cat or a dog) based on a dataset that contains variables regarding weight, height, coat color, ear shape, etc. The most basic way to train a model is dividng these data into a training set and a test set. The **training set** is a subset of the data that the model will learn from to make associations between the predictor variables or features (ie. height, weight etc.) and the outcome (ie. cat or dog). The **test set** is used to evaluate what the model has learned from the training set. 
 
 It is common to split the entire dataset into the training set that contains 60% of the data and the test set that contains 40% of the data:
 
@@ -44,21 +42,21 @@ It is common to split the entire dataset into the training set that contains 60%
 
 Other common splits include 70% training / 30% test and 80% training / 20% test.
 
-The process of developing a model often involves dividing the data into three main sets:
+In addition to the training and testing sets, a validation set can also be created for a total of three main sets. Leveraging a validation set is a highly recommended as it helps train the algorithm in a robost way. The training set, validation set, and the test set are detailed further here:
 
-1. **Training Set:** a subset of the data that the model uses to learn from the data by identifying patterns.
+1. **Training Set:** a subset of the data that the algorithm uses to learn from the data by identifying patterns.
 
 2. **Validation Set**: a subset of training set data that is used to evaluate the model's fit in an unbiased way by fine-tuning its parameters and optimizing its performance. This is akin to pop quizzes that help students improve their understanding and performance. 
 
-2. **Test Set:** a subset of data that is used to evaluate the final model's fit based on the training and validation sets. This is akin to the model's final exam, as it provides an objective assessment of the model's ability to generalize to new, unseen data. 
+2. **Test Set:** a subset of data that is used to evaluate the final model's fit based on the training and validation sets. This is akin to the model's final exam, as it provides an objective assessment of its ability to generalize to new data. 
 
-It is important to note that the test set should only be used once, after the model has been trained using the training dataset. Using the test set multiple times during the development process can lead to overfitting, where the model performs well on the test data but poorly on new, unseen data. The ideal algorithm is generalizable or flexible enough to accurately predict unseen data. This is known as the bias-variance tradeoff. For further information on the bias-variance tradeoff, see [Understanding the Bias-Variance Tradeoff](https://towardsdatascience.com/understanding-the-bias-variance-tradeoff-165e6942b229).
+It is important to note that the test set should only be used once, after the algorithm has been trained using the training dataset. Using the test set multiple times during the development process can lead to overfitting, where the model performs well on the test data but poorly on new data. The ideal algorithm is generalizable or flexible enough to accurately predict unseen data. This is known as the bias-variance tradeoff. For further information on the bias-variance tradeoff, see [Understanding the Bias-Variance Tradeoff](https://towardsdatascience.com/understanding-the-bias-variance-tradeoff-165e6942b229).
 
 ### Cross Validation
 
 The last topic we should mention in this section is **cross validation** or ***k*-fold cross validation**. If the dataset is based on this 60:40 split that we mentioned earlier, our model's accuracy will likely be influenced based upon *where* this 60:40 split occurs in the dataset. This will likely bias the data and reduce the algorithm's ability to predict accurately. Cross validation (CV) is implemented to fine tune a model's parameters and ensure that the model is exposed to more patterns in the dataset, which reduces bias and improves prediction accuracy. 
 
-It works by equally splitting the samples in the dataset into *k* number of folds or groups. For example, if 5-fold CV were to be run, we would have 5 different groups in the dataset with 4 retained for validation sets to train the model and 1 retained for testing to fine tune the model's parameters. Across the five iterations, each fold would have a chance to be the test set as seen in the figure below. To measure prediction in Random Forest, out of bag (OOB) errors are calculated each time when tuning parameters. The lower the OOB error, the better the model performance.
+It works by equally splitting the samples in the dataset into *k* number of folds or groups. For example, if 5-fold CV were to be run, we would have 5 different groups in the dataset with 4 retained for validation sets to train the model and 1 retained for testing to fine tune the model's parameters. Across the five iterations, each fold would have a chance to be the test set as seen in the figure below. To measure predictive ability of each of the pararmeters tested, out of bag (OOB) errors are calculated each time. The parameters that yield that the lowest OOB error are used in the algorithm's training on the entire training set. 
 
 <img src="https://github.com/UNC-CEMALB/P1006_Data-Organization-for-High-Dimensional-Analyses-in-Environmental-Health/assets/69641855/ffe9f044-3c13-4b56-80e1-109380f4a6d9" width="684"/>
 
@@ -68,10 +66,17 @@ It works by equally splitting the samples in the dataset into *k* number of fold
 
 Confusion matrix metrics would be calculated after each iteration and averaged for the final results. Check out these resources for additional information on [Cross Validation in Machine Learning](https://towardsdatascience.com/cross-validation-in-machine-learning-72924a69872f) and [Cross Validation Pros & Cons](https://www.geeksforgeeks.org/cross-validation-machine-learning/).
 
-## Assessing Model Performance  
+## Assessing Classification-Based Model Performance  
 Metrics from a confusion matrix are used to measure model performance for classification-based supervised machine learning models. A confusion matrix consists of table that displays the numbers of how often the algorithm correctly or incorrectly predicted the outcome. 
 
 Going back to our animal classification example, let's say the confusion matrix below is a result of how well the model was able to predict whether an animal was considered to be a cat or a dog.
+
+Helpful confusion matrix terminology:
+
++ True positive: the number of correctly classified "positive" data points (ie. the number of correctly classified dogs)
++ True negative: the number of correctly classified "negative" data points (ie. the number of correctly classified cats)
++ False positive: the number of incorrectly classified "positive" data points (ie. the number of cats incorrectly classified as dogs)
++ False negative: the number of incorrectly classified "negative" data points (ie. the number of dogs incorrectly classified as cats)
 
 <img src="https://github.com/UNC-CEMALB/P1006_Data-Organization-for-High-Dimensional-Analyses-in-Environmental-Health/assets/69641855/4c7a90a0-725b-48b8-ada4-77a5907131a0" width="684" />
 
@@ -79,15 +84,15 @@ Going back to our animal classification example, let's say the confusion matrix 
 
 Some of the metrics that can be obtained from a confusion matrix are listed below:
 
-+ **Balanced Accuracy:** is the ratio of correct predictions (TP + TN) to the total number of predictions (TP + TN + TN + FN) and is typically used to assess overall model performance. This metric is prone to skew for imbalanced data. For example, if the animal dataset had 11 cats and 74 dogs the data would be considered to be imbalanced.  
++ **Balanced Accuracy:** is the ratio of correct predictions to the total number of predictions or (sensitivity + specificity)/2 and is typically used to assess overall model performance.   
 
-+ **Sensitivity or Recall:** evaluates how well the model was able to predict the "positive" class. It's the ratio of correctly classified true positives to total number of all true positives (TP + FN). 
++ **Sensitivity or Recall:** evaluates how well the model was able to predict the "positive" class. It's the ratio of correctly classified true positives to total number of all true positives or TP/(TP + FN). 
 
-+ **Specificity:** evaluates how well the model was able to predict the "negative" class. It's the ratio of correctly classified true negatives to total number of all true negatives (TN + FP). 
++ **Specificity:** evaluates how well the model was able to predict the "negative" class. It's the ratio of correctly classified true negatives to total number of all true negatives or TN/(TN + FP). 
 
-+  **Positive Predictive Value (PPV) or Precision:**  evaluates how well the model was able to predict the "positive" class. It's the ratio of correctly classified true positives to total number of predicted positives (TP + FP).
++  **Positive Predictive Value (PPV) or Precision:**  evaluates how well the model was able to predict the "positive" class. It's the ratio of correctly classified true positives to total number of predicted positives or TP/(TP + FP).
 
-+  **Negative Predictive Value (NPV):**  evaluates how well the model was able to predict the "negative" class. It's the ratio of correctly classified true negatives to total number of predicted positives (TN + FN).
++  **Negative Predictive Value (NPV):**  evaluates how well the model was able to predict the "negative" class. It's the ratio of correctly classified true negatives to total number of predicted positives or TN/(TN + FN).
 
 For all metrics, the values fall between 0 and 1, where 0 indicates the model was not able to classify any data points correctly and 1 indicating that the model was able to classify all test data correctly. Although subjective, a balanced accuracy of at least 0.7 is considered respectable ([Barkved, 2022](https://www.obviously.ai/post/machine-learning-model-performance#:~:text=Good%20accuracy%20in%20machine%20learning,also%20consistent%20with%20industry%20standards.)).
 
@@ -100,31 +105,33 @@ For all metrics, the values fall between 0 and 1, where 0 indicates the model wa
 
 ## Types of Supervised Machine Learning Algorithms
 
-Although this module's example focuses random forest model in the coding example below, other commonly used algorithims for supervised machine learning include: 
+Although this module's example focuses on a random forest model in the coding example below, other commonly used algorithms for supervised machine learning include: 
 
-+ **K-Nearest Neighbors (KNN):** Uses Euclidean distance to classify a data point in the test set based upon the most common class of neighboring data points. For more information on KNN, see [K-Nearst Neighbor](https://www.ibm.com/topics/knn)
++ **K-Nearest Neighbors (KNN):** Uses distance to classify a data point in the test set based upon the most common class of neighboring data points from the training set. For more information on KNN, see [K-Nearst Neighbor](https://www.ibm.com/topics/knn).
+  
 <img src="https://user-images.githubusercontent.com/96756991/232493057-1e7ce98b-6985-44cd-98a9-3cfea5994659.png" width="684" />
 
 *Created with BioRender.com*
 
-+ **Support Vector Machine (SVM):** Creates a decision boundary line (hyperplane) in n-dimensional space to seperate the data into each class so that when new data is presented they can be easily cateogrized. For more information on SVM, see [Support Vector Machine](https://www.javatpoint.com/machine-learning-support-vector-machine-algorithm).
++ **Support Vector Machine (SVM):** Creates a decision boundary line (hyperplane) in n-dimensional space to seperate the data into each class so that when new data is presented they can be easily categorized. For more information on SVM, see [Support Vector Machine](https://www.javatpoint.com/machine-learning-support-vector-machine-algorithm).
 <img src="https://user-images.githubusercontent.com/96756991/233735220-08682ea4-fe13-41c8-8ac5-9ddda7859328.png" width="684" />
 
 *Created with BioRender.com* 
 
-+ **Random Forest (RF):** Uses a multitude of decison trees trained on a subset of different samples from the training set and the resulting classification of a data point in the test set is aggregated from all the decision trees. A **decision tree** is a hierarchical model that selects the best predictors to classify the data with each node representing a test on a predictor, each branch representing the outcome, and leaf nodes representing the class label. For more information on RF and decision trees, check out [Random Forest](https://www.ibm.com/in-en/topics/random-forest) and
-[Decision Trees](https://www.ibm.com/topics/decision-trees#:~:text=A%20decision%20tree%20is%20a,internal%20nodes%20and%20leaf%20nodes.).
++ **Random Forest (RF):** Uses a multitude of decision trees trained on a subset of different samples from the training set and the resulting classification of a data point in the test set is aggregated from all the decision trees. A **decision tree** is a hierarchical model that depicts decisions from predictors and their resulting outcomes. It starts with a root node, which represents an initial test from a single predictor. The root node splits into subsequent decision nodes that test another feature. These decision nodes can either feed into more decision nodes or leaf nodes that represent the predicted class label. A branch or a sub-tree refers to a subection of an entire decision tree. For more information on RF and decision trees, check out [Random Forest](https://www.ibm.com/in-en/topics/random-forest) and
+[Decision Trees](https://www.analyticsvidhya.com/blog/2021/08/decision-tree-algorithm/#What_is_a_Decision_Tree?).
 
 Here is an illustration of the terminology used to describe the underlying structure of a decision tree:
 
 <img src="https://github.com/UNC-CEMALB/P1011_Emission-Mixtures/assets/69641855/f4d15d7c-e2ee-42d0-b58c-4c8d3240f6be" width="684" />
-
 
 Here is a published example decision tree with potential variables and decisions informing low vs high risk of having a heart attack: **I'LL REMAKE THIS SO IT'S BASED ON THE SAME EXAMPLE FROM ABOVE FOR TAME**
 
 <img src="https://github.com/UNC-CEMALB/P1011_Emission-Mixtures/assets/69641855/690d8e90-059e-47d0-98c0-bd0fc6fbebc3" width="684" />
 
 ([Navlani, 2023](https://www.datacamp.com/tutorial/decision-tree-classification-python))
+
+**Note**: One model is not inherently better than the others with each having their respective advantages and disadvantages. Each algorithm's predictive ability will be largely dependent on the dataset and the situation.  
 
 ## Introduction to Training Module
 In this activity, we will analyze an example dataset to see whether we can use environmental monitoring information to predict areas of contamination through random forest modeling. Specifically, RF will leverage a dataset of well water variables that span geospatial location, sampling date, and well water attributes, with the goal of predicting whether detectable levels of inorganic arsenic (iAs) are present. This dataset was obtained through the sampling of 713 private wells across North Carolina using a method that was capable of detecting levels of iAs. After the algorithm has been trained and tested, model performance is assessed using the aforementioned confusion matrix metrics.
@@ -170,6 +177,7 @@ if (!requireNamespace("randomForest"))
 
 ### Loading R packages required for this session
 
+
 ```{r}
 library(readxl);
 library(lubridate);
@@ -180,6 +188,7 @@ library(caret);
 library(randomForest);
 ```
 
+ 
 ### Set your working directory
 
 
@@ -195,6 +204,7 @@ setwd("/Users/juliarager/Library/CloudStorage/OneDrive-UniversityofNorthCarolina
 ### Importing example dataset
 **Will need to change input to module number and add module number to the file itself**
 
+
 ```{r}
 # Load the data
 arsenic_data <- data.frame(read_excel("Module5/Module5_Arsenic_Data.xlsx"))
@@ -202,6 +212,7 @@ arsenic_data <- data.frame(read_excel("Module5/Module5_Arsenic_Data.xlsx"))
 # View the top of the dataset
 head(arsenic_data) 
 ```
+
 
 The columns in this dataset are described below:
 + `Tax_ID`: Tax ID for the property
@@ -214,20 +225,22 @@ The columns in this dataset are described below:
 + `Detect_Concentration`: Binary identifier (either non-detect (ND) or detect (D)) if iAs concentration detected in water sample 
 
 ### Changing Data Types 
-First, `Detect_Concentration` needs to be converted from a character to a factor, so that Random Forest to know that non-detect (binarized as 0) data is considered baseline. `Water_Sample_Date` needs to be converted from a character to a date type, so that Random Forest understands this column contains dates.
+First, `Detect_Concentration` needs to be converted from a character to a factor, so that Random Forest knows that non-detect data is considered baseline. `Water_Sample_Date` needs to be converted from a character to a date type, so that Random Forest understands this column contains dates.
 
 
 ```{r}
 arsenic_data = arsenic_data %>%
-    # Converting `Detect_Concentration from a character to a factor
-    mutate(Detect_Concentration = relevel(factor(ifelse(Detect_Concentration == "D", 1, 0)), ref = "0"),
-        # converting water sample date from a character to a date type 
+    # Converting `Detect_Concentration` from a character to a factor
+    mutate(Detect_Concentration = relevel(factor(Detect_Concentration), ref = "ND"),
+        # Converting water sample date from a character to a date type 
         Water_Sample_Date = mdy(Water_Sample_Date)) %>%
     # Removing tax id and only keeping the predictor and outcome variables in the dataset
+    # This allows us to put the entire dataframe as is into RF
     select(-Tax_ID)
 
 head(arsenic_data)
 ```
+
 
 ### Testing for differences in predictor variables acrosss the outcome classes
 
@@ -244,11 +257,12 @@ arsenic_data %>%
     # Adding a column that displays the total number of samples for each variable
     # This will be 713 for all variables since we have no missing data
     add_n() %>% 
-    # Adding a column that dispalys the p value from anova
+    # Adding a column that displays the p value from anova
     add_p(test = list(all_continuous() ~ "aov")) %>% 
     as_flex_table() %>%
     bold(bold = TRUE, part = "header")
 ```
+
 
 All the variables are significantly different between detect and non-detect iAs with the exception of the sample date and the static water depth, therefore the model should predict fairly well.
 
@@ -258,7 +272,7 @@ As mentioned above, cross validation is done so that the model is trained and te
 
 
 ```{r}
-# Since the splits in the dataset are random, a seed is set for reproducibility to ensure the splits are occuring
+# Since the splits in the dataset are random, a seed is set for reproducibility to ensure the splits are occurring
 # in the same locations each time the code is run
 set.seed(12)
 
@@ -268,19 +282,22 @@ set.seed(12)
 arsenic_index = createFolds(arsenic_data$Detect_Concentration, k = 5) 
 ```
 
-Within CV, different parameters will be tested, including the number of trees "grown" by RF (`ntree_values`) and the number of predictors used in those trees (`mtry_values`).
+Within CV, different parameters will be tested, including the number of decision trees "grown" by RF (`ntree_values`) and the number of predictors used in those trees (`mtry_values`). There is not a formula for choosing the right values to try, however it is recommended to stay closer to 500 decision trees and keeping the number of predictors between 2 and the total number. There are additional paramters that can be tuned, however these will be the only two we'll tune in this example. 
+
+Check out [Random Forests Programming Guide](https://afit-r.github.io/random_forests#tune) for additional information on tuning and building code for RF in R.
 
 
 ```{r}
-ntree_values = c(50, 250, 500) # number of trees 
+ntree_values = c(50, 250, 500) # number of decision trees 
 p = dim(arsenic_data)[2] - 1 # number of predictor variables in the dataset
 mtry_values = c(sqrt(p), p/2, p) # number of predictors to be used in the model
 ```
 
 ## Predicting iAs Detection with a Random Forest (RF) Model
 
+
 ```{r}
-# Setting the seed again so the predictions are consistent
+# Need to set the seed again so the RF predictions are consistent
 set.seed(12)
 
 # Creating an empty dataframe to save the metrics
@@ -305,7 +322,7 @@ for (i in 1:length(arsenic_index)){
         for (k in 1:length(mtry_values)){
             
             # Running RF to tune parameters
-            reg_rf_pred_tune[[k]] = randomForest(Detect_Concentration ~ ., data = data_train, 
+            reg_rf_pred_tune[[k]] = randomForest(Detect_Concentration~., data = data_train, 
                                                  ntree = ntree_values[j], mtry = mtry_values[k])
             # Obtaining the OOB error
             rf_OOB_errors[[k]] = data.frame("Tree Number" = ntree_values[j], "Variable Number" = mtry_values[k], 
@@ -315,12 +332,12 @@ for (i in 1:length(arsenic_index)){
             rf_error_df = rbind(rf_error_df, rf_OOB_errors[[k]])
         }
     }
-    
+
     # Finding the lowest OOB error using best number of predictors at split
     best_oob_errors <- which(rf_error_df$OOB_errors == min(rf_error_df$OOB_errors))
 
     # Now running RF on the entire training set with the tuned parameters
-    reg_rf <- randomForest(Detect_Concentration ~ ., data = data_train,
+    reg_rf <- randomForest(Detect_Concentration~., data = data_train,
                                ntree = rf_error_df$Tree.Number[min(best_oob_errors)],
                                mtry = rf_error_df$Variable.Number[min(best_oob_errors)])
 
@@ -329,7 +346,7 @@ for (i in 1:length(arsenic_index)){
 
     # Obtaining the confusion matrix
     matrix = confusionMatrix(data = data_test$Pred_Detect_Concentration, 
-                             reference = data_test$Detect_Concentration, positive = "1")
+                             reference = data_test$Detect_Concentration, positive = "D")
     
     # Extracting balanced accuracy, sensitivity, specificity, and PPV
     matrix_values = data.frame(t(c(matrix$byClass[11])), t(c(matrix$byClass[1:3])))
@@ -347,31 +364,30 @@ metrics_df = metrics_df %>%
 metrics_df
 ```
 
+
 Takeaways from this confusion matrix:
 
-+ Overall, the model did a moderate job at predicting if iAs would be detected based on a balanced accuracy of ~0.6
++ Overall, the model did a decent job at predicting if iAs would be detected based on a balanced accuracy of ~0.6
 + RF did a poor job of predicting detect data with a sensitivity of 0.4 and a PPV of ~0.5
 + The model was significantly better at predicting non-detect data based on a specificity of ~0.8 
 
 **I THINK WE COULD DISCUSS THE CLASS IMBALANCE ISSUE AND ADD EITHER SMOTE OR AUC, BUT THE MODEL PERFORMED DECENTLY WELL SO I'M NOT SURE IF THAT'S REALLY NECESSARY.**
 
-ALEXIS- I AGREE, I THINK JUST INCORPORATING AUC AS AN ADDITIONAL MODEL PERFORMANCE METRIC IS A GREAT IDEA, AND LET'S LEAVE OUT SMOTE FOR NOW
+## Additional Resources
+To learn more check out the following resources: 
 
++ [IBM - What is Machine Learning](https://www.ibm.com/topics/machine-learning)
++ [Curate List of AI and Machine Learning Resources](https://medium.com/machine-learning-in-practice/my-curated-list-of-ai-and-machine-learning-resources-from-around-the-web-9a97823b8524)
++ [Introduction to Machine Learning in R](https://machinelearningmastery.com/machine-learning-in-r-step-by-step/)
++ Machine Learning by Mueller, J. P. (2021). Machine learning for dummies. John Wiley &amp; Sons.
+  
 ## Concluding Remarks
 
 In conclusion, this training module has provided an informative introduction to supervised machine learning using classification techniques in R. Machine learning is a powerful tool that can help researchers gain new insights and improve models to analyze complex datasets faster and in a more comprehensive way. The example we've explored demonstrates the utility of supervised machine learning models on datasets with a plethora of features.
 
-## Additional Resources
-To learn more check out the following resources: **I WILL LIKELY CHANGE THESE RESOURCES...I THINK WE CAN FIND BETTER ONES** ALEXIS- YES AGREED, LET'S ALSO ASK OTHERS FOR THEIR FAVORITES - KYLE HAS RESPONDED WITH SOME GOOD SUGGESTIONS AT THIS POINT
-
-+ [Machine Learning Mastery](https://machinelearningmastery.com/machine-learning-in-r-step-by-step/)
-+ [Master in Data Science](https://www.mastersindatascience.org/learning/machine-learning-algorithms/decision-tree/)
-+ [IBM - What is Machine Learning](https://www.ibm.com/topics/machine-learning)
-+ Machine Learning by Mueller, J. P. (2021). Machine learning for dummies. John Wiley &amp; Sons. 
-
 ## Test Your Knowledge 
 
-1. Using the "Manganese_Data", use RF to determine if well water data can be accurate predictors of Manganese detection. The data is structured similarly to the "Arsenic_Data" used in this module, however it now includes 4 additional predictor variables:
+Using the "Manganese_Data", use RF to determine if well water data can be accurate predictors of Manganese detection. The data is structured similarly to the "Arsenic_Data" used in this module, however it now includes 4 additional features:
 
 + `Longtitude`: Longtitude of address (decimal degrees)
 + `Latitude`: Latitude of address (decimal degrees)
