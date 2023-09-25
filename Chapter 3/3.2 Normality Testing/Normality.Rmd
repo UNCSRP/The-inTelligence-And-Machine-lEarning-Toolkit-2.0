@@ -18,7 +18,7 @@ In this training module, we will:
 + Demonstrate log2 data transformation for non-normal data
 + Discuss additional considerations related to normality
 
-We will demonstrate normality assessment using example data derived from a study in which chemicals on silicone wristbands worn by participants for one week were analyzed as a proxy for environmental chemical exposure. Chemical concentrations on the wristbands were measured with gas chromatography mass spectrometry. The subset of chemical data used in this training module are all phthalates, a group of chemicals used primarily in plastic products to make them more flexible and durable. 
+We will demonstrate normality assessment using example data derived from a study in which chemicals on silicone wristbands worn by 97 participants for one week were analyzed as a proxy for environmental chemical exposure. Chemical concentrations on the wristbands were measured with gas chromatography mass spectrometry. The subset of chemical data used in this training module are all phthalates, a group of chemicals used primarily in plastic products to make them more flexible and durable. 
 
 ### Script Preparations
 
@@ -152,7 +152,7 @@ We will use the Shapiro-Wilk test to quantitatively assess whether our data dist
 ```{r}
 shapiro.test(wrist_data$Age)
 ```
-This test resulted in a p-value of 0.8143, so we cannot reject the null hypothesis (that data are normally distributed). This means that we can assume that these age is normally distributed, which is consistent with our visualizations above. 
+This test resulted in a p-value of 0.8143, so we cannot reject the null hypothesis (that data are normally distributed). This means that we can assume that age is normally distributed, which is consistent with our visualizations above. 
 
 ### Multiple Variable Normality Assessment
 
@@ -205,9 +205,9 @@ There are a number of approaches that can be used to change the range and/or dis
 
 + **Transformation** refers to any process used to change data into other, related values. Normalization and standardization are types of data transformation. Transformation can also refer to performing the same mathematical operation on every value in your data frame. For example, taking the log2 or log10 of every value is referred to as log-transformation.  
 
-+ **Normalization** is the process of transforming variables so that they are on a similar scale and therefore are comparable. This can be important when variables in a data set contain a mixture of data types that are represented by vastly different numeric magnitudes or when there are known sources of variability across samples. Normalization methods are highly dependent on the type of input data. One example of normalization is min-max scaling, which results in a range for each variable of 0 to 1. Although normalization in computational approaches typically refers to min-max scaling or other similar methods where the variable's range is bounded by specific values, wet-bench approaches also employ normalization - for example, using a reference gene for RT-qPCR assays or dividing a total protein amount for each sample by the volume of each sample to obtain a concentration.
+  + **Normalization** is the process of transforming variables so that they are on a similar scale and therefore are comparable. This can be important when variables in a data set contain a mixture of data types that are represented by vastly different numeric magnitudes or when there are known sources of variability across samples. Normalization methods are highly dependent on the type of input data. One example of normalization is min-max scaling, which results in a range for each variable of 0 to 1. Although normalization in computational approaches typically refers to min-max scaling or other similar methods where the variable's range is bounded by specific values, wet-bench approaches also employ normalization - for example, using a reference gene for RT-qPCR assays or dividing a total protein amount for each sample by the volume of each sample to obtain a concentration.
 
-+ **Standardization**, also known as Z-score normalization, is a specific type of normalization that involves subtracting each value from the mean of that variable and dividing by that variable's standard deviation. The standardized values for each variable will have a mean of 0 and a standard deviation of 1. The `scale()` function in R performs standardization by default when the data are centered (argument `center = TRUE` is included within the scale function). 
+  + **Standardization**, also known as Z-score normalization, is a specific type of normalization that involves subtracting each value from the mean of that variable and dividing by that variable's standard deviation. The standardized values for each variable will have a mean of 0 and a standard deviation of 1. The `scale()` function in R performs standardization by default when the data are centered (argument `center = TRUE` is included within the scale function). 
 
 ### Transformation of example data
 
@@ -289,7 +289,7 @@ There are a couple of different routes you can pursue if you have a mixture of n
 
 Our preference is to perform one test across all variables of the same data type/endpoint (e.g., all chemical concentrations, all cytokine concentrations). Generally, statistical tests are relatively robust to different data distributions, and your results are unlikely to change significantly by the test you choose, so aim to choose an approach that fits *best* rather than *perfectly*. 
 
-### Improving efficiency for normality assessment:
+#### Improving efficiency for normality assessment:
 
 If you find yourself frequently performing the same normality assessment workflow, consider writing a function that will execute each normality testing step (making a histogram, making a Q-Q plot, determining Shapiro-Wilk normality variable by variable, and determining the average Shapiro-Wilk p-value across all variables) and store the results in a list for easy inspection. 
 
