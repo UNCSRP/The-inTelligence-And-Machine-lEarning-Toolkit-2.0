@@ -34,7 +34,7 @@ When choosing variables for decision boundary plots, features that have the most
 
 Takeaways from this decision boundary plot:
 + Subjects with more lung inflammation ("responders") after ozone exposure tended to have higher Vitamin D levels and lower Cholesterol levels.
-+ Thse "responder" subjects were more likely to be non-asthmatics. 
++ These "responder" subjects were more likely to be non-asthmatics. 
 
 ## Introduction to Training Module
 In the previous module, we investigated whether a classification-based RF model using well water variables would be accurate predictors of iAs detection. In this module, we will extract variable importance from the same algorithm and plot variable importance. The two features with the highest variable importance will be identified and used to construct a decision boundary plot to determine how features are associated with iAs detection. 
@@ -45,11 +45,10 @@ The data to be used in this module was described and referenced previously in [T
 
 This training module was specifically developed to answer the following environmental health questions:
 
-1. What is each variable's importance on the predictive accuracy of iAs detection from a RF algorithm?
-
-2. How can variable importance of the features used in iAs detection be plotted from highest to lowest importance?
+1. After plotting variable importance from highest to lowest, which two predictors have the highest variable importance on the predictive accuracy of iAs detection from a RF algorithm?
    
-3. Using the two features with the highest variable importance, how can a decision boundary be visualized to separate and predict iAs detection?
+2. Using the two features with the highest variable importance, how can a decision boundary be visualized to separate and predict iAs detection?
+
 
 ## Script Preparations
 
@@ -223,7 +222,7 @@ modified_variable_importance_df = variable_importance_df %>%
                     ifelse(Predictor == "Flow_Rate", "Flow Rate",
                         ifelse(Predictor == "Well_Depth", "Well Depth",
                             ifelse(Predictor == "Static_Water_Depth", "Static Water Depth",  
-                                          Predictor)))))))
+                                          Predictor))))))
 
 # Saving the order of the variables from lowest to highest mean decrease gini by putting into a factor
 predictor_order = rev(modified_variable_importance_df$Predictor)
@@ -255,8 +254,9 @@ ggplot(data = modified_variable_importance_df ,
   guides(size = "none")#removing size legend
 ```
 
-
-From the variable importance dataframe and plot, we can see that casing depth had the greatest impact on RF followed by pH, water sample date, flow rate, well depth, and static water depth in descending order. 
+*With this, we can answer **Environmental Health Question 1***: After plotting variable importance from highest to lowest, which two predictors have the highest variable importance on the predictive accuracy of iAs detection from a RF algorithm?
+   
+**Answer**: From the variable importance dataframe and plot, we can see that casing depth and pH had the greatest impact on RF followed by water sample date, flow rate, well depth, and static water depth in descending order. 
 
 Since casing depth and pH have been identified as the predictors with the highest variable importance, they will be used as the two predictors for the decision boundary plot.
 
@@ -341,8 +341,9 @@ ggplot() +
                       labels = c('Non-Detect','Detect')) # renaming the classes
 ```
 
+*With this, we can answer **Environmental Health Question 2***: Using the two features with the highest variable importance, how can a decision boundary be visualized to separate and predict iAs detection?
 
-There is some overlap between detect and non-detect iAs samples; however, it is still evident that detect iAs samples were more likely to have a more basic pH and have a lower (<80 ft) casing depth.
+**Answer**: There is some overlap between detect and non-detect iAs samples; however, it is still evident that detect iAs samples were more likely to have a more basic pH and have a lower (<80 ft) casing depth.
 
 ## Concluding Remarks
 In conclusion, this training module provided methodologies to aid the interpretability of supervised ML with variable importance and decision boundary plots. Variable importance helps quantify the impact of each feature's importance on an algorithm's predictivity. The most important or environmentally-relevant predictors can be selected in a decision boundary plot to further understand and visualize the features impact on the model's classification. 
