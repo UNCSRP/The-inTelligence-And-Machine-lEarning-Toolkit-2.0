@@ -1,8 +1,8 @@
 # Data Visualizations
 
-This training module was developed by Dr. Kyle R. Roell, Lauren E. Koval, Dr. Julia E. Rager, and Alexis Payton
+This training module was developed by Dr. Kyle R. Roell, Lauren E. Koval, Alexis Payton, Dr. Elise Hickman, and Dr. Julia E. Rager
 
-Spring 2023
+Fall 2023
 
 
 ## Introduction to Training Module
@@ -15,10 +15,16 @@ There are many ways to visualize data, from simple scatter plots to more complic
 + Correlation plots
 + Heat maps
 
-These visualization approaches are demonstrated using a large environmental chemistry dataset. This example dataset was generated through chemical speciation analysis of smoke samples collected during lab-based simulations of wildfire events. Specifically, different biomass materials (eucalyptus, peat, pine, pine needles, and red oak) were burned under two combustion conditions of flaming and smoldering, resulting in the generation of 12 different smoke samples. These data have been previously published in the following example environmental health research studies, with data made publicly available:
+These visualization approaches are demonstrated using a large environmental chemistry dataset. This example dataset was generated through chemical speciation analysis of smoke samples collected during lab-based simulations of wildfire events. Specifically, different biomass materials (eucalyptus, peat, pine, pine needles, and red oak) were burned under two combustion conditions of flaming and smoldering, resulting in the generation of 12 different smoke samples. These data have been previously published in the following environmental health research studies, with data made publicly available:
 
 + Rager JE, Clark J, Eaves LA, Avula V, Niehoff NM, Kim YH, Jaspers I, Gilmour MI. Mixtures modeling identifies chemical inducers versus repressors of toxicity associated with wildfire smoke. Sci Total Environ. 2021 Jun 25;775:145759. doi: 10.1016/j.scitotenv.2021.145759. Epub 2021 Feb 10. PMID: [33611182](https://pubmed.ncbi.nlm.nih.gov/33611182/).
 + Kim YH, Warren SH, Krantz QT, King C, Jaskot R, Preston WT, George BJ, Hays MD, Landis MS, Higuchi M, DeMarini DM, Gilmour MI. Mutagenicity and Lung Toxicity of Smoldering vs. Flaming Emissions from Various Biomass Fuels: Implications for Health Effects from Wildland Fires. Environ Health Perspect. 2018 Jan 24;126(1):017011. doi: 10.1289/EHP2200. PMID: [29373863](https://pubmed.ncbi.nlm.nih.gov/29373863/).
+
+### GGplot2
+
+`Ggplot2` is a powerful package used to create graphics in R. It designed based on the philosophy that every figure can be built using a data set, a coordinate system, and a geom that specifies the type of plot. As a result, it is fairly straightforward to create highly customizable figures and is typically preferred over using base R to generate graphics. 
+
+For additional resources on `GGplot2`see [GGplot2 Posit Documentation](https://ggplot2.tidyverse.org/) and [Data Visualization with GGplot2](https://datacarpentry.org/R-ecology-lesson/04-visualization-ggplot2.html).
 
 ### Script Preparations
 
@@ -34,26 +40,30 @@ If you already have these packages installed, you can skip this step, or you can
 
 
 ```{r}
+if (!requireNamespace("ggplot2"))
+  install.packages("ggplot2");
 if (!requireNamespace("GGally"))
   install.packages("GGally");
+if (!requireNamespace("corrplot"))
+  install.packages("corrplot");
+if (!requireNamespace("pheatmap"))
+  install.packages("pheatmap");
 ```
 
 #### Loading R packages required for this session
 
-
-```{r}
+```{r message = FALSE}
 library(tidyverse)
 library(ggplot2)
 library(GGally)
 library(corrplot)
 library(reshape2)
+library(pheatmap)
 ```
 
-  
 #### Set your working directory
 
-
-```{r}
+```{r eval = FALSE}
 setwd("/filepath to where your input files are")
 ```
 
@@ -63,24 +73,43 @@ Then let's read in our example dataset. As mentioned in the introduction, this e
 
 ```{r}
 # Load the data
-smoke_data <- read.csv("Module3_3/Module3_3_DataforVisualizations.csv")
+smoke_data <- read.csv("Module3_1/Module3_1_DataforVisualizations.csv")
 
 # View the top of the dataset
 head(smoke_data) 
 ```
+
+
+<table class="dataframe">
+<caption>A data.frame: 6 × 14</caption>
+<thead>
+	<tr><th></th><th scope=col>Chemical.Category</th><th scope=col>Chemical</th><th scope=col>CASRN</th><th scope=col>Eucalyptus_Smoldering</th><th scope=col>Eucalyptus_Flaming</th><th scope=col>Peat_Smoldering</th><th scope=col>Peat_Flaming</th><th scope=col>Pine_Smoldering</th><th scope=col>Pine_Flaming</th><th scope=col>Pine_Needles_Smoldering</th><th scope=col>Pine_Needles_Flaming</th><th scope=col>Red_Oak_Smoldering</th><th scope=col>Red_Oak_Flaming</th><th scope=col>Units</th></tr>
+	<tr><th></th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
+</thead>
+<tbody>
+	<tr><th scope=row>1</th><td>n-Alkanes</td><td>2-Methylnonadecane</td><td>1560-86-7</td><td>0.06</td><td>0.06</td><td>1.36</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.13</td><td>ng_per_uL</td></tr>
+	<tr><th scope=row>2</th><td>n-Alkanes</td><td>3-Methylnonadecane</td><td>6418-45-7</td><td>0.04</td><td>0.04</td><td>1.13</td><td>0.90</td><td>0.47</td><td>0.04</td><td>0.04</td><td>0.72</td><td>0.04</td><td>0.77</td><td>ng_per_uL</td></tr>
+	<tr><th scope=row>3</th><td>n-Alkanes</td><td>Docosane          </td><td>629-97-0 </td><td>0.21</td><td>0.25</td><td>9.46</td><td>0.57</td><td>0.16</td><td>0.48</td><td>0.32</td><td>0.18</td><td>0.16</td><td>0.36</td><td>ng_per_uL</td></tr>
+	<tr><th scope=row>4</th><td>n-Alkanes</td><td>Dodecylcyclohexane</td><td>1795-17-1</td><td>0.04</td><td>0.04</td><td>0.25</td><td>0.04</td><td>0.04</td><td>0.04</td><td>0.12</td><td>0.04</td><td>0.04</td><td>0.04</td><td>ng_per_uL</td></tr>
+	<tr><th scope=row>5</th><td>n-Alkanes</td><td>Eicosane          </td><td>112-95-8 </td><td>0.11</td><td>0.25</td><td>7.55</td><td>0.54</td><td>0.17</td><td>0.29</td><td>0.28</td><td>0.16</td><td>0.15</td><td>0.38</td><td>ng_per_uL</td></tr>
+	<tr><th scope=row>6</th><td>n-Alkanes</td><td>Heneicosane       </td><td>629-94-7 </td><td>0.13</td><td>0.28</td><td>6.77</td><td>0.34</td><td>0.13</td><td>0.42</td><td>0.30</td><td>0.13</td><td>0.13</td><td>0.69</td><td>ng_per_uL</td></tr>
+</tbody>
+</table>
+
+
 
 ## Training Module's Environmental Health Questions
 This training module was specifically developed to answer the following environmental health question:
 
 1. How do the distributions of the chemical concentration data differ based on each biomass burn scenario?
 2. Are there correlations between biomass burn conditions based on the chemical concentration data?
-3. Under which biomass burn conditions, are conentrations of certain chemical categories the highest?
+3. Under which biomass burn conditions, are concentrations of certain chemical categories the highest?
 
-We can create a **density plot** to answer the first question. Similar to a histogram, density plots are an effective way to show overall distributions of data and can be useful to compare across various test conditions or other stratifications of the data under evaluation.
+We can create a **density plot** to answer the first question. Similar to a histogram, density plots are an effective way to show overall distributions of data and can be useful to compare across various test conditions or other stratifications of the data.
 
 In this example of a density plot, we'll visualize the distributions of chemical concentration data on the x axis. A density plot automatically displays where values are concentrated on the y axis. Additionally, we'll want to have multiple density plots within the same figure for each biomass burn condition. 
 
-Before the data can be visualized, it needs to be converted from a wide to long format. This is because we need to have variable or column names entitled, `Chemical_Concentration` and `Biomass_Burn_Condition` that can be put into `ggplot`.
+Before the data can be visualized, it needs to be converted from a wide to long format. This is because we need to have variable or column names entitled, `Chemical_Concentration` and `Biomass_Burn_Condition` that can be put into `ggplot`. For review on converting between long and wide formats and using other tidyverse tools, see [TAME Toolkit Module 2.3 for now](insert link).
 
 
 ```{r}
@@ -109,12 +138,12 @@ scaled_longer_smoke_data = longer_smoke_data %>%
 head(scaled_longer_smoke_data)
 ```
 
-
 We can see that each chemical is now scaled, centered around 0, with values distributed that are less than zero, and others that are greater than zero, based off a normal distribution. 
 
 Now that we have our dataset formatted, let's plot it.
 
 ## Density Plot Visualization
+The following code can be used to generate a density plot:
 
 
 ```{r}
@@ -122,10 +151,10 @@ ggplot(scaled_longer_smoke_data, aes(x = Scaled_Chemical_Concentration, color = 
   geom_density()
 ```
 
-    
-Here are some interesting takeaways from viewing this density plot:
-+ In general, there are a high number of chemicals that were measured at relatively lower abundances (hence, the peak in occurrence density occurring towards the left, before 0)
-+ The three conditions of smoldering peat, flaming peat, and flaming pine contained the most chemicals at the highest relative concentrations (hence, these lines are the top three lines towards the right)
+
+*With this, we can answer **Environmental Health Question 1***: How do the distributions of the chemical concentration data differ based on each biomass burn scenario?
+   
+**Answer**: In general, there are a high number of chemicals that were measured at relatively lower abundances (hence, the peak in occurrence density occurring towards the left, before 0). The three conditions of smoldering peat, flaming peat, and flaming pine contained the most chemicals at the highest relative concentrations (hence, these lines are the top three lines towards the right).
 
 ## Boxplot Visualization
 A **boxplot** can also be used to answer our first environmental health question: **How do the distributions of the chemical concentration data differ based on each biomass burn scenario?**. A boxplot also displays a data's distribution, but it incorporates a visualization of a five number summary (ie. minimum, first quartile, median, third quartile, and maximum). 
@@ -140,15 +169,14 @@ ggplot(scaled_longer_smoke_data, aes(x = Scaled_Chemical_Concentration, y = Biom
   geom_boxplot()
 ```
 
-
-Here are some interesting takeaways from viewing this box plot:
-- The median chemical concentration is fairly low (less than 0) for all biomass burn conditions.
-- In general, there isn't much variation in chemical concentrations with the exception of smoldering peat, flaming peat, and flaming eucalyptus
+*With this, we can answer **Environmental Health Question 1***: How do the distributions of the chemical concentration data differ based on each biomass burn scenario?
+   
+**Answer**: The median chemical concentration is fairly low (less than 0) for all biomass burn conditions. Overall, there isn't much variation in chemical concentrations with the exception of smoldering peat, flaming peat, and flaming eucalyptus.
 
 ## Correlation Visualizations
 Let's turn our attention to the second environmental health question: **Are there correlations between biomass burn conditions based on the chemical concentration data?** We'll use two different correlation visualizations to answer this question, using the `GGally` package. 
 
-`GGally` is a package that serves as an extension of `ggplot2`, the baseline R plotting system based on the grammer of graphics. GGally is very useful for creating plots that compare groups or features within a dataset, among many other utilities. Here we will demonstrate the `ggpairs` function within `GGally` using the scaled chemistry dataset. This function will produce an image that shows correlation values between biomass burn sample pairs, and also illustrates the overall distributions of values in samples. For more information on GGally see its associated [RDocumentation](https://www.rdocumentation.org/packages/GGally/versions/1.5.0) and [example helpful tutorial](http://www.sthda.com/english/wiki/ggally-r-package-extension-to-ggplot2-for-correlation-matrix-and-survival-plots-r-software-and-data-visualization).
+`GGally` is a package that serves as an extension of `ggplot2`, the baseline R plotting system based on the grammar of graphics. GGally is very useful for creating plots that compare groups or features within a dataset, among many other utilities. Here we will demonstrate the `ggpairs` function within `GGally` using the scaled chemistry dataset. This function will produce an image that shows correlation values between biomass burn sample pairs, and also illustrates the overall distributions of values in samples. For more information on GGally see its associated [RDocumentation](https://www.rdocumentation.org/packages/GGally/versions/1.5.0) and [example helpful tutorial](http://www.sthda.com/english/wiki/ggally-r-package-extension-to-ggplot2-for-correlation-matrix-and-survival-plots-r-software-and-data-visualization).
 
 `GGally` requires a wide dataframe with ids (ie. `Chemical`) as the rows and the variables that will be compared to each other (ie. `Biomass_Burn_Condition`) as the columns. Let's create that dataframe.
 
@@ -172,15 +200,18 @@ options(repr.plot.width = 15, repr.plot.height = 15)
 ggpairs(data.frame(as.matrix(wide_scaled_data)))
 ```
 
+Many of these biomass burn conditions have significant correlations denoted by the asterisks.
++ '*': p value < 0.1
++ '**': p value < 0.05
++ '***': p value < 0.01
 
-Many of these biomass burn conditions have significant correlations denoted by the asterisks. (NOT SURE IF THIS IS TRUE??)
-- '*': p value < 0.1
-- '**': p value < 0.05
-- '***': p value < 0.01
+The upper right portion displays the correlation values, where a value less than 0 indicates negative correlation and a greater than 0 signifies positive correlation. The diagonal shows the density plots for each variable. The lower left portion visualizes the values of each of two variables compared using a scatterplot.
 
-The diagonal shows the density plots for each variable. The lower left portion visualizes the values of each of two variables compared.
+*With this, we can answer **Environmental Health Question 2***: Are there correlations between biomass burn conditions based on the chemical concentration data?
+   
+**Answer**: There is low correlation between many of the variables (-0.5 < correlation value < 0.5). Eucalyptus flaming and pine flaming are significantly positively correlated along with peat flaming and pine needles flaming (correlation value ~0.7 and p value < 0.001).
 
-Using the other function from `GGally`, `ggcorr` visualizes each correlation as a square.
+We can visualize correlations another way using the other function from `GGally`, `ggcorr`, which visualizes each correlation as a square.
 
 
 ```{r}
@@ -189,28 +220,84 @@ ggcorr(wide_scaled_data)
 ```
 
 
+We'll visualize correlations between each of the groups using one more figure using the `corrplot` function from the `corrplot` package.
+
+
+```{r}
+# Need to supply corrplot with a correlation matrix, here, using the 'cor' function
+corrplot(cor(wide_scaled_data))
+```
+
+
+Each of these correlation figures displays the same information, but the one you choose to use is a matter of personal preference. Click on the following resources for additional information on [ggpairs](https://r-charts.com/correlation/ggpairs/) and [corrplot](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html). 
+
 ## Heat Map Visualization
 
-We'll turn our attention to answering the final environmental health question: **Under which biomass burn conditions, are conentrations of certain chemical categories the highest?** This can be addressed with the help of a heat map.
+Last, we'll turn our attention to answering the final environmental health question: **Under which biomass burn conditions, are concentrations of certain chemical categories the highest?** This can be addressed with the help of a heat map.
 
 **Heat maps** are a highly effective method of viewing an entire dataset at once. Heat maps can appear similar to correlation plots, but typically illustrate other values (e.g., concentrations, expression levels, presence/absence, etc) besides correlation values.
 
 For this example, we can plot `Biomass_Burn_Condition` and `Chemical.Category` on the axes and fill in the values with `Scaled_Chemical_Concentration`. When generating heat maps, scaled values can be used to better distinguish patterns between groups/samples. 
 
+It's also helpful to put display the actual value visualized in the heatmap. To do so, we'll need to take the average scaled chemical concentration for each biomass burn condition within each chemical category.
+
 
 ```{r}
-ggplot(data = scaled_longer_smoke_data, aes(x = Chemical.Category, y = Biomass_Burn_Condition,
-                                           fill = Scaled_Chemical_Concentration)) + 
-  geom_tile()
+# We'll take find the average value and that data to the dataframe as an additional column
+heatmap_df = scaled_longer_smoke_data %>%
+    group_by(Biomass_Burn_Condition, Chemical.Category) %>%
+    mutate(Avg_Scaled_Concentration = mean(Scaled_Chemical_Concentration))
+
+head(heatmap_df)
 ```
 
 
-From this heat map, we can see that...
-- Pine smoldering has high concentrations of Methoxyphenols
-- Pine needles smoldering has high concentrations of PAHs
-- Peat smoldering has high concentrations of n-Alkanes
-- Peat flaming has high concentrations of inorganics and ions
+Now we can plot the data and add the `Avg_Scaled_Concentration` to the figure using `geom_text`.
 
+
+```{r}
+ggplot(data = heatmap_df, aes(x = Chemical.Category, y = Biomass_Burn_Condition,
+                                           fill = Scaled_Chemical_Concentration)) + 
+  geom_tile() + 
+  geom_text(aes(label = round(Avg_Scaled_Concentration, 2)))
+```
+
+
+*With this, we can answer **Environmental Health Question 3***: Under which biomass burn conditions, are concentrations of certain chemical categories the highest?
+   
+**Answer**: Peat flaming has the highest concentrations of inorganics and ions. Eucalyptus smoldering has the highest concentrations of levoglucosans. Pine smoldering has the highest concentrations of methoxyphenols. Peat smoldering has the highest concentrations of n-Alkanes. Pine needles smoldering has highest concentrations of PAHs. ELISE OR JULIA - I'M CONFUSED AS TO WHY PINE FLAMING ACTUALLY HAS THE HIGHEST CONCENTRATION OF PAHS BUT PINE NEEDLES SMOLDERING HAS THE LIGHEST COLOR OF BLUE? NOT SURE WHAT I DID WRONG HERE?
+  
+This same heat map can be achieved another way using the `pheatmap` function from the `pheatmap` package. Using this function requires us to use a wide data set, which we need to create. It will contain `Chemical.Category`, `Biomass_Burn_Condition` and the `Scaled_Chemical_Concentrations`. 
+
+
+```{r}
+heatmap_df2 = scaled_longer_smoke_data %>%
+    group_by(Biomass_Burn_Condition, Chemical.Category) %>%
+    # using the summarize function instead of mutate function as was done previously since we only need the average values now
+    summarize(Avg_Scaled_Concentration = mean(Scaled_Chemical_Concentration)) %>%
+    # transforming the data to a wide format
+    pivot_wider(id_cols = Biomass_Burn_Condition, names_from = "Chemical.Category", 
+                               values_from = "Avg_Scaled_Concentration") %>%
+    # converting the chemical names to row names
+    column_to_rownames(var = "Biomass_Burn_Condition")
+
+head(heatmap_df2)
+```
+
+ 
+```{r}
+pheatmap(heatmap_df2, 
+        # removing the clustering option from both rows and columns
+        cluster_rows = FALSE, cluster_cols = FALSE,
+        # adding the values for each cell, making those values black, and changing the font size
+        display_numbers = TRUE, number_color = "black", fontsize = 12) 
+```
+
+
+Additional parameters, including `cluster_rows`, for `pheatmap` are discussed further in [TAME 2.0 Module 5.4](insert link). For basic heat maps like the ones shown here, `ggplot` or `pheatmap` can both be used however, both have their pros and cons. For example, `ggplot` figures tend to be more customizable and easily combined with figures, while `pheatmap` has additional parameters built into the function that can make plotting certain features advantageous like clustering.
+
+## Concluding Remarks
+In conclusion, this training module provided example code to create highly customizable data visualizations using `Ggplot2` pertinent to environmental health research.
 
 ## Test Your Knowledge
 Replicate the figure below! The heat map visualizes each burn condition separately, allowing us to determine if the concentrations of chemicals released are contingent upon the burn condition.
@@ -219,6 +306,6 @@ For additional figures available and to view aspects of figures that can be chan
 
 **Hint 1**: Use the `separate` function from `tidyverse` to split `Biomass_Burn_Condition` into `Biomass` and `Burn_Condition`. 
 
-**Hint 2**: Use the function `facet_wrap` within `ggplot` to seperate the heat maps by `Burn_Condition`.
+**Hint 2**: Use the function `facet_wrap` within `ggplot` to separate the heat maps by `Burn_Condition`.
 
-<img src="Module3_3/Module3_3_TYK_figure.png"  />
+<img src="Module3_1/Module3_1_TYK_figure.png"  />
