@@ -9,7 +9,7 @@ library(RColorBrewer)
 
 ```{r}
 # Load the data
-smoke_data <- read.csv("Module3_4/Module3_4_DataforVisualizations.csv")
+smoke_data <- read.csv("Module3_2/Module3_2_DataforVisualizations.csv")
 
 head(smoke_data)
 ```
@@ -35,15 +35,9 @@ This allows us to the underscores as a separator to split the `Biomass_Burn_Cond
 scaled_longer_smoke_data = scaled_longer_smoke_data %>%
     mutate(Biomass_Burn_Condition = ifelse(Biomass_Burn_Condition == "Red_Oak_Smoldering", "Red Oak_Smoldering",
                 ifelse(Biomass_Burn_Condition == "Red_Oak_Flaming", "Red Oak_Flaming",
-                    ifelse(Biomass_Burn_Condition == "Eucalyptus_Smoldering", "Eucalyptus_Smoldering",
-                        ifelse(Biomass_Burn_Condition == "Eucalyptus_Flaming", "Eucalyptus_Flaming",
-                            ifelse(Biomass_Burn_Condition == "Pine_Smoldering", "Pine_Smoldering",
-                                ifelse(Biomass_Burn_Condition == "Pine_Flaming", "Pine_Flaming",
-                                    ifelse(Biomass_Burn_Condition == "Pine_Needles_Smoldering", "Pine Needles_Smoldering",
-                                        ifelse(Biomass_Burn_Condition == "Pine_Needles_Flaming", "Pine Needles_Flaming",
-                                            ifelse(Biomass_Burn_Condition == "Peat_Smoldering", "Peat_Smoldering",
-                                                  ifelse(Biomass_Burn_Condition == "Peat_Flaming", "Peat_Flaming",
-                                                         NA)))))))))))
+                    ifelse(Biomass_Burn_Condition == "Pine_Needles_Smoldering", "Pine Needles_Smoldering",
+                        ifelse(Biomass_Burn_Condition == "Pine_Needles_Flaming", "Pine Needles_Flaming",
+                            Biomass_Burn_Condition)))))
 
 
 head(scaled_longer_smoke_data)
