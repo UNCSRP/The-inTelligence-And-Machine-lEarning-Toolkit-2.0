@@ -9,7 +9,7 @@ library(RColorBrewer)
 
 ```{r}
 # Load the data
-smoke_data <- read.csv("Module3_3/Module3_3_DataforVisualizations.csv")
+smoke_data <- read.csv("Module3_1/Module3_1_DataforVisualizations.csv")
 
 head(smoke_data)
 ```
@@ -35,15 +35,9 @@ This allows us to the underscores as a separator to split the `Biomass_Burn_Cond
 scaled_longer_smoke_data = scaled_longer_smoke_data %>%
     mutate(Biomass_Burn_Condition = ifelse(Biomass_Burn_Condition == "Red_Oak_Smoldering", "Red Oak_Smoldering",
                 ifelse(Biomass_Burn_Condition == "Red_Oak_Flaming", "Red Oak_Flaming",
-                    ifelse(Biomass_Burn_Condition == "Eucalyptus_Smoldering", "Eucalyptus_Smoldering",
-                        ifelse(Biomass_Burn_Condition == "Eucalyptus_Flaming", "Eucalyptus_Flaming",
-                            ifelse(Biomass_Burn_Condition == "Pine_Smoldering", "Pine_Smoldering",
-                                ifelse(Biomass_Burn_Condition == "Pine_Flaming", "Pine_Flaming",
-                                    ifelse(Biomass_Burn_Condition == "Pine_Needles_Smoldering", "Pine Needles_Smoldering",
-                                        ifelse(Biomass_Burn_Condition == "Pine_Needles_Flaming", "Pine Needles_Flaming",
-                                            ifelse(Biomass_Burn_Condition == "Peat_Smoldering", "Peat_Smoldering",
-                                                  ifelse(Biomass_Burn_Condition == "Peat_Flaming", "Peat_Flaming",
-                                                         NA)))))))))))
+                    ifelse(Biomass_Burn_Condition == "Pine_Needles_Smoldering", "Pine Needles_Smoldering",
+                        ifelse(Biomass_Burn_Condition == "Pine_Needles_Flaming", "Pine Needles_Flaming",
+                            Biomass_Burn_Condition)))))
 
 
 head(scaled_longer_smoke_data)
@@ -62,22 +56,22 @@ head(scaled_longer_smoke_data)
 
 ```{r}
 options(repr.plot.width = 16, repr.plot.height = 4)
-Module3_3_TYK_figure = ggplot(data = scaled_longer_smoke_data, aes(x = Chemical.Category, y = Biomass,
+Module3_1_TYK_figure = ggplot(data = scaled_longer_smoke_data, aes(x = Chemical.Category, y = Biomass,
                                            fill = Scaled_Chemical_Concentration)) + 
   geom_tile(color = 'white') + # adds white space between the tile
 
   facet_wrap(~Burn_Condition)  
 
-Module3_3_TYK_figure
+Module3_1_TYK_figure
 ```
 
 
 ```{r}
-Output = "/Users/alexis/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/CEMALB_DataAnalysisPM/Projects/P1006. Data Organization & File Management/P1006.2. Modules/P1006.2.6. Data Visualizations/Module3_3"
+Output = "/Users/alexis/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/CEMALB_DataAnalysisPM/Projects/P1006. Data Organization & File Management/P1006.2. Modules/P1006.2.6. Data Visualizations/Module3_1"
 
 # exporting figure
-ggsave(Module3_3_TYK_figure, 
-       filename = 'Module3_3_TYK_figure.png',
+ggsave(Module3_1_TYK_figure, 
+       filename = 'Module3_1_TYK_figure.png',
        path = Output,
        width = 16, height = 4)
 ```

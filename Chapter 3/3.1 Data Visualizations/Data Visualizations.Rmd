@@ -52,7 +52,8 @@ if (!requireNamespace("pheatmap"))
 
 #### Loading R packages required for this session
 
-```{r message = FALSE}
+
+```{r}
 library(tidyverse)
 library(ggplot2)
 library(GGally)
@@ -63,13 +64,13 @@ library(pheatmap)
 
 #### Set your working directory
 
-```{r eval = FALSE}
+
+```{r}
 setwd("/filepath to where your input files are")
 ```
 
 #### Importing example dataset
 Then let's read in our example dataset. As mentioned in the introduction, this example dataset represents chemical measurements across 12 different biomass burn scenarios, representing potential wildfire events. Let's upload and view these data:
-
 
 ```{r}
 # Load the data
@@ -78,25 +79,6 @@ smoke_data <- read.csv("Module3_1/Module3_1_DataforVisualizations.csv")
 # View the top of the dataset
 head(smoke_data) 
 ```
-
-
-<table class="dataframe">
-<caption>A data.frame: 6 × 14</caption>
-<thead>
-	<tr><th></th><th scope=col>Chemical.Category</th><th scope=col>Chemical</th><th scope=col>CASRN</th><th scope=col>Eucalyptus_Smoldering</th><th scope=col>Eucalyptus_Flaming</th><th scope=col>Peat_Smoldering</th><th scope=col>Peat_Flaming</th><th scope=col>Pine_Smoldering</th><th scope=col>Pine_Flaming</th><th scope=col>Pine_Needles_Smoldering</th><th scope=col>Pine_Needles_Flaming</th><th scope=col>Red_Oak_Smoldering</th><th scope=col>Red_Oak_Flaming</th><th scope=col>Units</th></tr>
-	<tr><th></th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;chr&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;dbl&gt;</th><th scope=col>&lt;chr&gt;</th></tr>
-</thead>
-<tbody>
-	<tr><th scope=row>1</th><td>n-Alkanes</td><td>2-Methylnonadecane</td><td>1560-86-7</td><td>0.06</td><td>0.06</td><td>1.36</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.06</td><td>0.13</td><td>ng_per_uL</td></tr>
-	<tr><th scope=row>2</th><td>n-Alkanes</td><td>3-Methylnonadecane</td><td>6418-45-7</td><td>0.04</td><td>0.04</td><td>1.13</td><td>0.90</td><td>0.47</td><td>0.04</td><td>0.04</td><td>0.72</td><td>0.04</td><td>0.77</td><td>ng_per_uL</td></tr>
-	<tr><th scope=row>3</th><td>n-Alkanes</td><td>Docosane          </td><td>629-97-0 </td><td>0.21</td><td>0.25</td><td>9.46</td><td>0.57</td><td>0.16</td><td>0.48</td><td>0.32</td><td>0.18</td><td>0.16</td><td>0.36</td><td>ng_per_uL</td></tr>
-	<tr><th scope=row>4</th><td>n-Alkanes</td><td>Dodecylcyclohexane</td><td>1795-17-1</td><td>0.04</td><td>0.04</td><td>0.25</td><td>0.04</td><td>0.04</td><td>0.04</td><td>0.12</td><td>0.04</td><td>0.04</td><td>0.04</td><td>ng_per_uL</td></tr>
-	<tr><th scope=row>5</th><td>n-Alkanes</td><td>Eicosane          </td><td>112-95-8 </td><td>0.11</td><td>0.25</td><td>7.55</td><td>0.54</td><td>0.17</td><td>0.29</td><td>0.28</td><td>0.16</td><td>0.15</td><td>0.38</td><td>ng_per_uL</td></tr>
-	<tr><th scope=row>6</th><td>n-Alkanes</td><td>Heneicosane       </td><td>629-94-7 </td><td>0.13</td><td>0.28</td><td>6.77</td><td>0.34</td><td>0.13</td><td>0.42</td><td>0.30</td><td>0.13</td><td>0.13</td><td>0.69</td><td>ng_per_uL</td></tr>
-</tbody>
-</table>
-
-
 
 ## Training Module's Environmental Health Questions
 This training module was specifically developed to answer the following environmental health question:
@@ -145,12 +127,10 @@ Now that we have our dataset formatted, let's plot it.
 ## Density Plot Visualization
 The following code can be used to generate a density plot:
 
-
 ```{r}
 ggplot(scaled_longer_smoke_data, aes(x = Scaled_Chemical_Concentration, color = Biomass_Burn_Condition)) + 
   geom_density()
 ```
-
 
 *With this, we can answer **Environmental Health Question 1***: How do the distributions of the chemical concentration data differ based on each biomass burn scenario?
    
@@ -160,7 +140,6 @@ ggplot(scaled_longer_smoke_data, aes(x = Scaled_Chemical_Concentration, color = 
 A **boxplot** can also be used to answer our first environmental health question: **How do the distributions of the chemical concentration data differ based on each biomass burn scenario?**. A boxplot also displays a data's distribution, but it incorporates a visualization of a five number summary (ie. minimum, first quartile, median, third quartile, and maximum). 
 
 For this example, let's have `Scaled_Chemical_Concentration` on the x axis and `Biomass_Burn_Condition` on the y axis. The `scaled_longer_smoke_data` dataframe is the format we need, so we'll use that for plotting.
-
 
 
 ```{r}
@@ -199,7 +178,7 @@ head(wide_scaled_data)
 options(repr.plot.width = 15, repr.plot.height = 15)
 ggpairs(data.frame(as.matrix(wide_scaled_data)))
 ```
-
+    
 Many of these biomass burn conditions have significant correlations denoted by the asterisks.
 + '*': p value < 0.1
 + '**': p value < 0.05
@@ -219,7 +198,6 @@ options(repr.plot.width = 10, repr.plot.height = 7)
 ggcorr(wide_scaled_data)
 ```
 
-
 We'll visualize correlations between each of the groups using one more figure using the `corrplot` function from the `corrplot` package.
 
 
@@ -227,7 +205,6 @@ We'll visualize correlations between each of the groups using one more figure us
 # Need to supply corrplot with a correlation matrix, here, using the 'cor' function
 corrplot(cor(wide_scaled_data))
 ```
-
 
 Each of these correlation figures displays the same information, but the one you choose to use is a matter of personal preference. Click on the following resources for additional information on [ggpairs](https://r-charts.com/correlation/ggpairs/) and [corrplot](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html). 
 
@@ -251,17 +228,15 @@ heatmap_df = scaled_longer_smoke_data %>%
 head(heatmap_df)
 ```
 
-
-Now we can plot the data and add the `Avg_Scaled_Concentration` to the figure using `geom_text`.
+Now we can plot the data and add the `Avg_Scaled_Concentration` to the figure using `geom_text`:
 
 
 ```{r}
 ggplot(data = heatmap_df, aes(x = Chemical.Category, y = Biomass_Burn_Condition,
                                            fill = Scaled_Chemical_Concentration)) + 
-  geom_tile() + 
-  geom_text(aes(label = round(Avg_Scaled_Concentration, 2)))
+  geom_tile() + # function used to specify a heatmap for ggplot
+  geom_text(aes(label = round(Avg_Scaled_Concentration, 2))) # adding concentration values as text
 ```
-
 
 *With this, we can answer **Environmental Health Question 3***: Under which biomass burn conditions, are concentrations of certain chemical categories the highest?
    
@@ -284,7 +259,8 @@ heatmap_df2 = scaled_longer_smoke_data %>%
 head(heatmap_df2)
 ```
 
- 
+Now let's generate the same heatmap this time using the `pheatmap` function:
+
 ```{r}
 pheatmap(heatmap_df2, 
         # removing the clustering option from both rows and columns
@@ -293,11 +269,10 @@ pheatmap(heatmap_df2,
         display_numbers = TRUE, number_color = "black", fontsize = 12) 
 ```
 
-
-Additional parameters, including `cluster_rows`, for `pheatmap` are discussed further in [TAME 2.0 Module 5.4](insert link). For basic heat maps like the ones shown here, `ggplot` or `pheatmap` can both be used however, both have their pros and cons. For example, `ggplot` figures tend to be more customizable and easily combined with figures, while `pheatmap` has additional parameters built into the function that can make plotting certain features advantageous like clustering.
+Additional parameters, including `cluster_rows`, for the `pheatmap` function are discussed further in [TAME 2.0 Module 5.4](insert link). For basic heat maps like the ones shown here, `ggplot` or `pheatmap` can both be used however, both have their pros and cons. For example, `ggplot` figures tend to be more customizable and easily combined with figures, while `pheatmap` has additional parameters built into the function that can make plotting certain features advantageous like clustering.
 
 ## Concluding Remarks
-In conclusion, this training module provided example code to create highly customizable data visualizations using `Ggplot2` pertinent to environmental health research.
+In conclusion, this training module provided example code to create highly customizable data visualizations using `ggplot2` pertinent to environmental health research.
 
 ## Test Your Knowledge
 Replicate the figure below! The heat map visualizes each burn condition separately, allowing us to determine if the concentrations of chemicals released are contingent upon the burn condition.
