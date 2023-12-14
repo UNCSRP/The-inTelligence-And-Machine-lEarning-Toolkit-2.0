@@ -1,0 +1,40 @@
+# Introduction to Statistical Tests - Test Your Knowledge Key
+```{r}
+library(tidyverse) 
+library(ggpubr) 
+```
+
+```{r}
+# Loading and viewing data
+full.data <- read.csv("Module3_4/Module3_4_FullDemoChemData.csv")
+
+head(full.data)
+```
+
+
+Let's first assess normality of birth weight (`BW`) using a histogram, a Q-Q plot, and the Shapiro-Wilk test.
+```{r}
+gghistogram(data = full.data, x = "BW", bins = 20)
+ggqqplot(full.data$BW, ylab = "BW")
+```
+
+
+```{r}
+shapiro.test(full.data$BW)
+```
+
+From the plots and the Shapiro-Wilk test, birth weight is considered to be normally distributed. Since we're interested in determining if there's statistical significance between a continuous variable (birth weight) and a categorical variable (maternal education), we'll use an ANOVA test.
+
+<br>
+
+Let's start with visualizing the distribution of birth weight across the maternal education categories.
+```{r}
+ggboxplot(data = full.data, x = "MEdu", y = "BW")
+```
+
+There doesn't seem to much a difference, but we'll go ahead and run the ANOVA test.
+```{r}
+anova(aov(data = full.data, BW ~ MEdu))
+```
+
+Given that the p value ~0.14, there are no significant differences in birth weight based on a mother's education level.
