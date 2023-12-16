@@ -4,6 +4,8 @@ This training module was developed by Dr. Kyle Roell, Alexis Payton, MS, and Dr.
 
 Fall 2023
 
+GENERAL COMMENT - SOME OF THE BREAKS LOOK VERY LARGE WHEN RENDERED, NOT SURE IF THAT WAS INTENTIONAL OR NOT
+
 ## Introduction to Training Module
 
 This training module provides a brief introduction to some of the most commonly implemented statistics and associated visualizations used in exposure science, toxicology, and environmental health studies. This module first uploads an example dataset that is similar to the data used in [TAME 2.0 Module 2.3 Data Manipulation & Reshaping](insert link), though includes some expanded subject information data to allow for more example statistical tests. Then, methods to evaluate data normality are presented, including visualization-based and statistical-based approaches. Basic statistical tests are then presented, including the t-test, analysis of variance, regression modeling, chi-squared test, and Fischer’s exact test. These statistical tests are very simple, with more extensive examples and associated descriptions of statistical models in the proceeding applications-based training modules.
@@ -101,15 +103,15 @@ This training module was specifically developed to answer the following environm
 ### Assessing Normality
 When selecting the appropriate statistical tests to evaluate potential trends in your data, statistical test selection often relies upon whether or not the underlying data are normally distributed. Many statistical tests and methods that are commonly implemented in exposure science, toxicology, and environmental health research rely on assumptions of normality. Thus, one of the most common statistic tests to perform at the beginning of an analysis is a **test for normality**.
 
-As dicussed in the previous module, there are a few ways to evaluate the normality of a dataset:
+As discussed in the previous module, there are a few ways to evaluate the normality of a dataset:
 
-*First*, you can visually gage whether a dataset appears to be normally distributed through plots. For example, plotting data using histograms, densities, or Q-Q plots can graphically help inform if a variable's values appear to be normally distributed or not.
+*First*, you can visually gauge whether a dataset appears to be normally distributed through plots. For example, plotting data using histograms, densities, or Q-Q plots can graphically help inform if a variable's values appear to be normally distributed or not.
 
 *Second*, you can evaluate normality using statistical tests, such as the **Kolmogorov-Smirnov (K-S) test** and **Shapiro-Wilk test**. When using these tests and interpreting their results, it is important to remember that the null hypothesis is that the sample distribution is normal, and a significant p-value means the distribution is non-normal.
 
 <br>
 
-Let's start with the first approach, based on data visualizations. In this module, we'll primarily be generating figures using the `ggpubr` package which is specifically designed to generate ggplot2-based figures using more streamlined coding syntax. In addition, this package has statistical paramters for plotting that are useful for basic statistical analysis. For further documentation on `ggpubr`, click [here](https://jtr13.github.io/cc20/brief-introduction-and-tutorial-of-ggpubr-package.html).
+Let's start with the first approach, based on data visualizations. In this module, we'll primarily be generating figures using the `ggpubr` package which is specifically designed to generate ggplot2-based figures using more streamlined coding syntax. In addition, this package has statistical parameters for plotting that are useful for basic statistical analysis. For further documentation on `ggpubr`, click [here](https://jtr13.github.io/cc20/brief-introduction-and-tutorial-of-ggpubr-package.html).
 
 Let's begin with a [histogram](https://en.wikipedia.org/wiki/Histogram) to view the distribution of BMI data using the `gghistogram` function from the `ggpubr` package:
 ```{r}
@@ -183,9 +185,11 @@ We need to extract the typical ANOVA results table using either the `summary` or
 anova(aov(data = full.data, BMI ~ Smoker3))
 ```
 
+WONDERING IF AFTER THIS TABLE, THERE SHOULD BE A DESCRIPTION OF SOME OF THE ELEMENTS OTHER THAN Pr(>F)? OR MAYBE JUST A LINK TO LEARN MORE ABOUT THEM? SAME COMMENT FOR THE REGRESSION TABLES BELOW!
+
 *With this, we can answer **Environmental Health Question 2***: Are there statistically significant differences in BMI between current, former, and people who have never smoked?
 
-**Answer**: From this ANOVA output table, we can conclude that the group means across all three groups are not equal given that the p value, written as Pr(>F) is significant. ADD POST HOC TESTS??
+**Answer**: From this ANOVA output table, we can conclude that the group means across all three groups are not equal given that the p value, written as Pr(>F) is significant. ADD POST HOC TESTS?? EH - YES, I WOULD ADD A POST HOC TEST! YOU COULD ALSO DISCUSS VARIOUS OPTIONS (TWO MOST COMMON ONES I SEE ARE PAIRWISE T TEST WITH BONFERRONI OR BH CORRECTION OR TUKEYS TEST). THIS COULD JUST GO INTO A PARAGRAPH WITH LINKED EXAMPLES IF YOU THINK ADDING THE CODE MAKES IT TOO LONG. 
 
 <br>
 
@@ -213,7 +217,7 @@ ggscatter(full.data, x = "BMI", y = "BW",
           cor.coef = TRUE, cor.method = "pearson", cor.coeff.args = list(label.sep = "\n")) 
 ```
 
-Running a basic collection analyses between these two variables using the `cor.test` function to extract the Pearson's correlation coefficient and p-value:
+We can also run a basic correlation analyses between these two variables using the `cor.test` function to extract the Pearson's correlation coefficient and p-value (which also appear above in the upper left corner of the graph):
 ```{r}
 cor.res <- cor.test(full.data$BW, full.data$BMI)
 signif(cor.res$estimate, 2)
@@ -221,6 +225,8 @@ signif(cor.res$p.value, 2)
 ```
 
 Together, it looks like there may be a association between BW and BMI, based on these correlation results, demonstrating a significant p-value of 0.0004.
+
+DO YOU WANT TO ADD ANYTHING ON SPEARMAN VS PEARSON CORRELATION?
 
 To test this further, let’s run a linear regression analysis using the `lm` function, using BMI (X) as the independent variable and BW as the dependent variable (Y):
 ```{r}
@@ -319,8 +325,13 @@ summary(log.res) # viewing the results
 ```
 
 Similar to the regression modeling analysis, we can also derive confidence intervals:
-```{r}
-confint(log.res)["MEdu",]
+
+WHEN I RAN THIS I GOT AN ERROR THAT THE SUBSCRIPT WAS OUT OF BOUNDS. WHEN I CHANGED IT TO EACH OF THE COEFFICIENTS, IT SEEMED TO WORK.
+
+```{r message = FALSE}
+confint(log.res)["MEduHS_Degree",]
+
+confint(log.res)["MEduNo_HS_Degree",]
 ```
 
 *With this, we can answer **Environmental Health Question 5***: Are there statistically significant differences in maternal education level based on whether they are a non-smoker or a smoker?
@@ -331,7 +342,7 @@ confint(log.res)["MEdu",]
 
 ##	Statistical Evaluations of Categorical Data using the Chi-Squared Test and Fisher's Exact Test
 Chi-squared test and Fisher's exact tests are used primarily when evaluating data distributions between two categorical variables. 
-The difference between a Chi-squared test and the Fisher's exact test surrounds the specific procedure being run. The [Chi-squared test](https://en.wikipedia.org/wiki/Chi-squared_test) is an approximation and is run with larger sample sizes to determine whether there is a statistically significant difference between the expected vs. observed frequencies in one or more categories of a contingency table. The [Fisher's exact test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test) is similar, though is an exact measure that can be run on any sample size, including smaller sample sizes. 
+The difference between a Chi-squared test and the Fisher's exact test surrounds the specific procedure being run. The [Chi-squared test](https://en.wikipedia.org/wiki/Chi-squared_test) is an approximation and is run with larger sample sizes to determine whether there is a statistically significant difference between the expected vs. observed frequencies in one or more categories of a contingency table. The [Fisher's exact test](https://en.wikipedia.org/wiki/Fisher%27s_exact_test) is similar, though is an exact measure that can be run on any sample size, including smaller sample sizes. CAN WE ADD INFO ABOUT WHAT EXACTLY IS A "SMALL" SAMPLE SIZE? OR MAYBE EVEN A RANGE IF DIFFERENT SOURCES SAY DIFFERENT THINGS?
 
 For this example, we are interested in evaluating the potential relationship between two categorical variables: smoking status (using the `Smoker` variable) and categorical BMI group (using the `BMIcat` variable) to address **Environmental Health Question 6**: Is there a relationship between smoking status and BMI?
 
@@ -362,9 +373,9 @@ Note that these all produce the same results. *With this, we can answer **Enviro
 
 <br>
 
-We can also run a Fisher's Exact Test when considering smaller cell sizes. We won't run this here due to computing time, but here is some example code for your records:
+We can also run a Fisher's Exact Test when considering smaller group sizes. We won't run this here due to computing time, but here is some example code for your records:
 ```{r}
-#With small cell sizes, can use Fisher's Exact Test
+#With small group sizes, can use Fisher's Exact Test
 #fisher.test(full.data$BMI, full.data$Smoker)
 ```
 
