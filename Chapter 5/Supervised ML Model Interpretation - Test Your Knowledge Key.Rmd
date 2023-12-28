@@ -21,8 +21,6 @@ head(manganese_data)
 ```
 
 Like we did in the module, we'll start by changing some of the data types. 
-
-
 ```{r}
 manganese_data = manganese_data %>%
     # Converting `Detect_Concentration` from a character to a factor
@@ -38,8 +36,6 @@ head(manganese_data)
 
 
 Next, setting up cross validation and parameters to be tuned.
-
-
 ```{r}
 set.seed(12)
 
@@ -51,8 +47,6 @@ mtry_values = c(sqrt(p), p/2, p) # number of predictors to be used in the model
 ```
 
 Predicting with RF
-
-
 ```{r}
 # Setting the seed again so the predictions are consistent
 set.seed(12)
@@ -120,18 +114,10 @@ variable_importance_df
 
 
 Reformatting the dataframe for plotting
-
-
 ```{r}
 # Adding spaces between the variables that need the space
 modified_variable_importance_df = variable_importance_df %>%
-     mutate(Predictor = ifelse(Predictor == "Casing_Depth", "Casing Depth",
-                ifelse(Predictor == "Water_Sample_Date", "Water Sample Date",
-                    ifelse(Predictor == "Flow_Rate", "Flow Rate",
-                        ifelse(Predictor == "Well_Depth", "Well Depth",
-                            ifelse(Predictor == "Static_Water_Depth", "Static Water Depth", 
-                                   ifelse(Predictor == "Stream_Distance", "Stream Distance", 
-                                          Predictor)))))))
+     mutate(Predictor = gsub("_", " ", Predictor))
 
 # Saving the order of the variables from lowest to highest mean decrease gini by putting into a factor
 predictor_order = rev(modified_variable_importance_df$Predictor)
@@ -142,8 +128,6 @@ head(modified_variable_importance_df)
 
 
 ## Variable Importance Plot
-
-
 ```{r}
 options(repr.plot.width=8, repr.plot.height=5) #changing plot size
 
@@ -169,8 +153,6 @@ From the variable importance dataframe and plot, we can see that a sample's loca
 Since longitude has been identified as the predictor with the highest variable importance, it will be used alongside casing depth as a predictor for the decision boundary plot.
 
 ### Decision Boundary Calculation
-
-
 ```{r}
 # Creating a dataframe with variables based on the highest predictors
 highest_predictivity_data = data.frame(manganese_data[,c("Longitude", "Casing_Depth", "Detect_Concentration")])
@@ -217,8 +199,6 @@ head(grid_df_rf)
 
 
 ## Decision Boundary Plot
-
-
 ```{r}
 options(repr.plot.width=10, repr.plot.height=7) #changing plot size
 

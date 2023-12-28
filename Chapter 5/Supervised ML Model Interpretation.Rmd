@@ -12,13 +12,15 @@ Supervised machine learning can utilize a multitude of predictors unlike traditi
   
 Visualization of these methods is an important part of interpretability, since visualizing helps convey concepts faster.
 
+<br>
+
 ## Variable Importance
 
 When a supervised machine learning (ML) algorithm makes predictions, it relies more heavily on some variables than others. How much a variable contributes to classifying data is known as **variable (feature) importance**. There are many methods that are used to measure feature importance, however in this module we'll be highlighting mean decrease gini that can easily be extracted from random forest (RF) classification-based models. Mean decrease gini (gini impurity) simply quantifies the improvement of predictivity with the addition of each predictor in a decision tree, which is then averaged over all the decision trees tested. The higher the value the greater the importance on the algorithm. 
 
-Note for RF regression-based models, node purity can be extracted as a measure of feature importance. For more information regarding feature importance and mean decrease gini see:
-+ [Feature Importance](https://www.baeldung.com/cs/ml-feature-importance)
-+ [Mean Decrease Gini](https://cran.r-project.org/web/packages/rfVarImpOOB/vignettes/rfVarImpOOB-vignette.html)
+Note for RF regression-based models, node purity can be extracted as a measure of feature importance. For more information, check on the following resources regarding [Feature Importance](https://www.baeldung.com/cs/ml-feature-importance) and [Mean Decrease Gini](https://cran.r-project.org/web/packages/rfVarImpOOB/vignettes/rfVarImpOOB-vignette.html).
+
+<br>
 
 ## Decision Boundary 
 Another concept that is pertinent to a model's interpretability, is understanding a decision boundary and how visualizing it can further aid in understanding how the model classifies new data points. A **decision boundary** is a line (or a hyperplane) that seeks to separate the training data by class. This line can be linear or non-linear and is formed in n-dimensional space. To clarify, although support vector machine (SVM) specifically uses decision boundaries to classify training data and make predictions on test data, decision boundaries can still be drawn for other algorithms.  
@@ -29,12 +31,15 @@ When choosing variables for decision boundary plots, features that have the most
 
 + Cholesterol, given that it had the highest variable importance and
 + Vitamin D, given its synthesis can be affected by ozone despite it having a lower variable importance in the paper's models.
-
-<img src="https://github.com/UNC-CEMALB/P1006_Data-Organization-for-High-Dimensional-Analyses-in-Environmental-Health/assets/69641855/c69e7341-97bc-4d1b-a718-7a0f979c9830" width="684" />
+```{r, echo=FALSE, fig.width=4, fig.height=5, fig.align='center'}
+knitr::include_graphics("Images/Image1.png")
+```
 
 Takeaways from this decision boundary plot:
 + Subjects with more lung inflammation ("responders") after ozone exposure tended to have higher Vitamin D levels and lower Cholesterol levels.
 + These "responder" subjects were more likely to be non-asthmatics. 
+
+<br>
 
 ## Introduction to Training Module
 In the previous module, we investigated whether a classification-based RF model using well water variables would be accurate predictors of iAs detection. In this module, we will extract variable importance from the same algorithm and plot variable importance. The two features with the highest variable importance will be identified and used to construct a decision boundary plot to determine how features are associated with iAs detection. 
@@ -53,16 +58,12 @@ This training module was specifically developed to answer the following environm
 ## Script Preparations
 
 ### Cleaning the global environment
-
-
 ```{r}
 rm(list=ls())
 ```
 
 ### Installing required R packages
 If you already have these packages installed, you can skip this step, or you can run the below code which checks installation status for you
-
-
 ```{r}
 if (!requireNamespace("readxl"))
   install.packages("readxl");
@@ -77,8 +78,6 @@ if (!requireNamespace("randomForest"))
 ```
 
 ### Loading R packages required for this session
-
-
 ```{r}
 library(readxl);
 library(lubridate);
@@ -88,16 +87,12 @@ library(randomForest);
 ```
 
 ### Set your working directory
-
-
-```{r}
+```{r, eval=FALSE, echo=TRUE}
 setwd("/filepath to where your input files are")
 ```
 
 ### Importing example dataset
 **Will need to change input to module number and add module number to the file itself**
-
-
 ```{r}
 # Load the data
 arsenic_data <- data.frame(read_excel("Module5/Module5_Arsenic_Data.xlsx"))
@@ -106,11 +101,8 @@ arsenic_data <- data.frame(read_excel("Module5/Module5_Arsenic_Data.xlsx"))
 head(arsenic_data) 
 ```
 
-
 ### Changing Data Types 
 First, `Detect_Concentration` needs to be converted from a character to a factor, so that Random Forest to know that non-detect data is considered baseline. `Water_Sample_Date` needs to be converted from a character to a date type, so that Random Forest understands this column contains dates.
-
-
 ```{r}
 arsenic_data = arsenic_data %>%
     # Converting `Detect_Concentration` from a character to a factor
@@ -124,10 +116,8 @@ arsenic_data = arsenic_data %>%
 head(arsenic_data)
 ```
 
-
 ## Setting up Cross Validation
-
-
+Note that the code below is different than the code presented in the previous [TAME 2.0 Module ?? Supervised Machine Learning](insert link). Both coding methods are valid and produce comparable results, however we wanted to present another way to run k-fold cross validation and random forest.
 ```{r}
 # Setting seed for reproducibility
 set.seed(12)
@@ -142,8 +132,6 @@ mtry_values = c(sqrt(p), p/2, p) # number of predictors to be used in the model
 ```
 
 ## Predicting iAs Detection with a Random Forest (RF) Model
-
-
 ```{r}
 # Setting the seed again so the predictions are consistent
 set.seed(12)
@@ -211,18 +199,11 @@ variable_importance_df
 
 
 ### Reformatting the dataframe for plotting 
-Transforming the dataframe so that figure is more legible. Specifically, spaces will be added between the variables and the `Predictor` column will be put into a factor to rearrange the order of the variables from lowest to highest mean decrease gini. For additional information on improving visualization see [TAME Toolkit Module 3.4](INSERT LINK).
-
-
+Transforming the dataframe so that the figure is more legible. Specifically, spaces will be added between the variables and the `Predictor` column will be put into a factor to rearrange the order of the variables from lowest to highest mean decrease gini. For additional information on improving visualizations see [TAME 2.0 Module 3.2 Improving Data Visualizations](insert link).
 ```{r}
 # Adding spaces between the variables that need the space
 modified_variable_importance_df = variable_importance_df %>%
-     mutate(Predictor = ifelse(Predictor == "Casing_Depth", "Casing Depth",
-                ifelse(Predictor == "Water_Sample_Date", "Water Sample Date",
-                    ifelse(Predictor == "Flow_Rate", "Flow Rate",
-                        ifelse(Predictor == "Well_Depth", "Well Depth",
-                            ifelse(Predictor == "Static_Water_Depth", "Static Water Depth",  
-                                          Predictor))))))
+     mutate(Predictor = gsub("_", " ", Predictor))
 
 # Saving the order of the variables from lowest to highest mean decrease gini by putting into a factor
 predictor_order = rev(modified_variable_importance_df$Predictor)
@@ -232,8 +213,6 @@ head(modified_variable_importance_df)
 ```
 
 ## Variable Importance Plot
-
-
 ```{r}
 options(repr.plot.width=8, repr.plot.height=5) #changing plot size
 
@@ -254,16 +233,16 @@ ggplot(data = modified_variable_importance_df ,
   guides(size = "none")#removing size legend
 ```
 
-*With this, we can answer **Environmental Health Question 1***: After plotting variable importance from highest to lowest, which two predictors have the highest variable importance on the predictive accuracy of iAs detection from a RF algorithm?
+*With this, we can answer **Environmental Health Question #1***: After plotting variable importance from highest to lowest, which two predictors have the highest variable importance on the predictive accuracy of iAs detection from a RF algorithm?
    
 **Answer**: From the variable importance dataframe and plot, we can see that casing depth and pH had the greatest impact on RF followed by water sample date, flow rate, well depth, and static water depth in descending order. 
 
 Since casing depth and pH have been identified as the predictors with the highest variable importance, they will be used as the two predictors for the decision boundary plot.
 
+<br>
+
 ### Decision Boundary Calculation
 First, RF will be trained with casing depth and pH. Since, the decision boundary plot will be used for visualization purposes and a 2-D figure can only plot two variables, we will not worry about tuning the parameters as was previously done. 
-
-
 ```{r}
 # Creating a dataframe with variables based on the highest predictors
 highest_predictivity_data = data.frame(arsenic_data[,c("Casing_Depth", "pH", "Detect_Concentration")])
@@ -273,8 +252,6 @@ rf_detect_arsenic = randomForest(Detect_Concentration~., data = highest_predicti
 ```
 
 From this RF prediction, the decision boundary will be calculated. This will be done by predicting `Detect_Concentraion` between a grid of values - specifically the minimum and maximum of the two predictiors (casing depth and pH). A non-linear line will be drawn on the plot to separate the two classes. 
-
-
 ```{r}
 get_grid_df <- function(classification_model, data, resolution = 100) {
     # This function predicts the outcome (Detect_Concentration) at evenly spaced data points using the two variables (pH and casing depth)
@@ -310,10 +287,7 @@ grid_df_rf = get_grid_df(rf_detect_arsenic, highest_predictivity_data)
 head(grid_df_rf)
 ```
 
-
 ## Decision Boundary Plot
-
-
 ```{r}
 options(repr.plot.width=10, repr.plot.height=7) #changing plot size
 
@@ -352,6 +326,8 @@ In conclusion, this training module provided methodologies to aid in the interpr
 
 + [Variable Importance](https://compgenomr.github.io/book/trees-and-forests-random-forests-in-action.html#variable-importance-1)
 + [Decision Boundary](https://www.aiforanyone.org/glossary/decision-boundary#:~:text=a%20decision%20boundary%3F-,A%20decision%20boundary%20is%20a%20line%20or%20surface%20that%20separates,make%20predictions%20about%20new%20data.)
+
+<br>
 
 ## Test Your Knowledge
 1. Using the "Managanese_Data", extract the variable importance for each predictor on a RF model. What two features have the highest variable importance?  
