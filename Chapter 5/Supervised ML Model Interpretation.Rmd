@@ -5,7 +5,7 @@ This training module was developed by Alexis Payton, MS, Lauren Koval, and Dr. J
 Fall 2023
 
 ## Introduction to Supervised Machine Learning Model Interpretation
-Supervised machine learning can utilize a multitude of predictors unlike traditional statistical analyses, which allows these models to more closely resemble real-world, complex environmental health scenarios offering new insights. However, one disadvantage of machine learning is that it is not as easily interpretable as traditional statistics (ie. linear regression). That being said, there are methods and concepts that can be applied to supervised machine learning algorithms to aid in the understanding of its predictions including:
+Supervised machine learning can utilize a multitude of predictors unlike traditional statistical analyses, which allows these models to more closely resemble real-world, complex environmental health scenarios offering new insights. However, one disadvantage of machine learning is that it is often not as easily interpretable as traditional statistics (ie. linear regression). That being said, there are methods and concepts that can be applied to supervised machine learning algorithms to aid in the understanding of its predictions including:
 
 + Variable (Feature) Importance
 + Decision Boundaries
@@ -346,7 +346,7 @@ ggplot() +
 **Answer**: There is some overlap between detect and non-detect iAs samples; however, it is still evident that detect iAs samples were more likely to have a more basic pH and have a lower (<80 ft) casing depth.
 
 ## Concluding Remarks
-In conclusion, this training module provided methodologies to aid the interpretability of supervised ML with variable importance and decision boundary plots. Variable importance helps quantify the impact of each feature's importance on an algorithm's predictivity. The most important or environmentally-relevant predictors can be selected in a decision boundary plot to further understand and visualize the features impact on the model's classification. 
+In conclusion, this training module provided methodologies to aid in the interpretation of supervised ML with variable importance and decision boundary plots. Variable importance helps quantify the impact of each feature's importance on an algorithm's predictivity. The most important or environmentally-relevant predictors can be selected in a decision boundary plot to further understand and visualize the features impact on the model's classification. 
 
 ## Additional Resources
 
