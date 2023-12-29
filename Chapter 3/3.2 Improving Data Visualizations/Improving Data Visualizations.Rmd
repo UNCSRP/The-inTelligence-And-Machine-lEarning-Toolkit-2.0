@@ -160,7 +160,7 @@ ggplot(scaled_longer_smoke_data, aes(x = Scaled_Chemical_Concentration, y = Biom
 
 *With this, we can answer **Environmental Health Question #1***: Which biomass burn condition has the highest chemical concentration?
 
-**Answer**: Smoldering peat has the highest chemical concentration (based on the median), however there the median concentrations are comparable across all biomass burn conditions. All the flaming conditions have the highest chemical concentrations with the exception of smoldering peat. Flaming conditions tend to have more variation in the chemical concentrations than the smoldering conditions with the exception of smoldering peat.
+**Answer**: Smoldering peat has the highest median chemical concentration, however the median concentrations are comparable across all biomass burn conditions. All the flaming conditions have the highest median chemical concentrations with the exception of smoldering peat. Flaming conditions tend to have more variation in the chemical concentrations than the smoldering conditions with the exception of smoldering peat.
 
 You may notice that the scaled chemical concentration was put on the x axis and burn condition was put on the y axis and not vice versa. When names are longer in length, the names are more legible if that variable is placed on the y axis.
 
