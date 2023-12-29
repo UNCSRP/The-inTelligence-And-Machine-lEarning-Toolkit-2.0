@@ -1,6 +1,5 @@
 # Improving Data Visualizations - Test Your Knowledge Key
 
-
 ```{r}
 library(ggplot2)
 library(tidyverse)
@@ -15,7 +14,6 @@ head(smoke_data)
 ```
 
 Like we did in the module, we'll start by changing the dataframe into a long format and creating a new column for scaled chemical concentrations.
-
 ```{r}
 scaled_longer_smoke_data = pivot_longer(smoke_data, cols = 4:13, names_to = "Biomass_Burn_Condition", 
                                  values_to = "Chemical_Concentration") %>%
@@ -30,7 +28,6 @@ head(scaled_longer_smoke_data)
 Although the next code block appears to be the same as the module it is not! This time, the underscore between the biomass and the burn condition is retained. For example, in the dataframe we have the class `Red_Oak_Smoldering`. In the code below, that will be changed to `Red Oak_Smoldering`. 
 
 This allows us to the underscores as a separator to split the `Biomass_Burn_Condition` column into `Biomass` and `Burn_Condition` using the `separate` function later on.
-
 ```{r}
 scaled_longer_smoke_data = scaled_longer_smoke_data %>%
     mutate(Biomass_Burn_Condition = ifelse(Biomass_Burn_Condition == "Red_Oak_Smoldering", "Red Oak_Smoldering",
@@ -44,7 +41,6 @@ head(scaled_longer_smoke_data)
 ```
 
 Splitting `Biomass_Burn_Condition` into `Biomass` and `Burn_Condition`.
-
 ```{r}
 scaled_longer_smoke_data = scaled_longer_smoke_data %>%
     separate(Biomass_Burn_Condition, c("Biomass", "Burn_Condition"), sep = "_")
@@ -53,14 +49,12 @@ head(scaled_longer_smoke_data)
 ```
 
 Putting `Burn_Condition` into a factor to reorder the classes for plotting purposes.
-
 ```{r}
 scaled_longer_smoke_data$Burn_Condition = factor(scaled_longer_smoke_data$Burn_Condition, 
                                                  levels = c("Smoldering", "Flaming"))
 ```
 
 ## Heat Map
-
 ```{r}
 options(repr.plot.width = 16, repr.plot.height = 4)
 
@@ -86,14 +80,4 @@ Module3_2_TYK_figure = ggplot(data = scaled_longer_smoke_data, aes(x = Chemical.
   scale_fill_gradient(low = rcolorbrewer_colors[1], high = rcolorbrewer_colors[2]) # changing the colors
 
 Module3_2_TYK_figure
-```
-
-```{r}
-Output = "/Users/alexis/Library/CloudStorage/OneDrive-UniversityofNorthCarolinaatChapelHill/CEMALB_DataAnalysisPM/Projects/P1006. Data Organization & File Management/P1006.2. Modules/P1006.2.4. Improving Data Visualizations/Module3_2"
-
-# exporting figure
-ggsave(Module3_2_TYK_figure, 
-       filename = 'Module3_2_TYK_figure.png',
-       path = Output,
-       width = 16, height = 4)
 ```
