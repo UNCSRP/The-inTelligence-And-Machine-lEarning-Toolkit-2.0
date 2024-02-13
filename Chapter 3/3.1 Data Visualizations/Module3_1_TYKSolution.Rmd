@@ -1,0 +1,58 @@
+# Data Visualizations - Test Your Knowledge Solution
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+# Load the data
+smoke_data <- read.csv("Module3_1_InputData.csv")
+
+head(smoke_data)
+```
+
+Like we did in the module, we'll start by changing the dataframe into a long format and creating a new column for scaled chemical concentrations.
+```{r}
+scaled_longer_smoke_data = pivot_longer(smoke_data, cols = 4:13, names_to = "Biomass_Burn_Condition", 
+                                 values_to = "Chemical_Concentration") %>%
+    # scaling within each chemical
+    group_by(Chemical) %>%
+    mutate(Scaled_Chemical_Concentration = scale(Chemical_Concentration)) %>%
+    ungroup()
+
+head(scaled_longer_smoke_data)
+```
+
+Before separating biomass and burn condition, we can rename some of the biomass burn conditions, which will then allow us to use the `separate()` function. For example, in the dataframe we have the class `Red_Oak_Smoldering`. In the code below, that will be changed to `Red Oak_Smoldering`. 
+
+This allows us to the underscores as a separator to split the `Biomass_Burn_Condition` column into `Biomass` and `Burn_Condition` using the `separate` function later on.
+```{r}
+scaled_longer_smoke_data = scaled_longer_smoke_data %>%
+    mutate(Biomass_Burn_Condition = ifelse(Biomass_Burn_Condition == "Red_Oak_Smoldering", "Red Oak_Smoldering",
+                ifelse(Biomass_Burn_Condition == "Red_Oak_Flaming", "Red Oak_Flaming",
+                    ifelse(Biomass_Burn_Condition == "Pine_Needles_Smoldering", "Pine Needles_Smoldering",
+                        ifelse(Biomass_Burn_Condition == "Pine_Needles_Flaming", "Pine Needles_Flaming",
+                            Biomass_Burn_Condition)))))
+
+
+head(scaled_longer_smoke_data)
+```
+
+Splitting `Biomass_Burn_Condition` into `Biomass` and `Burn_Condition`.
+```{r}
+scaled_longer_smoke_data = scaled_longer_smoke_data %>%
+    separate(Biomass_Burn_Condition, c("Biomass", "Burn_Condition"), sep = "_")
+
+head(scaled_longer_smoke_data)
+```
+
+## Heat Map
+```{r fig.align = "center", echo = FALSE,fig.width = 16, fig.height= 4}
+Module3_1_TYK_figure = ggplot(data = scaled_longer_smoke_data, aes(x = Chemical.Category, y = Biomass,
+                                           fill = Scaled_Chemical_Concentration)) + 
+  geom_tile(color = 'white') + # adds white space between the tile
+
+  facet_wrap(~Burn_Condition)  
+
+Module3_1_TYK_figure
+```
