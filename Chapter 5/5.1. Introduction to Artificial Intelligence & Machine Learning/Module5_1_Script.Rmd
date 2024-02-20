@@ -33,16 +33,20 @@ Before diving in to the applications of ML and AI in environmental health, let's
 
 **Machine Learning (ML)** is a subset of AI and describes a computer system that iteratively learns and improves from that experience autonomously. 
 
-Below is a high level taxonomy of AI. It's not meant to be an exhaustive depiction of all AI techniques, but a simple visualization of how some of these methodologies are nested within each other. 
+Below is a high level taxonomy of AI. It's not meant to be an exhaustive depiction of all AI techniques, but a simple visualization of how some of these methodologies are nested within each other. Note, that AI can be categorized in different ways and may deviate from what is below.
 ```{r out.width = "800px", echo = FALSE, out.width = "75%", fig.cap= "Created with *Biorender.com*", fig.align = 'center'}
 knitr::include_graphics("Module5_1_Images/Module5_1_Image1.png")
 ```
 
-Advantages of AI and ML include, the automation of repetitive tasks, complex problem solving, and reducing human error. However, disadvantages include learning from biased datasets or patterns that are reflected in the decisions of AI/ML and the lack of interpretability of algorithms created by AI/ML. Check out the following resource for further explanation on differences in [Artificial Intelligence vs. Machine Learning](https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning). Other subsets of AI fall outside of the scope of this module, however here is a resource on the [Types of Artificial Intelligence](https://builtin.com/artificial-intelligence).
+Advantages of AI and ML include, the automation of repetitive tasks, complex problem solving, and reducing human error. However, disadvantages include learning from biased datasets or patterns that are reflected in the decisions of AI/ML and the lack of interpretability of algorithms created by AI/ML. Check out the following resources for... 
+
++ Further explanation on differences in [Artificial Intelligence vs. Machine Learning](https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning)
++ Other subsets of AI that fall outside of the scope of these modules in [Types of Artificial Intelligence](https://builtin.com/artificial-intelligence)
++ Additional discussion on the utility of ML approaches for high-dimensional data in [Payton et. al](https://www.frontiersin.org/articles/10.3389/ftox.2023.1171175/full)
 
 It is important to understand the methodological "roots" of current methods. Otherwise, it seems like every approach is novel! AI and ML methods have been around since the mid- to late- 1900s and continue to evolve in the present day. The earliest conceptual roots for these approaches can be traced from antiquity; however, it is generally agreed that the field was named "artificial intelligence" at the ["Dartmouth Workshop"](https://home.dartmouth.edu/about/artificial-intelligence-ai-coined-dartmouth) in 1956, led by John McCarthy and others. The following schematic demonstrates the general taxonomy (categories, sub-fields, and specific methods) of modern ML and AI:
 
-```{r out.width = "800px", echo = FALSE, fig.align = 'center'}
+```{r out.width = "800px", echo = FALSE, fig.cap= "Created with *Biorender.com*", fig.align = 'center'}
 knitr::include_graphics("Module5_1_Images/Module5_1_Image2.png")
 ```
 
@@ -150,4 +154,10 @@ For additional case studies that leverage more advanced machine learning techniq
 
 + To KT, Truong L, Edwards S, Tanguay RL, Reif DM. Multivariate modeling of engineered nanomaterial features associated with developmental toxicity. NanoImpact. 2019 Apr;16:10.1016. PMID: [32133425](https://pubmed.ncbi.nlm.nih.gov/32133425/)
 
-+ Ring C, Sipes NS, Hsieh JH, Carberry C, Koval LE, Klaren WD, 
++ Ring C, Sipes NS, Hsieh JH, Carberry C, Koval LE, Klaren WD, Harris MA, Auerbach SS, Rager JE. Predictive modeling of biological responses in the rat liver using in vitro Tox21 bioactivity: Benefits from high-throughput toxicokinetics. Comput Toxicol. 2021 May;18:100166. PMID: [34013136](https://pubmed.ncbi.nlm.nih.gov/34013136/)
+
++ Hickman E, Payton A, Duffney P, Wells H, Ceppe AS, Brocke S, Bailey A, Rebuli ME, Robinette C, Ring B, Rager JE, Alexis NE, Jaspers I. Biomarkers of Airway Immune Homeostasis Differ Significantly with Generation of E-Cigarettes. Am J Respir Crit Care Med. 2022 Nov 15; 206(10):1248-1258. PMID: [35731626](https://pubmed.ncbi.nlm.nih.gov/35731626/)
+
++ Perryman AN, Kim H-YH, Payton A, Rager JE, McNell EE, Rebuli ME, et al. (2023) Plasma sterols and vitamin D are correlates and predictors of ozone-induced inflammation in the lung: A pilot study. PLoS ONE 18(5): e0285721. PMID: [37186612](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0285721)
+
++ Payton AD, Perryman AN, Hoffman JR, Avula V, Wells H, Robinette C, Alexis NE, Jaspers I, Rager JE, Rebuli ME. Cytokine signature clusters as a tool to compare changes associated with tobacco product use in upper and lower airway samples. American Journal of Physiology-Lung Cellular and Molecular Physiology 2022 322:5, L722-L736. PMID: [35318855](https://journals.physiology.org/doi/abs/10.1152/ajplung.00299.2021)
