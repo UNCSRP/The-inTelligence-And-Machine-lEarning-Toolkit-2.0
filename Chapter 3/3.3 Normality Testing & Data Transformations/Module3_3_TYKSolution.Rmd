@@ -1,0 +1,130 @@
+# Normality Testing - Test Your Knowledge Solution
+
+Prepare workspace
+```{r message = FALSE}
+# Load packages
+library(openxlsx) # for importing data
+library(tidyverse) # for manipulating and plotting data
+library(ggpubr) # for making Q-Q plots with ggplot 
+
+# Set theme for graphing
+theme_set(theme_bw())
+```
+
+Import data
+```{r message = FALSE}
+# Import data
+tyk_data <- read.xlsx("Module3_3_TYKInput.xlsx")
+```
+
+## TYK Question 1
+Are any variables normally distributed in the raw data?
+
+### Assess Raw Data
+
+#### Histograms
+```{r}
+# Prepare data frame
+tyk_data_long <- tyk_data %>%
+  pivot_longer(!S_ID, names_to = "variable", values_to = "value")
+
+# Make figure panel of histograms
+ggplot(tyk_data_long, aes(value)) +
+  geom_histogram(fill = "gray40", color = "black", binwidth = function(x) {(max(x) - min(x))/25}) +
+  facet_wrap(~ variable, scales = "free") +
+  labs(y = "# of Observations", x = "Value")
+```
+
+#### Q-Q Plots
+```{r fig.align = 'center'}
+ggqqplot(tyk_data_long, x = "value", facet.by = "variable", ggtheme = theme_bw(), scales = "free")
+```
+
+#### Shapiro-Wilk
+```{r}
+# Apply Shapiro Wilk test
+shapiro_res <-  apply(tyk_data %>% select(-S_ID), 2, shapiro.test)
+
+# Create results data frame
+shapiro_res <- do.call(rbind.data.frame, shapiro_res)
+
+# Clean data frame
+shapiro_res <- shapiro_res %>% 
+  
+  ## Add normality conclusion
+  mutate(normal = ifelse(p.value < 0.05, F, T)) %>%
+  
+  ## Remove columns that do not contain informative data
+  select(c(p.value, normal)) 
+
+# View cleaned up data frame
+shapiro_res
+```
+**Answer**: There are no variables that are normally distributed. 
+
+<br>
+
+## TYK Question 2
+Does psuedo log~2~ transforming the values makes the distributions overall more or less normally distributed?
+
+### Assess Psuedo log~2~ Transformed Data
+```{r}
+# Apply psuedo log2 transformation to chemical data
+tyk_data_pslog2 <- tyk_data %>%
+  mutate(across(DEET:Azoxystrobin, ~ log2(.x + 1)))
+```
+
+#### Histograms 
+```{r}
+# Pivot data longer
+tyk_data_pslog2_long <- tyk_data_pslog2 %>%
+  pivot_longer(!S_ID, names_to = "variable", values_to = "value")
+
+# Make figure panel of histograms
+ggplot(tyk_data_pslog2_long, aes(value)) +
+  geom_histogram(fill = "gray40", color = "black", binwidth = function(x) {(max(x) - min(x))/25}) +
+  facet_wrap(~ variable, scales = "free") +
+  labs(y = "# of Observations", x = "Value")
+```
+
+#### Q-Q Plots
+```{r fig.align = 'center'}
+ggqqplot(tyk_data_pslog2_long, x = "value", facet.by = "variable", ggtheme = theme_bw(), scales = "free")
+```
+
+#### Shapiro-Wilk
+```{r}
+# Apply Shapiro Wilk test
+shapiro_res_pslog2 <-  apply(tyk_data_pslog2 %>% select(-S_ID), 2, shapiro.test)
+
+# Create results data frame
+shapiro_res_pslog2 <- do.call(rbind.data.frame, shapiro_res_pslog2)
+
+# Clean data frame
+shapiro_res_pslog2 <- shapiro_res_pslog2 %>% 
+  
+  ## Add normality conclusion
+  mutate(normal = ifelse(p.value < 0.05, F, T)) %>%
+  
+  ## Remove columns that do not contain informative data
+  select(c(p.value, normal)) 
+
+# View cleaned up data frame
+shapiro_res_pslog2
+```
+**Answer**: Psuedo log~2~ transforming makes the distributions more normally distributed.
+
+<br>
+
+## TYK Question 3
+What are the average Kruskal-Wallis p-values for the raw and psudeo log~2~ transformed data?
+
+### Calculate Overall Kruskal-Wallis P-Values
+```{r}
+# Raw data
+mean(shapiro_res$p.value)
+
+# Log2 data
+mean(shapiro_res_pslog2$p.value)
+```
+**Answer**: The p-value for the raw data is 5.05 x 10^-18 and the p-value for the psuedo log~2~transformed data is 0.0043.
