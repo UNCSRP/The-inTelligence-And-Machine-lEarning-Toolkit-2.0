@@ -1,19 +1,22 @@
-# Introduction to Statistical Tests - Test Your Knowledge Key
+# Introduction to Statistical Tests - Test Your Knowledge Solution
 ```{r}
-library(tidyverse) 
+library(tidyverse)
+library(car)
 library(ggpubr) 
 ```
 
 ```{r}
 # Loading and viewing data
-full.data <- read.csv("Module3_4/Module3_4_FullDemoChemData.csv")
+full.data <- read.csv("Module3_4_InputData.csv")
 
 head(full.data)
 ```
 
+## TYK Question 1
+If we're interested in investigating if there are significant differences in birth weight based on maternal education level, which statistical test should you use?
 
-Let's first assess normality of birth weight (`BW`) using a histogram, a Q-Q plot, and the Shapiro-Wilk test.
-```{r}
+Let's first assess normality of birth weight (`BW`) using a histogram, a Q-Q plot, and the Shapiro-Wilk test to inform our decision on a statistical test to use.
+```{r fig.width=5, fig.height=4, fig.align = 'center'}
 gghistogram(data = full.data, x = "BW", bins = 20)
 ggqqplot(full.data$BW, ylab = "BW")
 ```
@@ -23,12 +26,22 @@ ggqqplot(full.data$BW, ylab = "BW")
 shapiro.test(full.data$BW)
 ```
 
-From the plots and the Shapiro-Wilk test, birth weight is considered to be normally distributed. Since we're interested in determining if there's statistical significance between a continuous variable (birth weight) and a categorical variable (maternal education), we'll use an ANOVA test.
+Now assessing for homogeneity of variance.
+```{r}
+# First converting the Medu variable to a factor
+full.data$MEdu = factor(full.data$MEdu, levels = c("No_HS_Degree", "No_College_Degree", "College_Degree"))
+leveneTest(BMI ~ MEdu, data = full.data)
+```
+
+**Answer**: From the plots and the Shapiro-Wilk test, birth weight is considered to be normally distributed. In addition, the Levene's test also reveals that the variance in birth weight across maternal education is the same. Since we're interested in determining if there's statistical significance between a continuous variable (birth weight) and a multi-categorical variable (maternal education), we'll use an ANOVA test.
 
 <br>
 
+## TYK Question 2
+Is that relationship considered to be statistically significant and how can we visualize the distributions of these groups?
+
 Let's start with visualizing the distribution of birth weight across the maternal education categories.
-```{r}
+```{r fig.width=5, fig.height=4, fig.align = 'center'}
 ggboxplot(data = full.data, x = "MEdu", y = "BW")
 ```
 
@@ -37,4 +50,4 @@ There doesn't seem to much a difference, but we'll go ahead and run the ANOVA te
 anova(aov(data = full.data, BW ~ MEdu))
 ```
 
-Given that the p value ~0.14, there are no significant differences in birth weight based on a mother's education level.
+**Answer**: Given that the p value ~0.14, there are no significant differences in birth weight based on a mother's education level.
