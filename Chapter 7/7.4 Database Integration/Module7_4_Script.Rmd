@@ -1,9 +1,6 @@
----
-title: "Database Integration: Air Quality, Mortality, and Environmental Justice Data"
-output: html_document
----
+# Database Integration: Air Quality, Mortality, and Environmental Justice Data
 
-The development of this training module was led by Dr. Cavin Ward-Caviness with contributions from Alexis Payton, MS.
+The development of this training module was led by Dr. Cavin Ward-Caviness with contributions from Alexis Payton, MS
 
 Originally developed Fall 2021, updated Spring 2024
 
@@ -52,7 +49,6 @@ This training module was specifically developed to answer the following environm
 rm(list=ls())
 ```
 
-
 #### Installing required R packages
 If you already have these packages installed, you can skip this step, or you can run the below code which checks installation status for you
 ```{r, results=FALSE, message=FALSE}
@@ -76,7 +72,6 @@ library(ggthemes)
 setwd("/filepath to where your input files are")
 ```
 
-
 Let's start by loading the datasets needed for this training module. As detailed in the introduction, these data were previously downloaded and organized, and specifically made available for this training exercise as a compiled RDataset, containing organized dataframes ready to analyze.
 
 We can now read in these organized data using the `load()` function.
@@ -84,20 +79,37 @@ We can now read in these organized data using the `load()` function.
 load("Module7_4_InputData1.RData")
 ```
 
-The air pollution data has already been aggregated to the county level so let's plot it and see what it looks like
-
-First let's take a look at the data, starting with the county-level shapefile:
+First let's take a look at the geographic data, starting with the county-level shapefile (`counties_shapefile`). This dataframe contains the location information for the counties which we will use for visualizations.
 ```{r}
 head(counties_shapefile)
 ```
-This dataframe contains the location information for the counties which we will use for visualizations.
+These geographic data are represented by the following columns:
 
++ `STATEFP`:
++ `COUNTYFP`:
++ `COUNTYNS`:
++ `AFFGEOID`:
++ `GEOID`: Geographic identifier
++ `NAME`: County name
++ `LSAD`:
++ `ALAND`:
++ `WATER`:
++ `geometry`: 
 
-Now let's view the EPA Air Quality Survey (AQS) data collected from 2016:
+Now let's view the EPA Air Quality Survey (AQS) data (`epa_ap_county`) collected from 2016. This dataframe represents county-level air quality measures, as detailed above. This dataframe is in melted (or long) format, meaning that different air quality measures are organized across rows, with variable measure indicators in the `Parameter.Name`, `Units.of.Measure`, and `County_Avg` columns.
 ```{r}
 head(epa_ap_county)
 ```
-This dataframe represents county-level air quality measures, collected through the Air Quality Survey (2016), as detailed above. This dataframe is in melted (or long) format, meaning that different air quality measures are organized across rows, with variable measure indicators in the `Parameter.Name`, `Units.of.Measure`, and `County_Avg` columns.
+These air quality data are represented by the following columns:
+
++ `State.Code`:
++ `State.Name`: State name
++ `County.Code`:
++ `County.Name`: County name
++ `State_County_Code`: Combined state and county code (separated by a 0)
++ `Parameter.Name`: Name of the air pollutant
++ `Units.of.Measure`: Units of measurement
++ `County_Avg`: County average
 
 These data can be restructured to view air quality measures as separate variables labeled across columns using:
 ```{r}
@@ -113,20 +125,29 @@ Note that we can now see the specific pollutant variables `NO2`, `PM25`, and `SO
 
 Here we pause briefly to speak on population-weighted vs unweighted exposures. The analysis we will be undertaking is known as an "ecological" analysis where we are looking at associations by area, e.g. county. When studying environmental exposures by area a common practice is to try to weight the exposures by the population so that exposures better represent the "burden" faced by the population. Ideally for this you would want a systematic model or assessment of the exposure that corresponded with a fine-scale population estimate so that for each county you could weight exposures within different areas of the county by the population exposed. This sparse monitor data (we will examine the population covered later in the tutorial) is not population weighted, but should you see similar analyses with population weighting of exposures you should simply be aware that this better captures the "burden" of exposure experienced by the population within the area estimated, typically zip code or county.
 
-Now let's view the CDC's mortality dataset collected from 2016:
+Now let's view the CDC's mortality dataset collected from 2016 (`cdc_mortality`):
 ```{r}
 head(cdc_mortality)
 ```
+These mortality data are represented by the following columns:
 
+ + `Notes`: ?
+ + `County`: County name with the state abbreviation
+ + `County.Code`: Combined state and county code (separated by a 0)
+ + `Deaths`: Number of deaths in 2016
+ + `Population`: County population in 2016
+ + `Crude.Rate`: Death rate (UNITS???)
+ + `Age.Adjusted.Rate`: Age adjusted death rate
+ + `Age.Adjusted.Rate.Standard.Error`: Standard error of the age adjusted rate
 
-We can create a visualization of values throughout the U.S. to further inform what these data look like:
+We can create a visualization of the age adjusted death rate and air pollutants throughout the U.S. to further inform what these data look like:
 ```{r county plot, fig.align = "center"}
 # Can merge them by the FIPS county code which we need to create for the counties_shapefile
 counties_shapefile$State_County_Code <- as.character(as.numeric(paste0(counties_shapefile$STATEFP, counties_shapefile$COUNTYFP)))
 
 # Let's merge in the air pollution and mortality data and plot it
-counties_shapefile <- merge(counties_shapefile, epa_ap_county, by.x="State_County_Code", by.y="State_County_Code", all.x=TRUE)
-counties_shapefile <- merge(counties_shapefile, cdc_mortality, by.x="State_County_Code", by.y="County.Code")
+counties_shapefile <- merge(counties_shapefile, epa_ap_county, by.x = "State_County_Code", by.y = "State_County_Code", all.x=TRUE)
+counties_shapefile <- merge(counties_shapefile, cdc_mortality, by.x = "State_County_Code", by.y = "County.Code")
 
 # Will remove alaska and hawaii just so we can look at the continental USA
 county_plot <- subset(counties_shapefile, !STATEFP %in% c("02","15"))
@@ -139,9 +160,11 @@ You can see that these result in the generation of four different nation-wide pl
 
 Let's make a nicer looking plot with `ggplot()`, looking just at PM~2.5~ levels:
 ```{R fig.align = "center"}
-ggplot(data=county_plot) + 
-  geom_sf(aes(fill=PM25)) +
-  scale_fill_viridis_c(option="plasma", name="PM~2.5~",
+ggplot(data = county_plot) + 
+  geom_sf(aes(fill = PM25)) +
+  
+  # Changing colors
+  scale_fill_viridis_c(option="plasma", name="PM~2.5~", # FIX PM25 TITLE!!!
                        guide = guide_colorbar(
                          direction = "horizontal",
                          barheight = unit(2, units = "mm"),
@@ -159,7 +182,7 @@ ggplot(data=county_plot) +
 
 ### Answer to Environmental Health Question 1
 :::question
-*With this, we can answer **Environmental Health Question 1***: What areas of the U.S. are most heavily monitored for air quality?
+*With this, we can answer **Environmental Health Question #1***: What areas of the U.S. are most heavily monitored for air quality?
 :::
 
 :::answer
@@ -169,16 +192,17 @@ ggplot(data=county_plot) +
 <br>
 
 ## Analyzing Relationships between PM~2.5~ and Mortality
-Now the primary question is whether counties with higher PM~2.5~ also have higher mortality rates. To answer this question, first we need to run some data merging in preparation for this analysis.
+Now the primary question is whether counties with higher PM~2.5~ also have higher mortality rates. To answer this question, first we need to perform some data merging in preparation for this analysis.
 ```{r merging data}
-model_data <- merge(epa_ap_county, cdc_mortality, by.x="State_County_Code", by.y="County.Code")
+# Merging mortality and air pollution data
+model_data <- merge(epa_ap_county, cdc_mortality, by.x = "State_County_Code", by.y = "County.Code")
 ```
 
 As we saw in the above plot, only a portion of the USA is covered by PM~2.5~ monitors. Let's see what our population coverage is
 ```{r}
-sum(model_data$Population, na.rm=TRUE)
-sum(cdc_mortality$Population, na.rm=TRUE)
-sum(model_data$Population, na.rm=TRUE)/sum(cdc_mortality$Population, na.rm=TRUE)*100
+sum(model_data$Population, na.rm = TRUE)
+sum(cdc_mortality$Population, na.rm = TRUE)
+sum(model_data$Population, na.rm = TRUE)/sum(cdc_mortality$Population, na.rm = TRUE)*100
 ```
 
 We can do a quick visual inspection of this using a scatter plot which will also let us check for unexpected distributions of the data (always a good idea)
@@ -191,7 +215,7 @@ ggplot(model_data) +
 
 The univariate correlation is a simple way of quantifying this potential relationships, though it does not nearly tell the complete story. Just as a starting point, let's run this simple univariate correlation calculation using the `cor()` function.
 ```{r}
-cor(model_data$Age.Adjusted.Rate, model_data$PM25, use="complete.obs")
+cor(model_data$Age.Adjusted.Rate, model_data$PM25, use = "complete.obs")
 ```
 
 Now, let's obtain a more complete estimate of the data through regression modeling. As an initial starting point, let's run this model without any confounders (also known as a 'crude' model).
@@ -216,7 +240,7 @@ The Residuals are the difference between the predicted outcome (age-adjusted mor
 
 ### Answer to Envrionmental Health Question 2
 :::question
-*With this, we can answer **Environmental Health Question 2***: Is there an association between long-term, ambient PM~2.5~ concentrations and mortality at the county level? Stated another way we are asking: Do counties with higher annual average PM~2.5~ concentrations also have higher all-cause mortality rates?
+*With this, we can answer **Environmental Health Question #2***: Is there an association between long-term, ambient PM~2.5~ concentrations and mortality at the county level? 
 :::
 
 :::answer
@@ -228,7 +252,7 @@ The Residuals are the difference between the predicted outcome (age-adjusted mor
 To more thoroughly examine the potential relationship between PM~2.5~ concentrations and mortality it is absolutely essential to adjust for confounders
 ```{r}
 # First we merge the covariate data in with the AQS data
-model_data <- merge(model_data, county_health, by.x="State_County_Code", by.y="County.5.digit.FIPS.Code", all.x=TRUE)
+model_data <- merge(model_data, county_health, by.x = "State_County_Code", by.y = "County.5.digit.FIPS.Code", all.x=TRUE)
 
 # Now we add some relevant confounders to the linear regression model
 m <- lm(Age.Adjusted.Rate ~ PM25 + Adult.smoking + Adult.obesity + Food.environment.index + Physical.inactivity +
@@ -242,7 +266,7 @@ summary(m)
 
 ### Answer to Envrionmental Health Question 3
 :::question
-*With this, we can answer **Environmental Health Question 3***: What is the difference when running crude statistical models vs statistical models that adjust for potential confounding, when evaluating the relationship between PM~2.5~ and mortality?
+*With this, we can answer **Environmental Health Question #3***: What is the difference when running crude statistical models vs statistical models that adjust for potential confounding, when evaluating the relationship between PM~2.5~ and mortality?
 :::
 
 :::answer
@@ -252,9 +276,9 @@ summary(m)
 <br>
 
 ## Environmental Justice Considerations
-Environmental Justice is the study of how societal inequities manifest in differences in environmental health risks either due to greater exposures or a worse health response to exposures. Racism and racial discrimination are major factors in both how much pollution people are exposed to as well what their responses might be due to other co-existing inequities (e.g. poverty, access to healthcare, food deserts). Race is a commonly used proxy for experiences of racism and racial discrimination.
+**Environmental justice** is the study of how societal inequities manifest in differences in environmental health risks either due to greater exposures or a worse health response to exposures. Racism and racial discrimination are major factors in both how much pollution people are exposed to as well what their responses might be due to other co-existing inequities (e.g. poverty, access to healthcare, food deserts). Race is a commonly used proxy for experiences of racism and racial discrimination.
 
-Here we will consider the race category of 'Non-Hispanic African-American' to investigate if pollution levels differ by percent African-Americans in a county and if associations between PM~2.5~ and mortality also differ by this variable, which could indicate Environmental Justice-relevant issues revealed by this data. We will specifically evaluate data distributions across counties with the highest percentage of African-Americans (top 25%) vs lowest percentage of African-Americans (bottom 25%).  
+Here we will consider the race category of 'Non-Hispanic African-American' to investigate if pollution levels differ by percent African-Americans in a county and if associations between PM~2.5~ and mortality also differ by this variable, which could indicate environmental justice-relevant issues revealed by this data. We will specifically evaluate data distributions across counties with the highest percentage of African-Americans (top 25%) vs lowest percentage of African-Americans (bottom 25%).  
 
 First let's visualize the distribution of % African-Americans in these data
 ```{r fig.align = "center"}
@@ -272,13 +296,16 @@ summary(model_data$Percent.Non.Hispanic.African.American)
 We can compute quartiles of the data
 ```{r}
 model_data$AA_quartile <- with(model_data, cut(Percent.Non.Hispanic.African.American, 
-                                breaks=quantile(Percent.Non.Hispanic.African.American, probs=seq(0,1, by=0.25), na.rm=TRUE), 
-                                include.lowest=TRUE, ordered_result=TRUE, labels=FALSE))
+                                breaks = quantile(Percent.Non.Hispanic.African.American, probs = seq(0,1, by = 0.25), na.rm = TRUE), 
+                                include.lowest = TRUE, ordered_result = TRUE, labels = FALSE))
 ```
 
 Then we can use these quartiles to see that as the Percent African-American increases so does the PM~2.5~ exposure by county
 ```{r}
-AA_summary <- model_data %>% filter(!is.na(Percent.Non.Hispanic.African.American)) %>% group_by(AA_quartile) %>% summarise(Percent_AA = mean(Percent.Non.Hispanic.African.American, na.rm=TRUE), Mean_PM25 = mean(PM25, na.rm=TRUE))
+AA_summary <- model_data %>% 
+  filter(!is.na(Percent.Non.Hispanic.African.American)) %>% 
+  group_by(AA_quartile) %>% 
+  summarise(Percent_AA = mean(Percent.Non.Hispanic.African.American, na.rm = TRUE), Mean_PM25 = mean(PM25, na.rm = TRUE))
 
 AA_summary
 ```
@@ -287,19 +314,19 @@ Now that we can see this trend, let's add some statistics.
 Let's specifically compare the relationships between PM~2.5~ and mortality within the bottom 25% AA counties (quartile 1); and also the highest 25% AA counties (quartile 4)
 ```{r}
 # first need to subset the data by these quartiles of interest
-low_AA <- subset(model_data, AA_quartile==1)
-high_AA <- subset(model_data, AA_quartile==4)
+low_AA <- subset(model_data, AA_quartile == 1)
+high_AA <- subset(model_data, AA_quartile == 4)
 
 # then we can run the relevant statistical models
 m.low <- lm(Age.Adjusted.Rate ~ PM25 + Adult.smoking + Adult.obesity + Food.environment.index + Physical.inactivity +
           High.school.graduation + Some.college + Unemployment + Violent.crime + Percent.Rural + Percent.Females +
           Percent.Asian + Percent.American.Indian.and.Alaskan.Native + Percent.NonHispanic.white,
-        data = low_AA, weights=1/low_AA$Age.Adjusted.Rate.Standard.Error)
+        data = low_AA, weights = 1/low_AA$Age.Adjusted.Rate.Standard.Error)
 
 m.high <- lm(Age.Adjusted.Rate ~ PM25 + Adult.smoking + Adult.obesity + Food.environment.index + Physical.inactivity +
           High.school.graduation + Some.college + Unemployment + Violent.crime + Percent.Rural + Percent.Females +
           Percent.Asian + Percent.American.Indian.and.Alaskan.Native + Percent.NonHispanic.white,
-        data = high_AA, weights=1/high_AA$Age.Adjusted.Rate.Standard.Error)
+        data = high_AA, weights = 1/high_AA$Age.Adjusted.Rate.Standard.Error)
 
 
 # We see a striking difference in the associations
@@ -310,7 +337,7 @@ rbind(c("Bottom 25% AA Counties",round(summary(m.low)$coefficients["PM25",c(1,2,
 
 ### Answer to Envrionmental Health Question 4
 :::question
-*With this, we can answer **Environmental Health Question 4***: Do observed associations differ when comparing between counties with a higher vs. lower percentage of African-Americans which can indicate environmental justice concerns?
+*With this, we can answer **Environmental Health Question #4***: Do observed associations differ when comparing between counties with a higher vs. lower percentage of African-Americans which can indicate environmental justice concerns?
 :::
 
 :::answer
