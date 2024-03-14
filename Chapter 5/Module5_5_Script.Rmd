@@ -1,0 +1,419 @@
+# Unsupervised Machine Learning II: Additional Applications of Clustering Analyses
+
+This training module was developed by Alexis Payton, MS, Lauren E. Koval, and Dr. Julia E. Rager
+
+Spring 2024
+
+## Introduction to Additional Applications of Clustering Analyses
+I'M OPEN TO A BETTER TITLE
+
+The previous module, [TAME 2.0 Module 5.4 Unsupervised Machine Learning I: *K*-Means Clustering & PCA](insert link), served as introduction to unsupervised machine learning (ML). **Unsupervised ML** involves training a model on a dataset lacking ground truths or response variables. However, in the previous module, the number of *k*-means clusters were selected based on prior information (ie. chemical class), but what if you don't have any information that can inform the number of cluster to select? That scenario is exactly why unsupervised ML was created and we'll explore the following concepts in this module:
+
++ *K*-Means and hierarchical clustering
++ Deriving the optimal number of clusters
++ Visualizing clusters through a PCA-based plot and heatmaps
++ Determining each variable's contribution to the clusters 
+ 
+<br>
+
+## *K*-Means Clustering
+In simple terms, *k*-means clustering is an unsupervised machine learning technique that partitions similar objects or data points into clusters. The algorithm seeks to minimize the sum of squares or total sqauared Euclidean distance between each object and their cluster mean. 
+
+### Deriving the Optimal Number of *K*-Means Clusters
+Typically there are three methods to find the *k* or number of clusters for *k*-means: the **elbow method**, **silhouette method**, and the **gap statistic method**. These techniques find the optimal *k* using visual inspection.
+
++ **Elbow Method**: uses a plot of the within cluster sum of squares (WCSS) on the y axis and different values of *k* on the x axis. The location where WCSS is the *minimized* or where an "elbow" can be seen is the optimal *k* value. After, a certain point having more clusters doesn't lead to a significant reduction in WCSS. 
+
+```{r fig.align = 'center'}
+knitr::include_graphics("Module5_5_Images/Module5_5_Image1.png")
+```
+
+Looking at the figures above, the elbow point is much clearer in the first plot versus the second, however typically elbow curves typically resemble the second figure. That's why it's recommended to use all three methods to determine the optimal number of clusters. 
+
++ **Silhouette Method**: uses a plot of the average silhouette width (score) on the y axis and different values of *k* on the x axis. The silhouette score is measure of each object's similarity to its own cluster and how dissimilar it is to other clusters. The location where the average silhouette width is *maximized* is the optimal *k* value.
+
+SHOULD I INCLUDE A FIGURE HERE TOO??
+
++ **Gap Statistic Method**: uses a plot of the gap statistic on the y axis and different values of *k* on the x axis. The gap statistic is measure of the intracluster variation for different values of *k*, therefore the location where this metric is *maximized* is the optimal *k* value. This method can actually be used for both *k*-means and hierarchical clustering.
+  
+SHOULD I INCLUDE A FIGURE HERE TOO??
+
+For additional information and code on all three methods, check out [Determining the Optimal Number of Clusters: 3 Must Know Methods](https://www.datanovia.com/en/lessons/determining-the-optimal-number-of-clusters-3-must-know-methods/).
+
+<br>
+
+## Hierarchical Clustering
+**Hierarchical clustering** groups objects into clusters that can then be visually represented in a dendrogram. The hierarchical clustering dendrogram below depicts is based on the "USArrests" dataset available in R. I WANT TO INCLUDE AN EXAMPLE OF A dendrogram, BUT I'D LIKE TO USE A DIFFERENT DATASET. ANY SUGGESSTIONS?? I ALSO KNOW IT'S SMALL AND BLURRY, BUT SINCE IT'LL BE CHANGED I DIDN'T BOTHER FIXING IT
+
+```{r fig.align = 'center'}
+knitr::include_graphics("Module5_5_Images/Module5_5_Image2.png")
+```
+
+Methods include clustering based on...
+
++ **Complete Linkage**: the maximum distance between two data points located in separate clusters. 
++ **Single Linkage**: the minimum distance between two data points located in separate clusters. 
++ **Average Linkage**: the average distance pairwise distance between all pairs of data points in separate clusters.
++ **Centroid Linkage**: the distance between the centroids or centers of each cluster.
++ **Ward Linkage**: seeks to minimize the variance between clusters.  
+
+Each method has its advtantages and disadvantages and more information on all distance calculations between clusters can be found at [Hierarchical Clustering](https://www.learndatasci.com/glossary/hierarchical-clustering/#Hierarchicalclusteringtypes).
+
+<br>
+
+## Introduction to Training Module
+
+We will apply these techniques using an example dataset from a previously published study where cytokine concentrations were derived from 44 subjects with varying smoking statuses (14 non-smokers, 17 e-cigarette users, and 13 cigarette smokers) from 4 different regions in the body. These methods are further described in the publication below:
+
++ Payton AD, Perryman AN, Hoffman JR, Avula V, Wells H, Robinette C, Alexis NE, Jaspers I, Rager JE, Rebuli ME. Cytokine signature clusters as a tool to compare changes associated with tobacco product use in upper and lower airway samples. American Journal of Physiology-Lung Cellular and Molecular Physiology 2022 322:5, L722-L736. PMID: [35318855](https://journals.physiology.org/doi/abs/10.1152/ajplung.00299.2021)
+
+Let's read in and view the dataset we'll be working with.
+
+### Installing required R packages
+If you already have these packages installed, you can skip this step, or you can run the below code which checks installation status for you
+```{r}
+if (!requireNamespace("vegan"))
+  install.packages("vegan");
+if (!requireNamespace("ggrepel"))
+  install.packages("ggrepel");
+if (!requireNamespace("dendextend"))
+  install.packages("dendextend");
+if (!requireNamespace("ggsci"))
+  install.packages("ggsci");
+if (!requireNamespace("FactoMineR"))
+install.packages("FactoMineR");
+```
+
+### Loading required R packages
+```{r}
+library(readxl)
+library(factoextra)
+library(FactoMineR)
+library(tidyverse)
+library(vegan)
+library(ggrepel)
+library(reshape2)
+library(pheatmap)
+library(ggsci)
+suppressPackageStartupMessages(library(dendextend))
+```
+
+### Set your working directory
+```{r, eval=FALSE, echo=TRUE}
+setwd("/filepath to where your input files are")
+```
+
+### Importing example dataset
+
+Then let's read in our example dataset. As mentioned in the introduction, this example dataset contains cytokine concentrations derived from 44 subjects. Let's upload and view these data:
+```{r}
+# Reading in file
+cytokines_df = data.frame(read_excel("Module5_5_InputData.xlsx", sheet = 2))
+
+# Viewing data 
+head(cytokines_df)
+```
+
+These data contain the following information:
+
++ `Original_Identifier`: initial identifier given to each subject by our wet bench colleagues
++ `Group`: denotes the smoking status of the subject ("NS" = "non-smoker", "Ecig" = "E-cigarette user", "CS" = "cigarette smoker")
++ `SubjectNo`: ordinal subject number assigned to each subject after the dataset was wrangled (1-44)
++ `SubjectID`: unique subject identifier that combines the group and subject number
++ `Compartment`: region of the body from which the sample was taken ("NLF" = "nasal lavage fluid sample", "NELF" = "nasal epithelieum lining fluid sample", "Sputum" = "induced sputum sample", "Serum" = "blood serum sample")
++ `Protein`: cytokine name
++ `Conc`: concentration (pg/mL)
++ `Conc_pslog2`: psuedo-log~2~ concentration
+
+Now that the data has been read in, we can start by asking some initial questions about the data.
+
+## Training Module's Environmental Health Questions
+This training module was specifically developed to answer the following environmental health questions:
+
+1. What are the optimal number of ***k*-means** clusters the cytokines can be grouped into that were derived from nasal epithelium fluid in non-smokers?
+2. After selecting a cluster number, which cytokines were assigned to each *k*-means cluster?
+3. What are the optimal number of **hierarchical** clusters the cytokines can be grouped into that were derived from nasal epithelium fluid in non-smokers? How do the hierarchical cluster assignments compare to the *k*-means cluster assignments?
+4. How can we visualize these cytokine clusters? SHOULD I MAKE THIS QUESTION BETTER
+5. Which cytokines have the greatest contributions to the first two eigenvectors?
+
+To answer the first envirionmental health question, let's start by filtering to include only NELF derived samples and non-smokers.
+```{r}
+baseline_df = cytokines_df %>%
+    filter(Group == "NS", Compartment == "NELF") 
+
+head(baseline_df)
+```
+
+The functions we require us to cast the data wider, which we will do using the `dcast()` function from the *reshape2* package. 
+```{r}
+wider_baseline_df = reshape2::dcast(baseline_df, Protein ~ SubjectID, value.var = "Conc_pslog2") %>% 
+  column_to_rownames("Protein")
+
+head(wider_baseline_df)
+```
+
+Deriving clusters using the `fviz_nbclust()` function to determine the optimal *k* based on suggestions from the elbow, silouette, and gap statistic methods. 
+```{r fig.align = 'center'}
+# Elbow method
+fviz_nbclust(wider_baseline_df, kmeans, method = "wss") +
+  labs(subtitle = "Elbow method") 
+
+# Silhouette method
+fviz_nbclust(wider_baseline_df, kmeans, method = "silhouette") + 
+  labs(subtitle = "Silhouette method") 
+
+# Gap statistic method
+fviz_nbclust(wider_baseline_df, kmeans, method = "gap_stat") + 
+  labs(subtitle = "Gap Statisitc method") 
+```
+
+The elbow method is suggesting 2 or 3 clusters, the silhouette method is suggesting 2, and the gap statistic method suggests 1. Since each of these methods is recommending different *k* values, we can go ahead and run *k*-means to visualize the clusters and test those different *k*'s. *K*-means clusters will be visualized using the `fviz_cluster()` function.
+```{r fig.align = 'center'}
+# Choosing to iterate through 2 or 3 clusters using i as our iterator
+for (i in 2:3){
+    # nstart = number of random starting partitions, it's recommended for nstart > 1
+    cluster_k <- kmeans(wider_baseline_df, centers = i, nstart = 25)
+    cluster_plot <- fviz_cluster(cluster_k, data = wider_baseline_df) + ggtitle(paste0("k = ", i))
+    print(cluster_plot)
+}
+```
+
+### Answer to Environmental Health Question 1
+:::question
+*With this, we can answer **Environmental Health Question 1***: What are the optimal number of ***k*-means** clusters the cytokines can be grouped into that were derived from nasal epithelium fluid in non-smokers?
+:::
+
+:::answer
+**Answer**: 2 or 3 clusters can be justified here, based on using the elbow or silhouette method or if *k*-means happens to group cytokines together that were implicated in similar biological pathways. In the final paper, we moved forward with 3 clusters, because that was still justifiable from the methods and we needed a bit more granularity in the clusters. 
+:::
+
+The final cluster assignment can easily be obtained using the `kmeans()` function from the *stats* package. 
+```{r}
+cluster_kmeans_3 <- kmeans(wider_baseline_df, centers = 3, nstart = 25)
+cluster_kmeans_df <- data.frame(cluster_kmeans_3$cluster) %>%
+    rownames_to_column("Cytokine") %>%
+    rename(`K-Means Cluster` = cluster_kmeans_3.cluster) %>%
+    # Ordering the dataframe for easier comparison
+    arrange(`K-Means Cluster`)
+
+cluster_kmeans_df
+```
+
+### Answer to Environmental Health Question 2
+:::question
+*With this, we can answer **Environmental Health Question 2***: After selecting a cluster number, which cytokines were assigned to each *k*-means cluster?
+:::
+
+:::answer
+**Answer**: After choosing the number of clusters to be 3, *k* = 3, the cluster assignments are as follows: 
+```{r fig.align = 'center'}
+knitr::include_graphics("Module5_5_Images/Module5_5_Image3.png")
+```
+:::
+
+<br>
+
+## Hierarchical Clustering
+
+Next, we'll turn our attention to answering environmental health question 3: What are the optimal number of **hierarchical** clusters the cytokines can be grouped into that were derived from nasal epithelium fluid in non-smokers? How do the hierarchical cluster assignments compare to the *k*-means cluster assignments?
+
+We'll start by using the `dist()` function to calculate the euclidean distance between the clusters followed by the `hclust()` function to obtain the hierarchical clustering assignments. 
+```{r}
+# Viewing the wider dataframe we'll be working with
+head(wider_baseline_df)
+```
+
+
+```{r}
+# First scaling data with each subject (down columns)
+scaled_df = data.frame(apply(wider_baseline_df, 2, scale))
+rownames(scaled_df) = rownames(wider_baseline_df)
+
+head(scaled_df)
+```
+
+The `dist()` function is intially used to calculate the Euclidean distance between each cytokine. Next, the `hclust()` function is used to run the hierarchical clustering analysis using the complete method by default. The method can be changed in the function using the method parameter.
+```{r}
+# Calculating euclidean dist
+dist_matrix <- dist(scaled_df, method = 'euclidean')
+
+# Hierarchical clustering
+cytokines_hc = hclust(dist_matrix)
+```
+
+Similar to what we did above using visual inspetion to determine the optimal *k* value, dendrograms will be visualized to determine the optimal number of hierarchical clusters using the `fviz_dend()` function from the *factoextra* package. 
+```{r fig.align = 'center', out.width = "75%",}
+# Using a for loop to test different k values
+for (i in 2:3){
+    dendrogram = fviz_dend(cytokines_hc, k = i, # Specifying k
+              cex = 0.85, # Label size
+              palette = "futurama", # Color palette see ?ggpubr::ggpar
+              rect = TRUE, rect_fill = TRUE, # Add rectangle around groups
+              rect_border = "futurama",  # Rectangle color
+              labels_track_height = 0.8  # Changes the room for labels
+             )
+    print(dendrogram)
+}
+```
+
+The dendrogram is suggesting 3 clusters, so let's move forward with 3 clusters and extract those cluster assignments using the `cutree()` function from the *stats* package.
+```{r}
+hc_assignments_df <- data.frame(cutree(cytokines_hc, k = 3)) %>%
+    rownames_to_column("Cytokine") %>%
+    rename(`Hierarchical Cluster` = cutree.cytokines_hc..k...3.) %>%
+    # Ordering the dataframe for easier comparison
+    arrange(`Hierarchical Cluster`)
+
+# Combining the dataframes to compare the cluster assignments from each approach
+full_join(cluster_kmeans_df, hc_assignments_df, by = "Cytokine")
+```
+
+For additional resources on running hierarchical clustering in R, see [Visualizing Clustering Dendrogram in R](https://agroninfotech.blogspot.com/2020/06/visualizing-clusters-in-r-hierarchical.html) and [Hiearchical Clustering on Principal Components](http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/117-hcpc-hierarchical-clustering-on-principal-components-essentials/).
+
+### Answer to Environmental Health Question 3
+:::question
+*With this, we can answer **Environmental Health Question 3***: What are the optimal number of **hierarchical** clusters the cytokines can be grouped into that were derived from nasal epithelium fluid in non-smokers? How do the hierarchical cluster assignments compare to the *k*-means cluster assignments?
+:::
+
+:::answer
+**Answer**: 2 or 3 clusters can be justified here, but for the same reasons mentioned for the first environmental health question we landed on 3 clusters. Even though the numbers are different, *k*-means and hierarchical clustering assigned the same cytokines to the same clusters.
+:::
+
+<br>
+
+## PCA Cluster Visualization?? IDK IF WE LIKE THAT NAME
+
+One way to visualize clustering is to plot the first two principal components on the axes and color the data points based on their corresponding cluster. This visualization can be used for both *k*-means and hierarchical clustering using the `fviz_cluster()` function.
+```{r fig.align = 'center', fig.height=5.5, fig.width=6}
+fviz_cluster(cluster_kmeans_3, data = wider_baseline_df)
+```
+
+Rather than using the `fviz_cluster()` function, we'll extract the data to build the sample figure using `ggplot()`. For the manuscript this was necessary, since I needed to facet the plots for each compartment (ie. NLF, NELF, sputum, and serum). For a single plot, this data extraction isn't required and the figure above can be further customized within the `fviz_cluster()` function. However, we'll go through the steps of obtaining the indicies to recreate the same polygons in `ggplot()` directly. 
+
+*K*-means actually uses principal component analysis (PCA) to reduce a dataset's dimensionality prior to obtaining the cluster assignments and plotting those clusters. Therefore, to obtain the coordinates of each cytokine within their respective clusters, PCA will need to be run first. 
+```{r}
+# First running PCA
+pca_cytokine <- prcomp(wider_baseline_df, scale = TRUE, center = TRUE)
+# Only need PC1 and PC2 for plotting, so selecting the first two columns
+baseline_scores_df <- data.frame(scores(pca_cytokine)[,1:2]) 
+baseline_scores_df$Cluster <- cluster_kmeans_3$cluster
+baseline_scores_df$Protein <- rownames(baseline_scores_df)
+
+# Changing cluster to a character for plotting
+baseline_scores_df$Cluster = as.character(baseline_scores_df$Cluster)
+
+head(baseline_scores_df)
+```
+
+Within each cluster, the `chull()` function is used to compute the indicies of the points on the convex hull. These are needed for `ggplot()` to create the polygon shapes of each cluster. 
+```{r}
+# hull values for cluster 1
+cluster_1 <- baseline_scores_df[baseline_scores_df$Cluster == 1, ][chull(baseline_scores_df %>% 
+                                                                    filter(Cluster == 1)),]  
+# hull values for cluster 2
+cluster_2 <- baseline_scores_df[baseline_scores_df$Cluster == 2, ][chull(baseline_scores_df %>% 
+                                                                    filter(Cluster == 2)),] 
+# hull values for cluster 3
+cluster_3 <- baseline_scores_df[baseline_scores_df$Cluster == 3, ][chull(baseline_scores_df %>% 
+                                                                    filter(Cluster == 3)),]  
+all_hulls_baseline <- rbind(cluster_1, cluster_2, cluster_3)
+# Changing cluster to a character for plotting
+all_hulls_baseline$Cluster = as.character(all_hulls_baseline$Cluster)
+
+head(all_hulls_baseline)
+```
+
+Now plotting the clusters using `ggplot()`.
+```{r fig.align = 'center', fig.height=5.5, fig.width=6}
+ggplot() + 
+  geom_point(data = baseline_scores_df, aes(x = PC1, y = PC2, color = Cluster, shape = Cluster), size = 4) + 
+  # Adding cytokine names
+  geom_text_repel(data = baseline_scores_df, aes(x = PC1, y = PC2, color = Cluster, label = Protein), 
+                  show.legend = FALSE, size = 4.5) + 
+  # Creating polygon shapes of the clusters
+  geom_polygon(data = all_hulls_baseline, aes(x = PC1, y = PC2, group = as.factor(Cluster), fill = Cluster, 
+                                        color = Cluster), alpha = 0.25, show.legend = FALSE) + 
+
+  theme_light() + 
+  theme(axis.text.x = element_text(vjust = 0.5), #rotating x labels/ moving x labels slightly to the left
+        axis.line = element_line(colour="black"), #making x and y axes black
+        axis.text = element_text(size = 13), #changing size of x axis labels
+        axis.title = element_text(face = "bold", size = rel(1.7)), #changes axis titles
+        legend.title = element_text(face = 'bold', size = 17), #changes legend title
+        legend.text = element_text(size = 14), #changes legend text
+        legend.position = 'bottom', # moving the legend to the bottom
+        legend.background = element_rect(colour = 'black', fill = 'white', linetype = 'solid'), #changes the legend background
+        strip.text.x = element_text(size = 18, face = "bold"), #changes size of facet x axis 
+        strip.text.y = element_text(size = 18, face = "bold")) + #changes size of facet y axis 
+  xlab('Dimension 1 (85.1%)') + ylab('Dimension 2 (7.7%)') + #changing axis labels 
+
+  # Using colors from the startrek palette from ggsci
+  scale_color_startrek(name = 'Cluster') +
+  scale_fill_startrek(name = 'Cluster') 
+```
+
+<br>
+
+## Hierarchical Clustering Visualization
+
+For this visualization, we'll build a heatmap using the `pheatmap()` function that has the capability to display hierarchical clustering dendrograms on a heatmap. To do so, we'll need to go back and use the `t_wider_baseline_df` dataframe.
+```{r fig.align = 'center', fig.height=7, fig.width=8}
+pheatmap(wider_baseline_df, 
+            cluster_cols = FALSE, # hierarchical clustering of cytokines
+            scale = "column",    # scaling the data to make differences across cytokines more apparent
+            cutree_row = 3, # adds a break between the 3 largest clusters
+            display_numbers = TRUE, number_color = "black", fontsize = 12, # adding average concentration values
+            angle_col = 45, fontsize_col = 12, fontsize_row = 12, # adjusting size/ orientation of axes labels
+            cellheight = 17, cellwidth = 30 # setting height and width for cells
+)
+
+# SHOULD I ALSO ADD AXES LABELS??
+```
+
+### Answer to Environmental Health Question 4
+:::question
+*With this, we can answer **Environmental Health Question 4***: How can we visualize these cytokine clusters?
+:::
+
+:::answer
+**Answer**: Clusters can be visualized using a PCA plot and hierarchical clustering can be visualized using a heatmap with a dendrogram. 
+:::
+
+<br>
+
+## Variable Contributions
+To answer our next environmental health question: Which cytokines have the greatest contributions to the first two eigenvectors? we'll use the `fviz_contrib()` function that plots the percentage of each variable's contribution to the principal component(s). It also displays a red dashed line and variables that fall above are considered to have significant contributions to those principal components.
+```{r fig.align = 'center'}
+# kmeans contributions
+fviz_contrib(pca_cytokine, 
+             choice = "ind", 
+             axes = 1:2) # specifies to show contribution percentages for first 2 PCs
+```
+
+### Answer to Environmental Health Question 5
+:::question
+*With this, we can answer **Environmental Health Question 5***: Which cytokines have the greatest contributions to the first two eigenvectors?
+:::
+
+:::answer
+**Answer**: The cytokines that have the greatest contributions to the first two principal components include IL-8, Fractalkine, IP-10, IL-4, MIG, I309, and IL-12p70. 
+:::
+
+<br>
+
+## Concluding Remarks
+In this module, we explored additional clustering applications for scenarios when the optimal number of clusters needs to be derived. In addition, methodology for *k*-means and hierarchical clusters along with their resulting visualizations was presented. Lastly, variable contributions to the eigenvectors was introduced as a means to determine the most influential variables on the principal components' composition. 
+
+## Additional Resources
++ [*K*-Means Cluster Analysis](https://uc-r.github.io/kmeans_clustering#silo)
++ [*K*-Means Clustering in R](https://www.datanovia.com/en/lessons/k-means-clustering-in-r-algorith-and-practical-examples/)
++ [Hierarchical Clustering in R](https://uc-r.github.io/hc_clustering)
+
+<br>
+
+### Test Your Knowledge
+Using the same dataset, answer the questions below. 
+
+1. Determine the optimal number of *k*-means clusters of cytokines derived from the nasal epithelieum lining fluid of **e-cigarette users**. 
+2. How do those clusters compare to the ones that were derived at baseline (in non-smokers)?
+3. Which cytokines have the greatest contributions to the first two eigenvectors?
