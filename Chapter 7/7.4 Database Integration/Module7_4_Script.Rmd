@@ -152,7 +152,7 @@ counties_shapefile <- merge(counties_shapefile, cdc_mortality, by.x = "State_Cou
 # Will remove alaska and hawaii just so we can look at the continental USA
 county_plot <- subset(counties_shapefile, !STATEFP %in% c("02","15"))
 
-# We can start with a simple plot of age-adjusted mortality rate, PM~2.5~, NO2, and SO2 levels across the U.S.
+# We can start with a simple plot of age-adjusted mortality rate, PM2.5, NO2, and SO2 levels across the U.S.
 plot(county_plot[,c("Age.Adjusted.Rate","PM25","NO2","SO2")])
 ```
 
@@ -164,7 +164,7 @@ ggplot(data = county_plot) +
   geom_sf(aes(fill = PM25)) +
   
   # Changing colors
-  scale_fill_viridis_c(option="plasma", name="PM~2.5~", # FIX PM25 TITLE!!!
+  scale_fill_viridis_c(option ="plasma", name ="PM2.5", 
                        guide = guide_colorbar(
                          direction = "horizontal",
                          barheight = unit(2, units = "mm"),
@@ -174,9 +174,9 @@ ggplot(data = county_plot) +
                          # some shifting around
                          title.hjust = 0.5,
                          label.hjust = 0.5)) +
-  ggtitle("2016 Annual PM25 (EPA Monitors)") +
+  ggtitle(expression(2016~Annual~PM[2.5]~EPA~Monitors)) + 
   theme_map() +
-  theme(plot.title = element_text(hjust = 0.5, size=22)) 
+  theme(plot.title = element_text(hjust = 0.5, size = 22)) 
 
 ```
 
@@ -224,7 +224,7 @@ A simple linear regression model in R can be carried out using the `lm()` (linea
 ```{r}
 # running the linear regression model
 m <- lm(Age.Adjusted.Rate ~ PM25,
-        data = model_data, weights=1/model_data$Age.Adjusted.Rate.Standard.Error)   
+        data = model_data, weights = 1/model_data$Age.Adjusted.Rate.Standard.Error)   
 # viewing the model results through the summary function
 summary(m)   
 ```
@@ -352,6 +352,7 @@ In conclusion, this training module serves as a novel example data integration e
 <br>
 
 ### Test Your Knowledge
-This training module provided some examples looking at PM~2.5~ concentration data. For this test your knowledge section, let's ask similar questions but now looking at NO~2~ concentration data.
+This training module provided some examples looking at PM~2.5~ concentration data. Using the same "Module7_4_InputData1.data" file, let's ask similar questions but now looking at NO~2~ concentration data.
 
-
+1. Is there an association between long-term, ambient NO~2~ concentrations and age-adjusted mortality at the county level (i.e., the crude model results)?
+2. After adjusting for covariates, is there an association between long-term, ambient NO~2~ concentrations and age-adjusted mortality at the county level (i.e., the adjusted model results)?

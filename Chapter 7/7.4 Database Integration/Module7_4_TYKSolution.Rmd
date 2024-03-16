@@ -1,0 +1,29 @@
+# Database Integration - Test Your Knowledge Solution
+
+```{r}
+library(sf)
+library(tidyverse)
+library(ggthemes)
+```
+
+
+```{r}
+# Reading in files
+load("Module7_4_InputData1.RData")
+
+# Viewing data 
+head(cytokines_df)
+```
+
+## TYK Question 1
+
+Determine the optimal number of *k*-means clusters of cytokines derived from the nasal epithelieum lining fluid of e-cigarette users.
+
+Starting by performing the necessary data manipulation.
+```{r}
+# selecting NELF samples from ecig users
+ecig_df = cytokines_df %>%
+    filter(Group == "Ecig", Compartment == "NELF") 
+
+head(ecig_df)
+```
