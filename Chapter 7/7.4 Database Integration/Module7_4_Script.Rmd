@@ -232,11 +232,12 @@ summary(m)
 Shown here are summary level statistics summarizing the results of the linear regression model.
 
 In the model summary we see several features:
+
 `Estimate`: the regression coefficient which tells us the relationship between a 1 ug/m3 change (elevation) in PM~2.5~ and the age-adjusted all-cause mortality rate
 `Std. Error`: the standard error of the estimate
 `t value`:  represents the T-statistic which is the test statistic for linear regression models and is simply the `Estimate` divided by `Std. Error`. This t value is compared with the Student's T distribution in order to determine the p-value (`Pr(>|t|)`).
 
-The Residuals are the difference between the predicted outcome (age-adjusted mortality rate) and known outcome from the data. For linear regression to be valid this should be normally distributed. The residuals from a linear model can be extracted using the residuals() command and plotted to see their distribution.
+The Residuals are the difference between the predicted outcome (age-adjusted mortality rate) and known outcome from the data. For linear regression to be valid this should be normally distributed. The residuals from a linear model can be extracted using the `residuals()` function and plotted to see their distribution.
 
 ### Answer to Envrionmental Health Question 2
 :::question
@@ -249,7 +250,11 @@ The Residuals are the difference between the predicted outcome (age-adjusted mor
 
 <br>
 
-To more thoroughly examine the potential relationship between PM~2.5~ concentrations and mortality it is absolutely essential to adjust for confounders
+To more thoroughly examine the potential relationship between PM~2.5~ concentrations and mortality it is absolutely essential to adjust for confounders. Let's start by viewing the AQS?? data that contains some confounders of interest ADD MORE WORDS!!
+```{r}
+head(county_health)
+```
+
 ```{r}
 # First we merge the covariate data in with the AQS data
 model_data <- merge(model_data, county_health, by.x = "State_County_Code", by.y = "County.5.digit.FIPS.Code", all.x=TRUE)

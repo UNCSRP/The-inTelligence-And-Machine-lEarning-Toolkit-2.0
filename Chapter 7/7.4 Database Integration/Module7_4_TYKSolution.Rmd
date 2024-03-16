@@ -1,6 +1,6 @@
 # Database Integration - Test Your Knowledge Solution
 
-```{r}
+```{r results=FALSE, message=FALSE}
 library(sf)
 library(tidyverse)
 library(ggthemes)
@@ -11,19 +11,65 @@ library(ggthemes)
 # Reading in files
 load("Module7_4_InputData1.RData")
 
-# Viewing data 
-head(cytokines_df)
+# Viewing geography, pollutant, AQS (confounder) data 
+head(counties_shapefile)
+head(epa_ap_county)
+head(county_health)
 ```
 
 ## TYK Question 1
 
-Determine the optimal number of *k*-means clusters of cytokines derived from the nasal epithelieum lining fluid of e-cigarette users.
+Is there an association between long-term, ambient NO~2~ concentrations and age-adjusted mortality at the county level (i.e., the crude model results)?
 
-Starting by performing the necessary data manipulation.
+First transforming the pollutant data from a long to wide format. 
 ```{r}
-# selecting NELF samples from ecig users
-ecig_df = cytokines_df %>%
-    filter(Group == "Ecig", Compartment == "NELF") 
+epa_ap_county <- epa_ap_county %>% 
+  select(-Units.of.Measure) %>% 
+  pivot_wider(names_from = Parameter.Name, values_from = County_Avg)
 
-head(ecig_df)
+head(epa_ap_county)
 ```
+
+Note that the `NO2` contains a lot of missing data. However, we can move forward by merging the geography and pollutant data by the `State_County_Code` and the `County.Code`.
+```{r}
+# Merging mortality and air pollution data
+model_data <- merge(epa_ap_county, cdc_mortality, by.x = "State_County_Code", by.y = "County.Code")
+
+head(model_data)
+```
+
+Now running the linear regression model between NO~2~ concentrations and age-adjusted mortality.
+```{r}
+# running the linear regression model
+m <- lm(Age.Adjusted.Rate ~ NO2,
+        data = model_data, weights = 1/model_data$Age.Adjusted.Rate.Standard.Error) 
+
+# viewing the model results through the summary function
+summary(m)   
+```
+**Answer**: Based on these model results, there may indeed be an association between NO~2~ concentrations and age-adjusted mortality (p value = 0.09)
+
+<br>
+
+## TYK Question 2 
+
+After adjusting for covariates, is there an association between long-term, ambient NO~2~ concentrations and age-adjusted mortality at the county level (i.e., the adjusted model results)?
+```{r}
+# First we merge the covariate data in with the AQS data
+model_data <- merge(model_data, county_health, by.x = "State_County_Code", by.y = "County.5.digit.FIPS.Code", all.x = TRUE)
+
+head(model_data)
+```
+
+```{r}
+# Now we add some relevant confounders to the linear regression model
+m <- lm(Age.Adjusted.Rate ~ NO2 + Adult.smoking + Adult.obesity + Food.environment.index + Physical.inactivity +
+          High.school.graduation + Some.college + Unemployment + Violent.crime + Percent.Rural + Percent.Females +
+          Percent.Asian + Percent.Non.Hispanic.African.American + Percent.American.Indian.and.Alaskan.Native + Percent.NonHispanic.white,
+        data = model_data, weights = 1/model_data$Age.Adjusted.Rate.Standard.Error)
+
+# And finally we check to see if the statistical association persists
+summary(m)
+```
+
+**Answer**: After adjusting for confounders, there is now a statistically significant relationship between NO~2 ambient exposure and age-adjusted mortality.
