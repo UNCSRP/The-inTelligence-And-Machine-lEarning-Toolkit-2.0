@@ -6,7 +6,7 @@ Fall 2023
 
 ## Introduction to Training Module
 
-Artificial intelligence (AI), machine learning (ML),  and predictive modeling (PM) are becoming increasingly popular buzzwords both in the public domain and within research fields, including environmental health. Within environmental health, these computational techniques are implemented to integrate large, multidimensional chemical and biological data sets to better understand links between environmental exposures and biological responses. 
+Artificial intelligence (AI), machine learning (ML),  and predictive modeling (PM) are becoming increasingly popular buzzwords both in the public domain and within research fields, including environmental health. Within environmental health, these computational techniques are implemented to integrate large, high dimensional chemical and biological datasets to better understand links between environmental exposures and biological responses. 
 
 In this training module, we will:
 
@@ -34,7 +34,7 @@ Before diving in to the applications of ML and AI in environmental health, let's
 **Machine Learning (ML)** is a subset of AI and describes a computer system that iteratively learns and improves from that experience autonomously. 
 
 Below is a high level taxonomy of AI. It's not meant to be an exhaustive depiction of all AI techniques, but a simple visualization of how some of these methodologies are nested within each other. Note, that AI can be categorized in different ways and may deviate from what is below.
-```{r out.width = "800px", echo = FALSE, out.width = "75%", fig.cap= "Created with *Biorender.com*", fig.align = 'center'}
+```{r out.width = "800px", echo = FALSE, out.width = "75%", fig.cap= "Created with *BioRender.com*", fig.align = 'center'}
 knitr::include_graphics("Module5_1_Images/Module5_1_Image1.png")
 ```
 
@@ -46,7 +46,7 @@ Advantages of AI and ML include, the automation of repetitive tasks, complex pro
 
 It is important to understand the methodological "roots" of current methods. Otherwise, it seems like every approach is novel! AI and ML methods have been around since the mid- to late- 1900s and continue to evolve in the present day. The earliest conceptual roots for these approaches can be traced from antiquity; however, it is generally agreed that the field was named "artificial intelligence" at the ["Dartmouth Workshop"](https://home.dartmouth.edu/about/artificial-intelligence-ai-coined-dartmouth) in 1956, led by John McCarthy and others. The following schematic demonstrates the general taxonomy (categories, sub-fields, and specific methods) of modern ML and AI:
 
-```{r out.width = "800px", echo = FALSE, fig.cap= "Created with *Biorender.com*", fig.align = 'center'}
+```{r out.width = "800px", echo = FALSE, fig.cap= "Created with *BioRender.com*", fig.align = 'center'}
 knitr::include_graphics("Module5_1_Images/Module5_1_Image2.png")
 ```
 
@@ -79,7 +79,7 @@ These screening efforts result in increasing amounts of data, which can be gathe
 knitr::include_graphics("Module5_1_Images/Module5_1_Image4.png")
 ```
 
-When many of these data sets and databases are combined, including diversity across different types of screening platforms, technologies, cell types, species, and other experimental variables, the associated dimensionality of the data gets "BIG." 
+When many of these datasets and databases are combined, including diversity across different types of screening platforms, technologies, cell types, species, and other experimental variables, the associated dimensionality of the data gets "big." 
 ```{r out.width = "500px", echo = FALSE, fig.align = 'center'}
 knitr::include_graphics("Module5_1_Images/Module5_1_Image5.png")
 ```
@@ -107,7 +107,7 @@ In the previous section, we briefly mentioned **predictive toxicology.** We ofte
 
 Our *working definition* is that **predictive toxicology** describes a multidisciplinary approach to chemical toxicity evaluation that more efficiently uses animal test results, when needed, and leverages expanding non-animal test methods to forecast the effects of a chemical on biological systems. Examples of the questions we can answer using predictive toxicology include:
 
-+ Can we more efficiently design animal studies and analyze data from shorter assays using less animals to predict long-term health outcomes?
++ Can we more efficiently design animal studies and analyze data from shorter assays using fewer animals to predict long-term health outcomes?
 + Can this suite of *in vitro* assays **predict** what would happen in an organism?
 + Can we use diverse, high dimensional data to cluster chemicals into **predicted** activity classes?
 
@@ -125,9 +125,13 @@ Our *working definition* is that **predictive exposure science** describes a mul
 There are many different types of ML methods that we can employ in predictive toxicology and exposure science, depending on the data type / purpose of data analysis. A recent [review](https://pubmed.ncbi.nlm.nih.gov/34029068/) written together with [Erin Baker's lab](https://bakerlab.wordpress.ncsu.edu/) provides a high-level overview on some of the types of ML methods and challenges to address when analyzing multi-omic data (including chemical signature data).
 
 ### Answer to Environmental Health Question 
+:::question
 *With this, we can now answer our **Environmental Health Question***: How and why are machine learning, predictive modeling, and artificial intelligence used in environmental health research?
+:::
 
-**Answer:** Machine learning, a subcategory of artificial intelligence, can be used in environmental health science to better understand patterns between chemical exposure and biological response in complex, high dimensional data sets. These data sets are often generated as part of efforts to screen many chemicals efficiently. Predictive modeling, which can include machine learning approaches, leverages these data to forecast the effects of a chemical on biological systems.
+:::answer
+**Answer:** Machine learning, a subcategory of artificial intelligence, can be used in environmental health science to better understand patterns between chemical exposure and biological response in complex, high dimensional datasets. These datasets are often generated as part of efforts to screen many chemicals efficiently. Predictive modeling, which can include machine learning approaches, leverages these data to forecast the effects of a chemical on biological systems.
+:::
 
 ### Additional Applications of Machine Learning in Environmental Health Science
 
@@ -140,7 +144,7 @@ In addition to the predictive toxicology questions above, machine learning can a
 
 ## Concluding Remarks
 
-In conclusion, this training module provide an overview of the field of artificial intelligence and machine learning and discusses application of these tools in environmental health science through predictive modeling. These methods represent common tools that are used in high dimensional data analyses within the field of environmental health sciences.
+In conclusion, this training module provide an overview of the field of artificial intelligence and machine learning and discusses applications of these tools in environmental health science through predictive modeling. These methods represent common tools that are used in high dimensional data analyses within the field of environmental health sciences.
 
 In the following modules, we will provide specific examples detailing how to apply both supervised and unsupervised machine learning methods to environmental health questions and how to interpret the results of these analyses. 
 
