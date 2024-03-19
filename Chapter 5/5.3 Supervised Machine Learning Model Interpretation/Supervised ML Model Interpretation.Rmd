@@ -1,6 +1,6 @@
 # Supervised Machine Learning Model Interpretation
 
-This training module was developed by Alexis Payton, MS, Lauren Koval, and Dr. Julia E. Rager
+This training module was developed by Alexis Payton, MS, Lauren E. Koval, and Dr. Julia E. Rager
 
 Fall 2023
 
@@ -31,11 +31,12 @@ When choosing variables for decision boundary plots, features that have the most
 
 + Cholesterol, given that it had the highest variable importance and
 + Vitamin D, given its synthesis can be affected by ozone despite it having a lower variable importance in the paper's models.
-```{r, echo=FALSE, fig.width=4, fig.height=5, fig.align='center'}
-knitr::include_graphics("Images/Image1.png")
+```{r, echo=FALSE, fig.align='center', out.width = "80%"}
+knitr::include_graphics("Module5_3_Images/Module5_3_Image1.png")
 ```
 
 Takeaways from this decision boundary plot:
+
 + Subjects with more lung inflammation ("responders") after ozone exposure tended to have higher Vitamin D levels and lower Cholesterol levels.
 + These "responder" subjects were more likely to be non-asthmatics. 
 
@@ -44,14 +45,13 @@ Takeaways from this decision boundary plot:
 ## Introduction to Training Module
 In the previous module, we investigated whether a classification-based RF model using well water variables would be accurate predictors of iAs detection. In this module, we will extract variable importance from the same algorithm and plot variable importance. The two features with the highest variable importance will be identified and used to construct a decision boundary plot to determine how features are associated with iAs detection. 
 
-The data to be used in this module was described and referenced previously in [TAME Toolkit module 5](insert link here).
+The data to be used in this module was described and referenced previously in [TAME 2.0 Module 5.2 Supervised Machine Learning](insert link).
 
 ## Training Module's Environmental Health Questions
 
 This training module was specifically developed to answer the following environmental health questions:
 
 1. After plotting variable importance from highest to lowest, which two predictors have the highest variable importance on the predictive accuracy of iAs detection from a RF algorithm?
-   
 2. Using the two features with the highest variable importance, how can a decision boundary be visualized to separate and predict iAs detection?
 
 
@@ -64,7 +64,7 @@ rm(list=ls())
 
 ### Installing required R packages
 If you already have these packages installed, you can skip this step, or you can run the below code which checks installation status for you
-```{r}
+```{r message=FALSE}
 if (!requireNamespace("readxl"))
   install.packages("readxl");
 if (!requireNamespace("lubridate"))
@@ -78,31 +78,29 @@ if (!requireNamespace("randomForest"))
 ```
 
 ### Loading R packages required for this session
-```{r}
+```{r message=FALSE}
 library(readxl);
 library(lubridate);
 library(tidyverse);
 library(caret);
 library(randomForest);
 ```
-
 ### Set your working directory
 ```{r, eval=FALSE, echo=TRUE}
 setwd("/filepath to where your input files are")
 ```
 
 ### Importing example dataset
-**Will need to change input to module number and add module number to the file itself**
 ```{r}
 # Load the data
-arsenic_data <- data.frame(read_excel("Module5/Module5_Arsenic_Data.xlsx"))
+arsenic_data <- data.frame(read_excel("Module5_3TYKInput.xlsx"))
 
 # View the top of the dataset
 head(arsenic_data) 
 ```
 
 ### Changing Data Types 
-First, `Detect_Concentration` needs to be converted from a character to a factor, so that Random Forest to know that non-detect data is considered baseline. `Water_Sample_Date` needs to be converted from a character to a date type, so that Random Forest understands this column contains dates.
+First, `Detect_Concentration` needs to be converted from a character to a factor so that Random Forest knows that the non-detect class is the baseline or "negative" class, while the detect class will be the "positive" class. `Water_Sample_Date` will be converted from a character to a date type using the `mdy()` function from the *lubridate* package. This is done so that the model understands this column contains dates.
 ```{r}
 arsenic_data = arsenic_data %>%
     # Converting `Detect_Concentration` from a character to a factor
@@ -115,9 +113,10 @@ arsenic_data = arsenic_data %>%
 
 head(arsenic_data)
 ```
+<br>
 
 ## Setting up Cross Validation
-Note that the code below is different than the code presented in the previous [TAME 2.0 Module ?? Supervised Machine Learning](insert link). Both coding methods are valid and produce comparable results, however we wanted to present another way to run k-fold cross validation and random forest.
+Note that the code below is different than the code presented in the previous [TAME 2.0 Module 5.2 Supervised Machine Learning](insert link). Both coding methods are valid and produce comparable results, however we wanted to present another way to run k-fold cross validation and random forest. In 5-fold cross validation (CV), there are 5 equally-sized folds (ideally!). This means that 80% of the original dataset is split into the 4 folds that comprise the training set and the remaining 20% in the last fold is reserved for the test set. 
 ```{r}
 # Setting seed for reproducibility
 set.seed(12)
@@ -125,18 +124,25 @@ set.seed(12)
 # 5-fold cross validation
 arsenic_index = createFolds(arsenic_data$Detect_Concentration, k = 5) 
 
+# Seeing if about 20% of the records are in the testing set
+kfold1 = arsenic_index[[1]]
+length(kfold1)/nrow(arsenic_data)
+
 # Creating vectors for parameters to be tuned
 ntree_values = c(50, 250, 500) # number of decision trees 
 p = dim(arsenic_data)[2] - 1 # number of predictor variables in the dataset
 mtry_values = c(sqrt(p), p/2, p) # number of predictors to be used in the model
 ```
+<br>
 
 ## Predicting iAs Detection with a Random Forest (RF) Model
+Notice that in the code below we are choosing the final RF model to be the one with the lowest out of bag (OOB) error. In the previous module, the final model was chosen based on the highest accuracy, however this is a similar approach here given that OOB error = 1 - Accuracy.
 ```{r}
 # Setting the seed again so the predictions are consistent
 set.seed(12)
 
-# Creating an empty dataframe to save the variable importance
+# Creating an empty dataframe to save the confusion matrix metrics and variable importance
+metrics = data.frame()
 variable_importance_df = data.frame()
 
 # Iterating through the cross validation folds
@@ -169,37 +175,52 @@ for (i in 1:length(arsenic_index)){
         }
     }
     
-    # Finding the lowest OOB error using best number of predictors at split
+    # Finding the lowest OOB error from the 5 folds using best number of predictors at split
     best_oob_errors <- which(rf_error_df$OOB_errors == min(rf_error_df$OOB_errors))
 
     # Now running RF on the entire training set with the tuned parameters
+    # This will be done 5 times for each fold
     reg_rf <- randomForest(Detect_Concentration ~ ., data = data_train,
                                ntree = rf_error_df$Tree.Number[min(best_oob_errors)],
                                mtry = rf_error_df$Variable.Number[min(best_oob_errors)])
 
     # Predicting on test set and adding the predicted values as an additional column to the test data
     data_test$Pred_Detect_Concentration = predict(reg_rf, newdata = data_test, type = "response")
+    matrix = confusionMatrix(data = data_test$Pred_Detect_Concentration, reference = data_test$Detect_Concentration, 
+                                     positive = "D")
+    
+    # SHOULD I REMOVE THIS??
+    # Extracting accuracy, sens, spec, PPV, NPV and adding to the dataframe to take mean later
+    matrix_values = data.frame(t(c(matrix$byClass[11])), t(c(matrix$byClass[1:4])))
+    metrics = rbind(metrics, matrix_values)
 
-    # extracting variable importance
+    # Extracting variable importance
     variable_importance_values = data.frame(importance(reg_rf)) %>%
         rownames_to_column(var = "Predictor")
     variable_importance_df = rbind(variable_importance_df, variable_importance_values)
 }
 
-# Taking average
+# Taking average across the 5 folds
+# SHOULD I REMOVE THIS??
+metrics = metrics %>%
+        summarise(`Balanced Accuracy` = mean(Balanced.Accuracy), Sensitivity = mean(Sensitivity), 
+              Specificity = mean(Specificity), PPV = mean(Pos.Pred.Value), NPV = mean(Neg.Pred.Value))
+
 variable_importance_df = variable_importance_df %>%
     group_by(Predictor) %>%
     summarise(MeanDecreaseGini = mean(MeanDecreaseGini)) %>%
     # Sorting from highest to lowest
     arrange(-MeanDecreaseGini)
 
+# First comparing results to the previous module
+metrics
+
 # Viewing the model's variable importance
 variable_importance_df
 ```
 
-
 ### Reformatting the dataframe for plotting 
-Transforming the dataframe so that the figure is more legible. Specifically, spaces will be added between the variables and the `Predictor` column will be put into a factor to rearrange the order of the variables from lowest to highest mean decrease gini. For additional information on improving visualizations see [TAME 2.0 Module 3.2 Improving Data Visualizations](insert link).
+Transforming the dataframe so that the figure is more legible. Specifically, spaces will be added between the variables and the `Predictor` column will be put into a factor to rearrange the order of the variables from lowest to highest mean decrease gini. For additional information on tricks like this to make visualizations easier to read see [TAME 2.0 Module 3.2 Improving Data Visualizations](insert link).
 ```{r}
 # Adding spaces between the variables that need the space
 modified_variable_importance_df = variable_importance_df %>%
@@ -213,11 +234,9 @@ head(modified_variable_importance_df)
 ```
 
 ## Variable Importance Plot
-```{r}
-options(repr.plot.width=8, repr.plot.height=5) #changing plot size
-
+```{r fig.align='center', out.width = "65%"}
 ggplot(data = modified_variable_importance_df , 
-             aes(x = MeanDecreaseGini, y = Predictor, size = 3)) + 
+             aes(x = MeanDecreaseGini, y = Predictor, size = 2)) + 
   geom_point() + 
 
   theme_light() + 
@@ -233,15 +252,20 @@ ggplot(data = modified_variable_importance_df ,
   guides(size = "none")#removing size legend
 ```
 
+### Answer to Environmental Health Question 1
+:::question
 *With this, we can answer **Environmental Health Question #1***: After plotting variable importance from highest to lowest, which two predictors have the highest variable importance on the predictive accuracy of iAs detection from a RF algorithm?
-   
+:::
+
+:::answer
 **Answer**: From the variable importance dataframe and plot, we can see that casing depth and pH had the greatest impact on RF followed by water sample date, flow rate, well depth, and static water depth in descending order. 
+:::
 
 Since casing depth and pH have been identified as the predictors with the highest variable importance, they will be used as the two predictors for the decision boundary plot.
 
 <br>
 
-### Decision Boundary Calculation
+## Decision Boundary Calculation
 First, RF will be trained with casing depth and pH. Since, the decision boundary plot will be used for visualization purposes and a 2-D figure can only plot two variables, we will not worry about tuning the parameters as was previously done. 
 ```{r}
 # Creating a dataframe with variables based on the highest predictors
@@ -251,7 +275,7 @@ highest_predictivity_data = data.frame(arsenic_data[,c("Casing_Depth", "pH", "De
 rf_detect_arsenic = randomForest(Detect_Concentration~., data = highest_predictivity_data)
 ```
 
-From this RF prediction, the decision boundary will be calculated. This will be done by predicting `Detect_Concentraion` between a grid of values - specifically the minimum and maximum of the two predictiors (casing depth and pH). A non-linear line will be drawn on the plot to separate the two classes. 
+From this RF prediction, the decision boundary will be calculated. This will be done by predicting `Detect_Concentraion` between a grid of values - specifically the minimum and maximum of the two predictors (casing depth and pH). A non-linear line will be drawn on the plot to separate the two classes. 
 ```{r}
 get_grid_df <- function(classification_model, data, resolution = 100) {
     # This function predicts the outcome (Detect_Concentration) at evenly spaced data points using the two variables (pH and casing depth)
@@ -287,37 +311,38 @@ grid_df_rf = get_grid_df(rf_detect_arsenic, highest_predictivity_data)
 head(grid_df_rf)
 ```
 
-## Decision Boundary Plot
-```{r}
-options(repr.plot.width=10, repr.plot.height=7) #changing plot size
-
+Now let's plot the grid of predictions with the sampled data.
+```{r fig.width=7.5, fig.height=6, fig.align='center', out.width = "90%"}
 ggplot() +
-  geom_point(data = arsenic_data, aes(x = pH, y = Casing_Depth, color = Detect_Concentration),
+  geom_point(data = arsenic_data, aes(x = Casing_Depth, y = pH, color = Detect_Concentration),
             position = position_jitter(w = 0.1, h = 0.1), size = 4, alpha = 0.8) + 
-  geom_contour(data = grid_df_rf, aes(x = pH, y = Casing_Depth, z = as.numeric(Pred_Class == "D")), 
+  geom_contour(data = grid_df_rf, aes(x = Casing_Depth, y = pH, z = as.numeric(Pred_Class == "D")), 
                color = "black", breaks = 0.5) + # adds contour line
-  geom_point(data = grid_df_rf, aes(x = pH, y = Casing_Depth, color = Pred_Class), 
+  geom_point(data = grid_df_rf, aes(x = Casing_Depth, y = pH, color = Pred_Class), 
              size = 0.1) + # shades plot
 
   theme_light() + 
   theme(axis.line = element_line(color = "black"), #making x and y axes black
-        axis.text = element_text(size = 12), #changing size of x axis labels
-        axis.title = element_text(face = "bold", size = rel(1.7)), #changes axis titles
-        legend.title = element_text(face = 'bold', size = 14), #changes legend title
-        legend.text = element_text(size = 12), #changes legend text
-        legend.position = c(0.15,0.85), # move legend to top left corner
-        legend.background = element_rect(color = 'black', fill = 'white', linetype = 'solid'), # changes legend background
-        strip.text.x = element_text(size = 15, face = "bold"), #changes size of facet x axis 
-        strip.text.y = element_text(size = 15, face = "bold")) + #changes size of facet y axis 
-  labs(y = 'Casing Depth (ft)') + #changing axis labels 
+        axis.text = element_text(size = 10), #changing size of x axis labels
+        axis.title = element_text(face = "bold", size = rel(1.5)), #changes axis titles
+        legend.title = element_text(face = 'bold', size = 12), #changes legend title
+        legend.text = element_text(size = 10), #changes legend text
+        legend.position = "bottom", # move legend to top left corner
+        legend.background = element_rect(color = 'black', fill = 'white', linetype = 'solid')) + # changes legend background
+  labs(x = 'Casing Depth') + #changing axis labels
 
   scale_color_discrete(name = "Arsenic Detection", # renaming the legend
                       labels = c('Non-Detect','Detect')) # renaming the classes
 ```
 
-*With this, we can answer **Environmental Health Question 2***: Using the two features with the highest variable importance, how can a decision boundary be visualized to separate and predict iAs detection?
+### Answer to Environmental Health Question 2
+:::question
+*With this, we can answer **Environmental Health Question #2***: Using the two features with the highest variable importance, how can a decision boundary be visualized to separate and predict iAs detection?
+:::
 
-**Answer**: There is some overlap between detect and non-detect iAs samples; however, it is still evident that detect iAs samples were more likely to have a more basic pH and have a lower (<80 ft) casing depth.
+:::answer
+**Answer**: There is some overlap between detect and non-detect iAs samples; however, it is still evident that wells with detectable levels of iAs were more likely to have lower (<80 ft) casing depths and a more basic pH.
+:::
 
 ## Concluding Remarks
 In conclusion, this training module provided methodologies to aid in the interpretation of supervised ML with variable importance and decision boundary plots. Variable importance helps quantify the impact of each feature's importance on an algorithm's predictivity. The most important or environmentally-relevant predictors can be selected in a decision boundary plot to further understand and visualize the features impact on the model's classification. 
@@ -329,6 +354,6 @@ In conclusion, this training module provided methodologies to aid in the interpr
 
 <br>
 
-## Test Your Knowledge
-1. Using the "Managanese_Data", extract the variable importance for each predictor on a RF model. What two features have the highest variable importance?  
+### Test Your Knowledge
+1. Using the "Module5_3TYKInput.xlsx", extract the variable importance for each predictor on a RF model. What two features have the highest variable importance?  
 2. Using casing depth and the feature with the highest variable importance, construct a decision boundary plot. Was RF able to separate Manganese samples based on these two variables?
