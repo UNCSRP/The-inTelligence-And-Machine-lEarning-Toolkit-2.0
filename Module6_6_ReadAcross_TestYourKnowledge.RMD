@@ -1,0 +1,121 @@
+# Read-Across Toxicity Predictions - Test Your Knowledge Solution
+
+#### Preparing Workspace
+```{r, results=FALSE, message=FALSE}
+rm(list=ls())
+
+library(tidyverse)
+library(fingerprint)
+library(rcdk)
+```
+
+
+```{r, eval=FALSE, echo=TRUE}
+setwd("/filepath to where your input files are")
+```
+
+#### Loading and Cleaning Data
+```{r}
+# Read in our chemical substances and their structural information as well as our acute toxicity data
+substances <- read.csv("Module6_6_InputData1.csv")
+acute_data <- read.csv("Module6_6_InputData2.csv")
+
+# Convert QSAR ready smiles to characters
+all_smiles <- as.character(substances$QSAR_READY_SMILES)
+```
+
+
+```{r}
+# Make sure that structure and toxicity dataframes are sorted by DTXSID
+substances <- substances[order(substances$DTXSID),]
+acute_data <- acute_data[order(acute_data$DTXSID),]
+
+# Test to see whether data in these columns are equal
+unique(substances$DTXSID == acute_data$DTXSID)
+```
+
+
+```{r}
+# Isolate the structural information and toxicity data for our target chemical (methylparaben) to reference later in this example
+target_substance <-filter(substances, DTXSID == 'DTXSID4022529')
+target_acute_data <- filter(acute_data, DTXSID == 'DTXSID4022529')
+```
+
+
+```{r}
+# Convert our QSAR ready SMILES to molecular objects
+target_mol <- parse.smiles(as.character(target_substance$QSAR_READY_SMILES)) 
+all_mols <-parse.smiles(all_smiles)
+```
+
+
+```{r}
+# Obtain the chemical fingerprints for the chemicals in our dataset
+target.fp <- get.fingerprint(target_mol[[1]], type = 'standard')
+all.fp <- lapply(all_mols, get.fingerprint, type='standard')
+```
+
+
+```{r}
+# Create a Tanimoto similarity matrix for all of our chemicals then convert to a dataframe
+all.fp.sim <- fingerprint::fp.sim.matrix(all.fp, method = 'tanimoto')
+all.fp.sim <- as.data.frame(all.fp.sim)
+colnames(all.fp.sim) = substances$DTXSID
+row.names(all.fp.sim) = substances$DTXSID
+```
+
+## TYK Question 1
+
+How many source analogues are structurally similar to methylparaben (DTXSID4022529) when considering a similarity threshold of 0.75?
+```{r}
+target.sim <- all.fp.sim %>% filter(row.names(all.fp.sim) == 'DTXSID4022529')
+target.sim <- target.sim %>% select_if(function(x) any(x > 0.75))
+```
+
+
+```{r}
+# Make a matrix of our source analogues and their Tanimoto similarity with methylparaben
+source_analogues <- t(target.sim)
+DTXSID <-rownames(source_analogues)
+source_analogues <- cbind(DTXSID, source_analogues)
+rownames(source_analogues) <- NULL
+colnames(source_analogues) <- c('DTXSID', 'Target_TanimotoSim')
+```
+
+
+```{r}
+# Merge the toxicity data with our source analogues then remove our target chemical from this dataset
+source_analogues <- merge(source_analogues, acute_data, by.x = 'DTXSID', by.y = 'DTXSID')
+source_analogues_only <- source_analogues %>% filter(Target_TanimotoSim != 1) 
+```
+
+**Answer**: 8 chemicals
+
+<br>
+
+## TYK Question 2
+
+What is the predicted LD50 for methylparaben in mg/kg and how does this compare to the measured LD50 for methylparaben?
+```{r}
+# Calculate the read-across prediction for methylparaben in units of -log10 millimolar
+source_analogues_only$wt_tox_calc <- as.numeric(source_analogues_only$Target_TanimotoSim) * source_analogues_only$LD50_LM  
+
+sum_tox <- sum(source_analogues_only$wt_tox_calc)
+sum_sims <- sum(as.numeric(source_analogues_only$Target_TanimotoSim))
+
+ReadAcross_Pred <- sum_tox/sum_sims
+```
+
+
+```{r}
+# Convert -log10 millimolar units to read-across prediction in mg/kg using the molecular weight of methylparaben (152.15 g/mol)
+ReadAcross_Pred <- (10^(-ReadAcross_Pred))*152.15
+ReadAcross_Pred 
+```
+
+
+```{r}
+target_acute_data$LD50_mgkg
+```
+
+**Answer**: The predicted LD50 for methylparaben is 1,897 mg/kg. This is a ~10% difference from the observed LD50 of 2,100 mg/kg which gets us in the ball park of the chemical's true observed LD50.
